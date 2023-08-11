@@ -55,7 +55,7 @@ export default {
             <template #title>
               {{ appInfo.version }}
             </template>
-            <img width="35" alt="Edmicro NocoDB" src="~/assets/img/branch/edmicro_icon.png" />
+            <img width="35" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
           </a-tooltip>
         </div>
 

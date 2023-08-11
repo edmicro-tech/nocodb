@@ -1,7 +1,7 @@
 <h1 align="center" style="border-bottom: none">
     <div>
         <a href="https://www.nocodb.com">
-            <img src="/packages/nc-gui/assets/img/branch/edmicro_icon.png" width="80" />
+            <img src="/packages/nc-gui/assets/img/brand/edmicro_icon.png" width="80" />
             <br>
             NocoDB
         </a>
