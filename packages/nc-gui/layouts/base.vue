@@ -51,7 +51,7 @@ hooks.hook('page:finish', () => {
             </template>
             <div class="flex items-center gap-2">
               <img v-if="!isDashboard" width="120" alt="Edmicro NocoDB" src="~/assets/img/brand/logo-edmicro-b.svg" />
-              <img v-else width="25" alt="Edmicro NocoDB" src="~/assets/img/branch/edmicro_icon.png" />
+              <img v-else width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
             </div>
           </a-tooltip>
         </div>
