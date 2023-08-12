@@ -278,7 +278,7 @@ useEventListener(document, 'keydown', async (e: KeyboardEvent) => {
               <template #title>
                 {{ currentVersion }}
               </template>
-              <img width="25" class="-mr-1" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
+              <img width="25" class="-mr-1" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
             </a-tooltip>
           </div>
 
@@ -292,7 +292,7 @@ useEventListener(document, 'keydown', async (e: KeyboardEvent) => {
               <template #title>
                 {{ currentVersion }}
               </template>
-              <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
+              <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
             </a-tooltip>
           </a>
 

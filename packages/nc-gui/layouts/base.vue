@@ -50,8 +50,8 @@ hooks.hook('page:finish', () => {
               {{ currentVersion }}
             </template>
             <div class="flex items-center gap-2">
-              <img v-if="!isDashboard" width="120" alt="Edmicro NocoDB" src="~/assets/img/brand/logo-edmicro-b.svg" />
-              <img v-else width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
+              <img v-if="!isDashboard" width="120" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+              <img v-else width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
             </div>
           </a-tooltip>
         </div>
