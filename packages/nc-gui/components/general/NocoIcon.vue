@@ -22,8 +22,8 @@ const onClick = useThrottleFn(() => {
     @click="onClick"
   >
     <div class="relative">
-      <img class="hidden dark:block" :width="size" :height="size" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
-      <img class="dark:hidden" :width="size" :height="size" alt="Edmicro NocoDB" src="~/assets/img/brand/edmicro_icon.png" />
+      <img class="hidden dark:block" :width="size" :height="size" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+      <img class="dark:hidden" :width="size" :height="size" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
 
       <TransitionGroup name="layout" :duration="500">
         <template v-if="animate || ping">
