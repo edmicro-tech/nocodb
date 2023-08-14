@@ -1205,14 +1205,14 @@ const duplicateTable = async (table: TableType) => {
     <div class="flex items-start flex-col justify-start px-2 py-3 gap-2">
       <LazyGeneralAddBaseButton class="color-transition py-1.5 px-2 cursor-pointer select-none hover:text-primary" />
 
-      <LazyGeneralHelpAndSupport class="color-transition px-2 text-gray-500 cursor-pointer select-none hover:text-accent" />
+      <!-- <LazyGeneralHelpAndSupport class="color-transition px-2 text-gray-500 cursor-pointer select-none hover:text-accent" /> -->
 
-      <GeneralJoinCloud
+      <!-- <GeneralJoinCloud
         v-if="!isMobileMode"
         class="color-transition px-2 text-gray-500 cursor-pointer select-none hover:text-accent"
-      />
+      /> -->
 
-      <GithubButton
+      <!-- <GithubButton
         v-if="!isMobileMode"
         class="ml-2 py-1"
         href="https://github.com/nocodb/nocodb"
@@ -1221,7 +1221,7 @@ const duplicateTable = async (table: TableType) => {
         data-size="large"
       >
         Star
-      </GithubButton>
+      </GithubButton> -->
     </div>
   </div>
 </template>
