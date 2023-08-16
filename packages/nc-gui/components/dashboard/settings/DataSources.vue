@@ -84,7 +84,7 @@ const deleteBase = (base: BaseType) => {
   $e('c:base:delete')
 
   Modal.confirm({
-    title: `${t('modal.deleteProject')} '${base.alias}' project?`,
+    title: `${t('modal.deleteProject')} '${base.alias}'?`,
     wrapClassName: 'nc-modal-base-delete',
     okText: 'Yes',
     okType: 'danger',
