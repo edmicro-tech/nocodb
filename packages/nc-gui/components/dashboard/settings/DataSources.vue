@@ -8,7 +8,7 @@ import UIAcl from './UIAcl.vue'
 import Erd from './Erd.vue'
 import { ClientType, DataSourcesSubTab } from '~/lib'
 import { storeToRefs, useNuxtApp, useProject } from '#imports'
-
+const { t } = useI18n()
 interface Props {
   state: string
   reload: boolean
@@ -84,7 +84,7 @@ const deleteBase = (base: BaseType) => {
   $e('c:base:delete')
 
   Modal.confirm({
-    title: `Do you want to delete '${base.alias}' project?`,
+    title: `${t('modal.deleteProject')} '${base.alias}' project?`,
     wrapClassName: 'nc-modal-base-delete',
     okText: 'Yes',
     okType: 'danger',
@@ -248,10 +248,8 @@ watch(
 
                 <div class="ds-table-col ds-table-actions">
                   <div class="flex items-center gap-2">
-                    <a-button
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(sources[0].id, DataSourcesSubTab.Metadata)"
-                    >
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(sources[0].id, DataSourcesSubTab.Metadata)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <a-tooltip v-if="metadiffbases.includes(sources[0].id)">
                           <template #title>Out of sync</template>
@@ -261,29 +259,22 @@ watch(
                         Sync Metadata
                       </div>
                     </a-button>
-                    <a-button
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(sources[0].id, DataSourcesSubTab.UIAcl)"
-                    >
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(sources[0].id, DataSourcesSubTab.UIAcl)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="acl" class="group-hover:text-accent" />
                         UI ACL
                       </div>
                     </a-button>
-                    <a-button
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(sources[0].id, DataSourcesSubTab.ERD)"
-                    >
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(sources[0].id, DataSourcesSubTab.ERD)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="erd" class="group-hover:text-accent" />
                         ERD
                       </div>
                     </a-button>
-                    <a-button
-                      v-if="!sources[0].is_meta"
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(sources[0].id, DataSourcesSubTab.Edit)"
-                    >
+                    <a-button v-if="!sources[0].is_meta" class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(sources[0].id, DataSourcesSubTab.Edit)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="edit" class="group-hover:text-accent" />
                         Edit
@@ -317,10 +308,8 @@ watch(
 
                 <div class="ds-table-col ds-table-actions">
                   <div class="flex items-center gap-2">
-                    <a-button
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(base.id, DataSourcesSubTab.Metadata)"
-                    >
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(base.id, DataSourcesSubTab.Metadata)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <a-tooltip v-if="metadiffbases.includes(base.id)">
                           <template #title>Out of sync</template>
@@ -330,32 +319,29 @@ watch(
                         Sync Metadata
                       </div>
                     </a-button>
-                    <a-button
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(base.id, DataSourcesSubTab.UIAcl)"
-                    >
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(base.id, DataSourcesSubTab.UIAcl)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="acl" class="group-hover:text-accent" />
                         UI ACL
                       </div>
                     </a-button>
-                    <a-button class="nc-action-btn cursor-pointer outline-0" @click="baseAction(base.id, DataSourcesSubTab.ERD)">
+                    <a-button class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(base.id, DataSourcesSubTab.ERD)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="erd" class="group-hover:text-accent" />
                         ERD
                       </div>
                     </a-button>
-                    <a-button
-                      v-if="!base.is_meta"
-                      class="nc-action-btn cursor-pointer outline-0"
-                      @click="baseAction(base.id, DataSourcesSubTab.Edit)"
-                    >
+                    <a-button v-if="!base.is_meta" class="nc-action-btn cursor-pointer outline-0"
+                      @click="baseAction(base.id, DataSourcesSubTab.Edit)">
                       <div class="flex items-center gap-2 text-gray-600 font-light">
                         <GeneralIcon icon="edit" class="group-hover:text-accent" />
                         Edit
                       </div>
                     </a-button>
-                    <a-button v-if="!base.is_meta" class="nc-action-btn cursor-pointer outline-0" @click="deleteBase(base)">
+                    <a-button v-if="!base.is_meta" class="nc-action-btn cursor-pointer outline-0"
+                      @click="deleteBase(base)">
                       <div class="flex items-center gap-2 text-red-500 font-light">
                         <GeneralIcon icon="delete" class="group-hover:text-accent" />
                         Delete

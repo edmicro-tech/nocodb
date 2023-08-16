@@ -28,7 +28,7 @@ import {
 definePageMeta({
   title: 'title.myProject',
 })
-
+const { t } = useI18n()
 const { $api, $e, $jobs } = useNuxtApp()
 
 const { api, isLoading } = useApi()
@@ -65,11 +65,11 @@ const deleteProject = (project: ProjectType) => {
   $e('c:project:delete')
 
   Modal.confirm({
-    title: `Do you want to delete '${project.title}' project?`,
+    title: `${t('modal.deleteProject')} '${project.title}' project?`,
     wrapClassName: 'nc-modal-project-delete',
-    okText: 'Yes',
+    okText: t('general.yes'),
     okType: 'danger',
-    cancelText: 'No',
+    cancelText: t('general.no'),
     async onOk() {
       try {
         await api.project.delete(project.id as string)
@@ -200,7 +200,7 @@ const copyProjectMeta = async () => {
         :placeholder="$t('activity.searchProject')"
       />
 
-      <a-tooltip title="Reload projects">
+      <a-tooltip :title="$t('general.reload')">
         <div
           class="transition-all duration-200 h-full flex-0 flex items-center group hover:ring active:(ring ring-accent) rounded-full mt-1"
           :class="isLoading ? 'animate-spin ring ring-gray-200' : ''"
@@ -340,7 +340,7 @@ const copyProjectMeta = async () => {
                   <a-menu-item key="duplicate" v-e="['c:project:duplicate']" @click.stop="duplicateProject(record)">
                     <div class="color-transition nc-project-menu-item group" :data-testid="`dupe-project-${record.title}`">
                       <GeneralIcon icon="copy" class="group-hover:text-accent" />
-                      Duplicate
+                      {{ $t('general.duplicate') }}
                     </div>
                   </a-menu-item>
                 </a-menu>

@@ -76,7 +76,8 @@
     "hideField": "Hide Field",
     "sortAsc": "Sort Ascending",
     "sortDesc": "Sort Descending",
-    "geoDataField": "GeoData Field"
+    "geoDataField": "GeoData Field",
+    "removeUserProject": "This action will remove this user from this project ?"
   },
   "objects": {
     "project": "Project",
@@ -170,6 +171,9 @@
     "isNull": "is null",
     "isNotNull": "is not null"
   },
+  "modal": {
+    "deleteProject": "Do you want to delete "
+  },
   "title": {
     "erdView": "ERD View",
     "newProj": "New Project",
@@ -218,7 +222,8 @@
     "resetPasswordMenu": "Reset Password",
     "tokens": "Tokens",
     "userManagement": "User Management",
-    "licence": "Licence"
+    "licence": "Licence",
+    "inviteUser": "Invite new user"
   },
   "labels": {
     "createdBy": "Created By",

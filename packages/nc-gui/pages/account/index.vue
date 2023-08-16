@@ -82,7 +82,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
                 <div class="select-none">{{ $t('title.appStore') }}</div>
               </div>
             </a-menu-item>
-            <a-menu-item
+            <!-- <a-menu-item
               v-if="isUIAllowed('license')"
               key="license"
               class="group active:(!ring-0) hover:(!bg-primary !bg-opacity-25)"
@@ -93,7 +93,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
 
                 <div class="select-none">{{ $t('title.licence') }}</div>
               </div>
-            </a-menu-item>
+            </a-menu-item> -->
           </a-menu>
         </div>
       </a-layout-sider>

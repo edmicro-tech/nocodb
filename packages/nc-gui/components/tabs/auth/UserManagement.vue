@@ -210,7 +210,7 @@ const isSuperAdmin = (user: { main_roles?: string }) => {
     >
       <div class="flex flex-col h-full">
         <div class="flex flex-row justify-center mt-2 text-center w-full text-base">
-          This action will remove this user from this project
+          {{ $t('general.removeUserProject') }}
         </div>
         <div class="flex mt-6 justify-end space-x-2">
           <a-button class="!rounded-md" @click="showUserDeleteModal = false"> {{ $t('general.cancel') }}</a-button>

@@ -157,7 +157,7 @@ function resetError() {
                 {{ $t('labels.signUpWithGoogle') }}
               </span>
             </a>
-
+<!-- 
             <div class="flex items-center gap-2">
               <a-switch
                 v-model:checked="subscribe"
@@ -165,7 +165,7 @@ function resetError() {
                 class="my-1 hover:(ring ring-accent ring-opacity-100) focus:(!ring !ring-accent ring-opacity-100)"
               />
               <div class="prose-xs text-gray-500">Subscribe to our weekly newsletter</div>
-            </div>
+            </div> -->
 
             <div class="text-end prose-sm">
               {{ $t('msg.info.signUp.alreadyHaveAccount') }}
@@ -176,10 +176,10 @@ function resetError() {
         </a-form>
       </div>
 
-      <div class="prose-sm mt-4 text-gray-500">
+      <!-- <div class="prose-sm mt-4 text-gray-500">
         By signing up, you agree to the
         <a class="prose-sm !text-gray-500 underline" target="_blank" href="https://nocodb.com/policy-nocodb">Terms of Service</a>
-      </div>
+      </div> -->
     </div>
   </NuxtLayout>
 </template>

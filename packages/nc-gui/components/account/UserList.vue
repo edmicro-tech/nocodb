@@ -132,7 +132,7 @@ const copyPasswordResetUrl = async (user: User) => {
 <template>
   <div data-testid="nc-super-user-list">
     <div class="max-w-[900px] mx-auto">
-      <div class="text-xl my-4 text-left font-weight-bold">User Management</div>
+      <div class="text-xl my-4 text-left font-weight-bold">{{ $t('title.userManagement') }}</div>
       <div class="py-2 flex gap-4 items-center">
         <a-input-search
           v-model:value="searchText"
@@ -159,7 +159,7 @@ const copyPasswordResetUrl = async (user: User) => {
         >
           <div class="flex items-center gap-1">
             <component :is="iconMap.plus" />
-            Invite new user
+            {{ $t('title.inviteUser') }}
           </div>
         </a-button>
       </div>
