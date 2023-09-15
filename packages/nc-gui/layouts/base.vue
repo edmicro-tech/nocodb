@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, iconMap, navigateTo, ref, useGlobal, useNuxtApp, useRoute, useSidebar } from '#imports'
 
-const { signOut, signedIn, isLoading, user, currentVersion } = useGlobal()
+const { signOut, signedIn, isLoading, user, currentVersion, appInfo } = useGlobal()
 
 useSidebar('nc-left-sidebar', { hasSidebar: false })
 
@@ -14,13 +14,13 @@ const hasSider = ref(false)
 const sidebar = ref<HTMLDivElement>()
 
 const logout = async () => {
-  await signOut()
-  navigateTo('/signin')
+  await signOut(false)
+  await navigateTo('/signin')
 }
 
 const { hooks } = useNuxtApp()
 
-const isDashboard = computed(() => !!route.params.projectType)
+const isDashboard = computed(() => !!route.params.typeOrId)
 
 /** when page suspensions have finished, check if a sidebar element was teleported into the layout */
 hooks.hook('page:finish', () => {
@@ -68,7 +68,7 @@ hooks.hook('page:finish', () => {
 
         <LazyGeneralReleaseInfo />
 
-        <a-tooltip placement="bottom" :mouse-enter-delay="1">
+        <a-tooltip v-if="!appInfo.ee" placement="bottom" :mouse-enter-delay="1">
           <template #title> Switch language</template>
 
           <div class="flex pr-4 items-center">
@@ -113,7 +113,7 @@ hooks.hook('page:finish', () => {
 
                 <a-menu-divider class="!m-0" /> -->
 
-                <a-menu-item key="1" class="!rounded-b group">
+                <a-menu-item key="1" class="!rounded-b group" data-testid="nc-menu-accounts__sign-out">
                   <div v-e="['a:navbar:user:sign-out']" class="nc-project-menu-item group" @click="logout">
                     <component :is="iconMap.signout" class="group-hover:text-accent" />&nbsp;
 
@@ -128,10 +128,10 @@ hooks.hook('page:finish', () => {
         </template>
       </a-layout-header>
 
-      <a-tooltip placement="bottom">
+      <a-tooltip v-if="!appInfo.ee" placement="bottom">
         <template #title> Switch language</template>
 
-        <LazyGeneralLanguage v-if="!signedIn && !route.params.projectId" class="nc-lang-btn" />
+        <LazyGeneralLanguage v-if="!signedIn && !route.params.projectId && !route.params.erdUuid" class="nc-lang-btn" />
       </a-tooltip>
 
       <div class="w-full h-full overflow-hidden">

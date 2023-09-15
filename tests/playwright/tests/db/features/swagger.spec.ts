@@ -1,24 +1,26 @@
 import { expect, test } from '@playwright/test';
 import { DashboardPage } from '../../../pages/Dashboard';
-import { GridPage } from '../../../pages/Dashboard/Grid';
-import setup from '../../../setup';
+import setup, { unsetup } from '../../../setup';
 
-test.describe('Table Column Operations', () => {
-  let grid: GridPage, dashboard: DashboardPage;
+test.describe('Swagger', () => {
+  let dashboard: DashboardPage;
   let context: any;
 
   test.beforeEach(async ({ page }) => {
     context = await setup({ page });
     dashboard = new DashboardPage(page, context.project);
-    grid = dashboard.grid;
+  });
+
+  test.afterEach(async () => {
+    await unsetup(context);
   });
 
   test('Create column', async () => {
     // access swagger link
     const link = `http://localhost:8080/api/v1/db/meta/projects/${context.project.id}/swagger`;
-    await dashboard.rootPage.goto(link, { waitUntil: 'networkidle' });
+    await dashboard.rootPage.goto(link);
 
-    const swagger = await dashboard.rootPage;
+    const swagger = dashboard.rootPage;
 
     // authorize with token information
     await swagger.locator('.btn.authorize').click();

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { extractRolesObj, ProjectRoles } from 'nocodb-sdk';
 import { Strategy } from 'passport-custom';
-import { ApiToken, ProjectUser, User } from '../../models';
+import { ApiToken, ProjectUser, User } from '~/models';
+import { sanitiseUserObj } from '~/utils';
 
 @Injectable()
 export class AuthTokenStrategy extends PassportStrategy(Strategy, 'authtoken') {
@@ -15,9 +17,12 @@ export class AuthTokenStrategy extends PassportStrategy(Strategy, 'authtoken') {
           return callback({ msg: 'Invalid token' });
         }
 
-        user = {};
+        user = {
+          is_api_token: true,
+        };
+
         if (!apiToken.fk_user_id) {
-          user.roles = 'editor';
+          user.project_roles = extractRolesObj(ProjectRoles.EDITOR);
           return callback(null, user);
         }
 
@@ -28,21 +33,22 @@ export class AuthTokenStrategy extends PassportStrategy(Strategy, 'authtoken') {
 
         Object.assign(user, {
           id: dbUser.id,
-          roles: dbUser.roles,
+          roles: extractRolesObj(dbUser.roles),
         });
 
-        dbUser.is_api_token = true;
         if (req['ncProjectId']) {
           const projectUser = await ProjectUser.get(
             req['ncProjectId'],
             dbUser.id,
           );
-          user.roles = projectUser?.roles || dbUser.roles;
-          user.roles = user.roles === 'owner' ? 'owner,creator' : user.roles;
-          return callback(null, user);
+          user.project_roles = extractRolesObj(projectUser?.roles);
+          if (user.project_roles.owner) {
+            user.project_roles.creator = true;
+          }
+          return callback(null, sanitiseUserObj(user));
         }
       }
-      return callback(null, user);
+      return callback(null, sanitiseUserObj(user));
     } catch (error) {
       return callback(error);
     }

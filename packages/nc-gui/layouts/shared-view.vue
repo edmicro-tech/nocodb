@@ -33,7 +33,7 @@ onMounted(() => {
 
   // handle meta title
   if (sharedView.value?.title) {
-    document.title = `${sharedView.value.title} | NocoDB`
+    document.title = `${sharedView.value.title}`
   } else {
     document.title = 'NocoDB'
   }
@@ -79,7 +79,7 @@ export default {
         <div class="flex-1" />
       </a-layout-header>
 
-      <div class="w-full overflow-hidden" style="height: calc(100% - var(--header-height))">
+      <div class="w-full overflow-hidden" style="height: calc(100vh)">
         <slot />
       </div>
     </a-layout>

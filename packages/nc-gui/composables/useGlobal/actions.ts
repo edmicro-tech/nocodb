@@ -1,5 +1,7 @@
+import { getActivePinia } from 'pinia'
 import type { Actions, AppInfo, State } from './types'
-import { message, useNuxtApp } from '#imports'
+import { type NcProjectType, message, useNuxtApp } from '#imports'
+import { navigateTo } from '#app'
 
 export function useGlobalActions(state: State): Actions {
   const setIsMobileMode = (isMobileMode: boolean) => {
@@ -7,7 +9,7 @@ export function useGlobalActions(state: State): Actions {
   }
 
   /** Sign out by deleting the token from localStorage */
-  const signOut: Actions['signOut'] = async () => {
+  const signOut: Actions['signOut'] = async (_skipRedirect = false) => {
     try {
       const nuxtApp = useNuxtApp()
       await nuxtApp.$api.auth.signout()
@@ -15,6 +17,13 @@ export function useGlobalActions(state: State): Actions {
     } finally {
       state.token.value = null
       state.user.value = null
+      const pn = getActivePinia()
+      if (pn) {
+        pn._s.forEach((store) => {
+          store.$dispose()
+          delete pn.state.value[store.$id]
+        })
+      }
     }
   }
 
@@ -67,5 +76,71 @@ export function useGlobalActions(state: State): Actions {
     }
   }
 
-  return { signIn, signOut, refreshToken, loadAppInfo, setIsMobileMode }
+  const navigateToProject = ({
+    workspaceId: _workspaceId,
+    type: _type,
+    projectId,
+    query,
+  }: {
+    workspaceId?: string
+    projectId?: string
+    type?: NcProjectType
+    query?: any
+  }) => {
+    const workspaceId = _workspaceId || 'nc'
+    let path: string
+
+    const queryParams = query ? `?${new URLSearchParams(query).toString()}` : ''
+
+    if (projectId) {
+      path = `/${workspaceId}/${projectId}${queryParams}`
+    } else {
+      path = `/${workspaceId}${queryParams}`
+    }
+
+    navigateTo({
+      path,
+    })
+  }
+
+  const ncNavigateTo = ({
+    workspaceId: _workspaceId,
+    type: _type,
+    projectId,
+    query,
+    tableId,
+    viewId,
+  }: {
+    workspaceId?: string
+    projectId?: string
+    type?: NcProjectType
+    query?: any
+    tableId?: string
+    viewId?: string
+  }) => {
+    const tablePath = tableId ? `/${tableId}${viewId ? `/${viewId}` : ''}` : ''
+    const workspaceId = _workspaceId || 'nc'
+    let path: string
+
+    const queryParams = query ? `?${new URLSearchParams(query).toString()}` : ''
+
+    if (projectId) {
+      path = `/${workspaceId}/${projectId}${tablePath}${queryParams}`
+    } else {
+      path = `/${workspaceId}${queryParams}`
+    }
+
+    navigateTo({
+      path,
+    })
+  }
+
+  const getBaseUrl = (workspaceId: string) => {
+    if (state.appInfo.value.baseHostName && location.hostname !== `${workspaceId}.${state.appInfo.value.baseHostName}`) {
+      return `https://${workspaceId}.${state.appInfo.value.baseHostName}`
+    }
+    return undefined
+  }
+
+  return { signIn, signOut, refreshToken, loadAppInfo, setIsMobileMode, navigateToProject, getBaseUrl, ncNavigateTo }
 }

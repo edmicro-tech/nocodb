@@ -4,10 +4,12 @@ import { message } from 'ant-design-vue'
 import tinycolor from 'tinycolor2'
 import type { Select as AntSelect } from 'ant-design-vue'
 import type { SelectOptionType } from 'nocodb-sdk'
+import { WorkspaceUserRoles } from 'nocodb-sdk'
 import {
   ActiveCellInj,
   CellClickHookInj,
   ColumnInj,
+  EditColumnInj,
   EditModeInj,
   IsFormInj,
   IsKanbanInj,
@@ -40,6 +42,8 @@ const column = inject(ColumnInj)!
 
 const readOnly = inject(ReadonlyInj)!
 
+const isLockedMode = inject(IsLockedInj, ref(false))
+
 const isEditable = inject(EditModeInj, ref(false))
 
 const activeCell = inject(ActiveCellInj, ref(false))
@@ -55,6 +59,8 @@ const isOpen = ref(false)
 const isKanban = inject(IsKanbanInj, ref(false))
 
 const isPublic = inject(IsPublicInj, ref(false))
+
+const isEditColumn = inject(EditColumnInj, ref(false))
 
 const isForm = inject(IsFormInj, ref(false))
 
@@ -73,7 +79,13 @@ const { isPg, isMysql } = useProject()
 const tempSelectedOptState = ref<string>()
 
 const isNewOptionCreateEnabled = computed(
-  () => !isPublic.value && !disableOptionCreation && (hasRole('owner', true) || hasRole('creator', true)),
+  () =>
+    !isPublic.value &&
+    !disableOptionCreation &&
+    (hasRole('owner', true) ||
+      hasRole('creator', true) ||
+      hasRole(WorkspaceUserRoles.OWNER, true) ||
+      hasRole(WorkspaceUserRoles.CREATOR, true)),
 )
 
 const options = computed<(SelectOptionType & { value: string })[]>(() => {
@@ -94,7 +106,15 @@ const isOptionMissing = computed(() => {
   return (options.value ?? []).every((op) => op.title !== searchVal.value)
 })
 
-const hasEditRoles = computed(() => hasRole('owner', true) || hasRole('creator', true) || hasRole('editor', true))
+const hasEditRoles = computed(
+  () =>
+    hasRole('owner', true) ||
+    hasRole('creator', true) ||
+    hasRole('editor', true) ||
+    hasRole(WorkspaceUserRoles.OWNER, true) ||
+    hasRole(WorkspaceUserRoles.CREATOR, true) ||
+    hasRole(WorkspaceUserRoles.EDITOR, true),
+)
 
 const editAllowed = computed(() => (hasEditRoles.value || isForm.value) && active.value)
 
@@ -256,7 +276,11 @@ const selectedOpt = computed(() => {
 </script>
 
 <template>
-  <div class="h-full w-full flex items-center nc-single-select" :class="{ 'read-only': readOnly }" @click="toggleMenu">
+  <div
+    class="h-full w-full flex items-center nc-single-select"
+    :class="{ 'read-only': readOnly || isLockedMode }"
+    @click="toggleMenu"
+  >
     <div v-if="!(active || isEditable)">
       <a-tag v-if="selectedOpt" class="rounded-tag" :color="selectedOpt.color">
         <span
@@ -279,11 +303,12 @@ const selectedOpt = computed(() => {
       v-model:value="vModel"
       class="w-full overflow-hidden"
       :class="{ 'caret-transparent': !hasEditRoles }"
+      :placeholder="isEditColumn ? '(Optional)' : ''"
       :allow-clear="!column.rqd && editAllowed"
       :bordered="false"
       :open="isOpen && editAllowed"
-      :disabled="readOnly || !editAllowed"
-      :show-arrow="hasEditRoles && !readOnly && active && vModel === null"
+      :disabled="readOnly || !editAllowed || isLockedMode"
+      :show-arrow="hasEditRoles && !(readOnly || isLockedMode) && active && vModel === null"
       :dropdown-class-name="`nc-dropdown-single-select-cell ${isOpen && active ? 'active' : ''}`"
       :show-search="isOpen && active"
       @select="onSelect"

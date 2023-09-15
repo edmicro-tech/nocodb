@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { ActiveCellInj, ReadonlyInj, inject, onClickOutside, useProject, useSelectedCellKeyupListener, watch } from '#imports'
+import {
+  ActiveCellInj,
+  EditColumnInj,
+  ReadonlyInj,
+  inject,
+  onClickOutside,
+  useProject,
+  useSelectedCellKeyupListener,
+  watch,
+} from '#imports'
 
 interface Props {
   modelValue?: string | null | undefined
@@ -21,13 +30,15 @@ const active = inject(ActiveCellInj, ref(false))
 
 const editable = inject(EditModeInj, ref(false))
 
+const isEditColumn = inject(EditColumnInj, ref(false))
+
 const column = inject(ColumnInj)!
 
-let isTimeInvalid = $ref(false)
+const isTimeInvalid = ref(false)
 
 const dateFormat = isMysql(column.value.base_id) ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm:ssZ'
 
-const localState = $computed({
+const localState = computed({
   get() {
     if (!modelValue) {
       return undefined
@@ -41,7 +52,7 @@ const localState = $computed({
       dateTime = dayjs(`1999-01-01 ${modelValue}`)
     }
     if (!dateTime.isValid()) {
-      isTimeInvalid = true
+      isTimeInvalid.value = true
       return undefined
     }
 
@@ -76,7 +87,17 @@ watch(
   { flush: 'post' },
 )
 
-const placeholder = computed(() => (modelValue === null && showNull.value ? 'NULL' : isTimeInvalid ? 'Invalid time' : ''))
+const placeholder = computed(() => {
+  if (isEditColumn.value && (modelValue === '' || modelValue === null)) {
+    return '(Optional)'
+  } else if (modelValue === null && showNull.value) {
+    return 'NULL'
+  } else if (isTimeInvalid.value) {
+    return 'Invalid time'
+  } else {
+    return ''
+  }
+})
 
 useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
   switch (e.key) {
@@ -101,7 +122,7 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
     :bordered="false"
     use12-hours
     format="HH:mm"
-    class="!w-full !px-0 !border-none"
+    class="!w-full !px-1 !border-none"
     :class="{ 'nc-null': modelValue === null && showNull }"
     :placeholder="placeholder"
     :allow-clear="!readOnly && !localState && !isPk"

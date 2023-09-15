@@ -1,6 +1,12 @@
 import request from 'supertest';
 import Project from '../../../src/models/Project';
 
+interface ProjectArgs {
+  fk_workspace_id?: string;
+  title?: string;
+  type?: string;
+}
+
 const sakilaProjectConfig = (context) => {
   let base;
 
@@ -38,6 +44,7 @@ const sakilaProjectConfig = (context) => {
     title: 'sakila',
     bases: [base],
     external: true,
+    ...(process.env.EE ? { fk_workspace_id: context.fk_workspace_id } : {}),
   };
 };
 
@@ -69,11 +76,17 @@ const createSakilaProject = async (context) => {
   return (await Project.getByTitleOrId(response.body.id)) as Project;
 };
 
-const createProject = async (context, projectArgs = defaultProjectValue) => {
+const createProject = async (
+  context,
+  projectArgs: ProjectArgs = defaultProjectValue,
+) => {
   const response = await request(context.app)
     .post('/api/v1/db/meta/projects/')
     .set('xc-auth', context.token)
-    .send(projectArgs);
+    .send({
+      ...projectArgs,
+      ...(process.env.EE ? { fk_workspace_id: context.fk_workspace_id } : {}),
+    });
 
   return (await Project.getByTitleOrId(response.body.id)) as Project;
 };

@@ -1,5 +1,5 @@
-import { RelationTypes, UITypes } from 'nocodb-sdk';
-import type { LinkToAnotherRecordColumn } from '../../../../models';
+import { isLinksOrLTAR, RelationTypes, UITypes } from 'nocodb-sdk';
+import type { LinkToAnotherRecordColumn } from '~/models';
 import type { SwaggerColumn } from '../getSwaggerColumnMetas';
 
 export const rowIdParam = {
@@ -100,7 +100,7 @@ export const columnNameQueryParam = {
 export const columnNameParam = (columns: SwaggerColumn[]) => {
   const columnNames = [];
   for (const { column } of columns) {
-    if (column.uidt !== UITypes.LinkToAnotherRecord || column.system) continue;
+    if (!isLinksOrLTAR(column) || column.system) continue;
     columnNames.push(column.title);
   }
 

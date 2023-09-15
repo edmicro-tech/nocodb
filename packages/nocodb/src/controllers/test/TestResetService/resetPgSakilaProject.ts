@@ -2,8 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import axios from 'axios';
 import { knex } from 'knex';
-import Audit from '../../../models/Audit';
-import type Project from '../../../models/Project';
+import type Project from '~/models/Project';
+import Audit from '~/models/Audit';
 
 const config = {
   client: 'pg',
@@ -150,7 +150,7 @@ const resetPgSakilaProject = async ({
   );
   if (response.status !== 200) {
     console.error('Error creating project', response.data);
-    throw new Error('Error creating project', response.data);
+    throw new Error(response.data);
   }
 };
 

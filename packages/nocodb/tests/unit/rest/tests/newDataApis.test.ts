@@ -120,6 +120,8 @@ let countryColumns;
 let cityTable: Model;
 let cityColumns;
 
+const unauthorizedResponse = process.env.EE !== 'true' ? 404 : 403;
+
 // Optimisation scope for time reduction
 // 1. BeforeEach can be changed to BeforeAll for List and Read APIs
 
@@ -299,44 +301,8 @@ function generalDb() {
   });
 
   it('Nested List - Link to another record', async function () {
-    const expectedRecords = [
-      [
-        {
-          CityId: 251,
-          City: 'Kabul',
-        },
-      ],
-      [
-        {
-          CityId: 59,
-          City: 'Batna',
-        },
-        {
-          CityId: 63,
-          City: 'Bchar',
-        },
-        {
-          CityId: 483,
-          City: 'Skikda',
-        },
-      ],
-      [
-        {
-          CityId: 516,
-          City: 'Tafuna',
-        },
-      ],
-      [
-        {
-          CityId: 67,
-          City: 'Benguela',
-        },
-        {
-          CityId: 360,
-          City: 'Namibe',
-        },
-      ],
-    ];
+    const expectedRecords = [1, 3, 1, 2];
+    const expectedRecordsPg = ['1', '3', '1', '2'];
 
     // read first 4 records
     const records = await ncAxiosGet({
@@ -348,8 +314,9 @@ function generalDb() {
     expect(records.body.list.length).to.equal(4);
 
     // extract LTAR column "City List"
-    const cityList = records.body.list.map((r) => r['City List']);
-    expect(cityList).to.deep.equal(expectedRecords);
+    const cityList = records.body.list.map((r) => r['Cities']);
+    if (isPg(context)) expect(cityList).to.deep.equal(expectedRecordsPg);
+    else expect(cityList).to.deep.equal(expectedRecords);
   });
 
   it('Nested List - Lookup', async function () {
@@ -419,12 +386,7 @@ function generalDb() {
     });
 
     // extract LTAR column "City List"
-    expect(records.body['City List']).to.deep.equal([
-      {
-        CityId: 251,
-        City: 'Kabul',
-      },
-    ]);
+    expect(+records.body['Cities']).to.equal(1);
   });
 
   it('Nested Read - Lookup', async function () {
@@ -835,7 +797,7 @@ function textBased() {
     // Invalid table ID
     await ncAxiosGet({
       url: `/api/v1/tables/123456789/rows`,
-      status: 404,
+      status: unauthorizedResponse,
     });
 
     // Invalid view ID
@@ -962,7 +924,7 @@ function textBased() {
     // Invalid table ID
     await ncAxiosPost({
       url: `/api/v1/tables/123456789/rows`,
-      status: 404,
+      status: unauthorizedResponse,
     });
 
     // Invalid data - create should not specify ID
@@ -996,7 +958,7 @@ function textBased() {
     // Invalid table ID
     await ncAxiosGet({
       url: `/api/v1/tables/123456789/rows/100`,
-      status: 404,
+      status: unauthorizedResponse,
     });
     // Invalid row ID
     await ncAxiosGet({
@@ -1075,7 +1037,7 @@ function textBased() {
     await ncAxiosPatch({
       url: `/api/v1/tables/123456789/rows`,
       body: { Id: 100, SingleLineText: 'some text' },
-      status: 404,
+      status: unauthorizedResponse,
     });
     // Invalid row ID
     await ncAxiosPatch({
@@ -1124,7 +1086,7 @@ function textBased() {
     await ncAxiosDelete({
       url: `/api/v1/tables/123456789/rows`,
       body: { Id: 100 },
-      status: 404,
+      status: unauthorizedResponse,
     });
     // Invalid row ID
     await ncAxiosDelete({ body: { Id: '123456789' }, status: 422 });
@@ -2126,7 +2088,7 @@ function linkBased() {
     await ncAxiosLinkAdd({
       urlParams: {
         tableId: tblFilm.id,
-        linkId: getColumnId(columnsFilm, 'Actor List'),
+        linkId: getColumnId(columnsFilm, 'Actors'),
         rowId: 1,
       },
       body: [
@@ -2180,7 +2142,7 @@ function linkBased() {
     rsp = await ncAxiosLinkGet({
       urlParams: {
         tableId: tblFilm.id,
-        linkId: getColumnId(columnsFilm, 'Actor List'),
+        linkId: getColumnId(columnsFilm, 'Actors'),
         rowId: 1,
       },
     });
@@ -2225,7 +2187,7 @@ function linkBased() {
       const rsp = await ncAxiosLinkGet({
         urlParams: {
           tableId: tblFilm.id,
-          linkId: getColumnId(columnsFilm, 'Actor List'),
+          linkId: getColumnId(columnsFilm, 'Actors'),
           rowId: i,
         },
       });
@@ -2268,7 +2230,7 @@ function linkBased() {
       const rsp = await ncAxiosLinkGet({
         urlParams: {
           tableId: tblFilm.id,
-          linkId: getColumnId(columnsFilm, 'Actor List'),
+          linkId: getColumnId(columnsFilm, 'Actors'),
           rowId: i,
         },
       });
@@ -2417,8 +2379,7 @@ function linkBased() {
     await ncAxiosLinkAdd({
       ...validParams,
       urlParams: { ...validParams.urlParams, tableId: 9999 },
-      status: 404,
-      msg: "Table with id '9999' not found",
+      status: unauthorizedResponse,
     });
 
     // Link Add: Invalid link ID
@@ -2490,8 +2451,7 @@ function linkBased() {
     await ncAxiosLinkRemove({
       ...validParams,
       urlParams: { ...validParams.urlParams, tableId: 9999 },
-      status: 404,
-      msg: "Table with id '9999' not found",
+      status: unauthorizedResponse,
     });
 
     // Link Remove: Invalid link ID
@@ -2563,8 +2523,7 @@ function linkBased() {
     await ncAxiosLinkGet({
       ...validParams,
       urlParams: { ...validParams.urlParams, tableId: 9999 },
-      status: 404,
-      msg: "Table with id '9999' not found",
+      status: unauthorizedResponse,
     });
 
     // Link List: Invalid link ID

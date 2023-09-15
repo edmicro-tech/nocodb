@@ -91,7 +91,7 @@ export class SelectOptionCellPageObject extends BasePage {
       return await expect(this.cell.get({ index, columnHeader })).toContainText(option, { useInnerText: true });
     }
 
-    const locator = await this.cell.get({ index, columnHeader }).locator('.ant-tag');
+    const locator = this.cell.get({ index, columnHeader }).locator('.ant-tag');
     await locator.waitFor({ state: 'visible' });
     const text = await locator.allInnerTexts();
     return expect(text).toContain(option);
@@ -122,6 +122,7 @@ export class SelectOptionCellPageObject extends BasePage {
     }
 
     await this.get({ index, columnHeader }).click();
+    await this.rootPage.waitForTimeout(500);
 
     let counter = 0;
     for (const option of options) {
@@ -176,6 +177,7 @@ export class SelectOptionCellPageObject extends BasePage {
     index: number;
   }) {
     const selectCell = this.get({ index, columnHeader });
+    await selectCell.click();
 
     let counter = 0;
     for (const option of options) {

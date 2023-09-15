@@ -1,28 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import {
-  AuditOperationSubTypes,
-  AuditOperationTypes,
+  AppEvents,
+  extractRolesObj,
   OrgUserRoles,
   PluginCategory,
+  ProjectRoles,
 } from 'nocodb-sdk';
-import { T } from 'nc-help';
 import { v4 as uuidv4 } from 'uuid';
 import * as ejs from 'ejs';
 import validator from 'validator';
-import NocoCache from '../../cache/NocoCache';
-import { validatePayload } from '../../helpers';
-import { NcError } from '../../helpers/catchError';
-import NcPluginMgrv2 from '../../helpers/NcPluginMgrv2';
-import { PagedResponseImpl } from '../../helpers/PagedResponse';
-import { randomTokenString } from '../../helpers/stringHelpers';
-import { Audit, ProjectUser, User } from '../../models';
+import type { ProjectUserReqType, UserType } from 'nocodb-sdk';
+import NocoCache from '~/cache/NocoCache';
+import { validatePayload } from '~/helpers';
+import Noco from '~/Noco';
+import { AppHooksService } from '~/services/app-hooks/app-hooks.service';
+import { NcError } from '~/helpers/catchError';
+import NcPluginMgrv2 from '~/helpers/NcPluginMgrv2';
+import { PagedResponseImpl } from '~/helpers/PagedResponse';
+import { randomTokenString } from '~/helpers/stringHelpers';
+import { Project, ProjectUser, User } from '~/models';
 
-import Noco from '../../Noco';
-import { CacheGetType, CacheScope, MetaTable } from '../../utils/globals';
-import type { ProjectUserReqType } from 'nocodb-sdk';
+import { CacheGetType, CacheScope, MetaTable } from '~/utils/globals';
+import { extractProps } from '~/helpers/extractProps';
+import { getProjectRolePower } from '~/utils/roleHelper';
 
 @Injectable()
 export class ProjectUsersService {
+  constructor(protected appHooksService: AppHooksService) {}
+
   async userList(param: { projectId: string; query: any }) {
     return new PagedResponseImpl(
       await ProjectUser.getUsersList({
@@ -31,7 +36,10 @@ export class ProjectUsersService {
       }),
       {
         ...param.query,
-        count: await ProjectUser.getUsersCount(param.query),
+        count: await ProjectUser.getUsersCount({
+          project_id: param.projectId,
+          ...param.query,
+        }),
       },
     );
   }
@@ -45,6 +53,26 @@ export class ProjectUsersService {
       'swagger.json#/components/schemas/ProjectUserReq',
       param.projectUser,
     );
+
+    if (
+      getProjectRolePower({
+        project_roles: extractRolesObj(param.projectUser.roles),
+      }) > getProjectRolePower(param.req.user)
+    ) {
+      NcError.badRequest(`Insufficient privilege to invite with this role`);
+    }
+
+    if (
+      ![
+        ProjectRoles.CREATOR,
+        ProjectRoles.EDITOR,
+        ProjectRoles.COMMENTER,
+        ProjectRoles.VIEWER,
+        ProjectRoles.NO_ACCESS,
+      ].includes(param.projectUser.roles as ProjectRoles)
+    ) {
+      NcError.badRequest('Invalid role');
+    }
 
     const emails = (param.projectUser.email || '')
       .toLowerCase()
@@ -67,9 +95,22 @@ export class ProjectUsersService {
       // add user to project if user already exist
       const user = await User.getByEmail(email);
 
+      const project = await Project.get(param.projectId);
+
+      if (!project) {
+        return NcError.badRequest('Invalid project id');
+      }
+
       if (user) {
         // check if this user has been added to this project
         const projectUser = await ProjectUser.get(param.projectId, user.id);
+
+        const project = await Project.get(param.projectId);
+
+        if (!project) {
+          return NcError.badRequest('Invalid project id');
+        }
+
         if (projectUser) {
           NcError.badRequest(
             `${user.email} with role ${projectUser.roles} already exists in this project`,
@@ -80,6 +121,13 @@ export class ProjectUsersService {
           project_id: param.projectId,
           fk_user_id: user.id,
           roles: param.projectUser.roles || 'editor',
+        });
+
+        this.appHooksService.emit(AppEvents.PROJECT_INVITE, {
+          project,
+          user,
+          invitedBy: param.req.user,
+          ip: param.req.clientIp,
         });
 
         const cachedUser = await NocoCache.get(
@@ -94,19 +142,10 @@ export class ProjectUsersService {
             cachedUser,
           );
         }
-
-        await Audit.insert({
-          project_id: param.projectId,
-          op_type: AuditOperationTypes.AUTHENTICATION,
-          op_sub_type: AuditOperationSubTypes.INVITE,
-          user: param.req.user.email,
-          description: `${email} has been invited to ${param.projectId} project`,
-          ip: param.req.clientIp,
-        });
       } else {
         try {
           // create new user with invite token
-          const { id } = await User.insert({
+          const user = await User.insert({
             invite_token,
             invite_token_expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
             email,
@@ -117,21 +156,17 @@ export class ProjectUsersService {
           // add user to project
           await ProjectUser.insert({
             project_id: param.projectId,
-            fk_user_id: id,
+            fk_user_id: user.id,
             roles: param.projectUser.roles,
           });
 
-          const count = await User.count();
-          T.emit('evt', { evt_type: 'project:invite', count });
-
-          await Audit.insert({
-            project_id: param.projectId,
-            op_type: AuditOperationTypes.AUTHENTICATION,
-            op_sub_type: AuditOperationSubTypes.INVITE,
-            user: param.req.user.email,
-            description: `invited ${email} to ${param.projectId} project `,
+          this.appHooksService.emit(AppEvents.PROJECT_INVITE, {
+            project,
+            user,
+            invitedBy: param.req.user,
             ip: param.req.clientIp,
           });
+
           // in case of single user check for smtp failure
           // and send back token if failed
           if (
@@ -175,44 +210,67 @@ export class ProjectUsersService {
       param.projectUser,
     );
 
-    // todo: use param.projectId
-    if (!param.projectUser?.project_id) {
-      NcError.badRequest('Missing project id in request body.');
+    if (!param.projectId) {
+      NcError.badRequest('Missing project id');
+    }
+
+    const project = await Project.get(param.projectId);
+
+    if (!project) {
+      return NcError.badRequest('Invalid project id');
+    }
+
+    if (param.projectUser.roles.includes(ProjectRoles.OWNER)) {
+      NcError.badRequest('Owner cannot be updated');
     }
 
     if (
-      param.req.session?.passport?.user?.roles?.owner &&
-      param.req.session?.passport?.user?.id === param.userId &&
-      param.projectUser.roles.indexOf('owner') === -1
+      ![
+        ProjectRoles.CREATOR,
+        ProjectRoles.EDITOR,
+        ProjectRoles.COMMENTER,
+        ProjectRoles.VIEWER,
+        ProjectRoles.NO_ACCESS,
+      ].includes(param.projectUser.roles as ProjectRoles)
     ) {
-      NcError.badRequest("Super admin can't remove Super role themselves");
+      NcError.badRequest('Invalid role');
     }
+
     const user = await User.get(param.userId);
 
     if (!user) {
       NcError.badRequest(`User with id '${param.userId}' doesn't exist`);
     }
 
-    // todo: handle roles which contains super
-    if (
-      !param.req.session?.passport?.user?.roles?.owner &&
-      param.projectUser.roles.indexOf('owner') > -1
-    ) {
-      NcError.forbidden('Insufficient privilege to add super admin role.');
+    const targetUser = await User.getWithRoles(param.userId, {
+      user,
+      projectId: param.projectId,
+    });
+
+    if (!targetUser) {
+      NcError.badRequest(
+        `User with id '${param.userId}' doesn't exist in this project`,
+      );
     }
 
-    await ProjectUser.update(
+    if (
+      getProjectRolePower(targetUser) >= getProjectRolePower(param.req.user)
+    ) {
+      NcError.badRequest(`Insufficient privilege to update user`);
+    }
+
+    await ProjectUser.updateRoles(
       param.projectId,
       param.userId,
       param.projectUser.roles,
     );
 
-    await Audit.insert({
-      op_type: AuditOperationTypes.AUTHENTICATION,
-      op_sub_type: AuditOperationSubTypes.ROLES_MANAGEMENT,
-      user: param.req.user.email,
-      description: `Roles for ${user.email} with has been updated to ${param.projectUser.roles}`,
+    this.appHooksService.emit(AppEvents.PROJECT_USER_UPDATE, {
+      project,
+      user,
+      updatedBy: param.req.user,
       ip: param.req.clientIp,
+      projectUser: param.projectUser,
     });
 
     return {
@@ -228,11 +286,11 @@ export class ProjectUsersService {
   }): Promise<any> {
     const project_id = param.projectId;
 
-    if (param.req.session?.passport?.user?.id === param.userId) {
+    if (param.req.user?.id === param.userId) {
       NcError.badRequest("Admin can't delete themselves!");
     }
 
-    if (!param.req.session?.passport?.user?.roles?.owner) {
+    if (!param.req.user?.roles?.owner) {
       const user = await User.get(param.userId);
       if (user.roles?.split(',').includes('super'))
         NcError.forbidden(
@@ -261,6 +319,12 @@ export class ProjectUsersService {
       NcError.badRequest(`User with id '${param.userId}' not found`);
     }
 
+    const project = await Project.get(param.projectId);
+
+    if (!project) {
+      return NcError.badRequest('Invalid project id');
+    }
+
     const invite_token = uuidv4();
 
     await User.update(user.id, {
@@ -286,13 +350,12 @@ export class ProjectUsersService {
 
     await this.sendInviteEmail(user.email, invite_token, param.req);
 
-    await Audit.insert({
-      op_type: AuditOperationTypes.AUTHENTICATION,
-      op_sub_type: AuditOperationSubTypes.RESEND_INVITE,
-      user: user.email,
-      description: `${user.email} has been re-invited`,
+    this.appHooksService.emit(AppEvents.PROJECT_USER_RESEND_INVITE, {
+      project,
+      user,
+      invitedBy: param.req.user,
       ip: param.req.clientIp,
-      project_id: param.projectId,
+      projectUser: param.projectUser,
     });
 
     return true;
@@ -318,7 +381,7 @@ export class ProjectUsersService {
               .split(',')
               .map((r) => r.replace(/^./, (m) => m.toUpperCase()))
               .join(', '),
-            adminEmail: req.session?.passport?.user?.email,
+            adminEmail: req.user?.email,
           }),
         });
         return true;
@@ -330,5 +393,37 @@ export class ProjectUsersService {
       );
       throw e;
     }
+  }
+
+  async projectUserMetaUpdate(param: {
+    body: any;
+    projectId: string;
+    user: UserType;
+  }) {
+    // update project user data
+    const projectUserData = extractProps(param.body, [
+      'starred',
+      'order',
+      'hidden',
+    ]);
+
+    if (Object.keys(projectUserData).length) {
+      // create new project user if it doesn't exist
+      if (!(await ProjectUser.get(param.projectId, param.user?.id))) {
+        await ProjectUser.insert({
+          ...projectUserData,
+          project_id: param.projectId,
+          fk_user_id: param.user?.id,
+        });
+      } else {
+        await ProjectUser.update(
+          param.projectId,
+          param.user?.id,
+          projectUserData,
+        );
+      }
+    }
+
+    return true;
   }
 }

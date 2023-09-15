@@ -1,8 +1,7 @@
 import type { ComputedRef, Ref, ToRefs } from 'vue'
 import type { WritableComputedRef } from '@vue/reactivity'
 import type { JwtPayload } from 'jwt-decode'
-import type { Language, ProjectRole, User } from '~/lib'
-import type { useCounter } from '#imports'
+import type { Language, NcProjectType, ProjectRole, User, useCounter } from '#imports'
 
 export interface AppInfo {
   ncSiteUrl: string
@@ -12,6 +11,8 @@ export interface AppInfo {
   firstUser: boolean
   githubAuthEnabled: boolean
   googleAuthEnabled: boolean
+  oidcAuthEnabled: boolean
+  oidcProviderName: string | null
   ncMin: boolean
   oneClick: boolean
   projectHasAdmin: boolean
@@ -24,6 +25,10 @@ export interface AppInfo {
   ncMaxAttachmentsAllowed: number
   isCloud: boolean
   automationLogLevel: 'OFF' | 'ERROR' | 'ALL'
+  baseHostName?: string
+  disableEmailAuth: boolean
+  mainSubDomain?: string
+  dashboardPath: string
 }
 
 export interface StoredState {
@@ -57,11 +62,21 @@ export interface Getters {
 }
 
 export interface Actions {
-  signOut: () => void
+  signOut: (skipRedirect?: boolean) => void
   signIn: (token: string) => void
   refreshToken: () => void
   loadAppInfo: () => void
   setIsMobileMode: (isMobileMode: boolean) => void
+  navigateToProject: (params: { workspaceId?: string; projectId?: string; type?: NcProjectType; query?: any }) => void
+  ncNavigateTo: (params: {
+    workspaceId?: string
+    projectId?: string
+    type?: NcProjectType
+    query?: any
+    tableId?: string
+    viewId?: string
+  }) => void
+  getBaseUrl: (workspaceId: string) => string | undefined
 }
 
 export type ReadonlyState = Readonly<Pick<State, 'token' | 'user'>> & Omit<State, 'token' | 'user'>

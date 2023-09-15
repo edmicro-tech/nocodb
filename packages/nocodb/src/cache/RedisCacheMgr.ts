@@ -1,7 +1,7 @@
 import debug from 'debug';
 import Redis from 'ioredis';
-import { CacheDelDirection, CacheGetType, CacheScope } from '../utils/globals';
 import CacheMgr from './CacheMgr';
+import { CacheDelDirection, CacheGetType, CacheScope } from '~/utils/globals';
 
 const log = debug('nc:cache');
 
@@ -178,7 +178,7 @@ export default class RedisCacheMgr extends CacheMgr {
       let getKey = `${this.prefix}:${scope}:${o.id}`;
       // special case - MODEL_ROLE_VISIBILITY
       if (scope === CacheScope.MODEL_ROLE_VISIBILITY) {
-        getKey = `${this.prefix}:${scope}:${o.id}:${o.role}`;
+        getKey = `${this.prefix}:${scope}:${o.fk_view_id}:${o.role}`;
       }
       // set Get Key
       log(`RedisCacheMgr::setList: setting key ${getKey}`);

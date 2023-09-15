@@ -13,23 +13,23 @@ import {
 } from '@nestjs/common';
 import isDocker from 'is-docker';
 import { ProjectReqType } from 'nocodb-sdk';
-import { GlobalGuard } from '../guards/global/global.guard';
-import { PagedResponseImpl } from '../helpers/PagedResponse';
-import {
-  Acl,
-  ExtractProjectIdMiddleware,
-} from '../middlewares/extract-project-id/extract-project-id.middleware';
-import Noco from '../Noco';
-import { packageVersion } from '../utils/packageVersion';
-import { ProjectsService } from '../services/projects.service';
 import type { ProjectType } from 'nocodb-sdk';
+import { GlobalGuard } from '~/guards/global/global.guard';
+import { PagedResponseImpl } from '~/helpers/PagedResponse';
+import Noco from '~/Noco';
+import { packageVersion } from '~/utils/packageVersion';
+import { ProjectsService } from '~/services/projects.service';
+import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { Filter } from '~/models';
 
-@UseGuards(ExtractProjectIdMiddleware, GlobalGuard)
+@UseGuards(GlobalGuard)
 @Controller()
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(protected readonly projectsService: ProjectsService) {}
 
-  @Acl('projectList')
+  @Acl('projectList', {
+    scope: 'org',
+  })
   @Get('/api/v1/db/meta/projects/')
   async list(@Query() queryParams: Record<string, any>, @Request() req) {
     const projects = await this.projectsService.projectList({
@@ -42,6 +42,7 @@ export class ProjectsController {
     });
   }
 
+  @Acl('projectInfoGet')
   @Get('/api/v1/db/meta/projects/:projectId/info')
   async projectInfoGet() {
     return {
@@ -53,6 +54,7 @@ export class ProjectsController {
       PackageVersion: packageVersion,
     };
   }
+
   @Acl('projectGet')
   @Get('/api/v1/db/meta/projects/:projectId')
   async projectGet(@Param('projectId') projectId: string) {
@@ -64,15 +66,18 @@ export class ProjectsController {
 
     return project;
   }
+
   @Acl('projectUpdate')
   @Patch('/api/v1/db/meta/projects/:projectId')
   async projectUpdate(
     @Param('projectId') projectId: string,
     @Body() body: Record<string, any>,
+    @Request() req,
   ) {
     const project = await this.projectsService.projectUpdate({
       projectId,
       project: body,
+      user: req.user,
     });
 
     return project;
@@ -80,15 +85,18 @@ export class ProjectsController {
 
   @Acl('projectDelete')
   @Delete('/api/v1/db/meta/projects/:projectId')
-  async projectDelete(@Param('projectId') projectId: string) {
+  async projectDelete(@Param('projectId') projectId: string, @Request() req) {
     const deleted = await this.projectsService.projectSoftDelete({
       projectId,
+      user: req.user,
     });
 
     return deleted;
   }
 
-  @Acl('projectCreate')
+  @Acl('projectCreate', {
+    scope: 'org',
+  })
   @Post('/api/v1/db/meta/projects')
   @HttpCode(200)
   async projectCreate(@Body() projectBody: ProjectReqType, @Request() req) {
@@ -98,5 +106,11 @@ export class ProjectsController {
     });
 
     return project;
+  }
+
+  @Acl('hasEmptyOrNullFilters')
+  @Get('/api/v1/db/meta/projects/:projectId/has-empty-or-null-filters')
+  async hasEmptyOrNullFilters(@Param('projectId') projectId: string) {
+    return await Filter.hasEmptyOrNullFilters(projectId);
   }
 }

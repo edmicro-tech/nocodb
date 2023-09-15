@@ -2,10 +2,12 @@ import { expect, Locator } from '@playwright/test';
 import { DashboardPage } from '..';
 import BasePage from '../../Base';
 import { ToolbarPage } from '../common/Toolbar';
+import { TopbarPage } from '../common/Topbar';
 
 export class FormPage extends BasePage {
   readonly dashboard: DashboardPage;
   readonly toolbar: ToolbarPage;
+  readonly topbar: TopbarPage;
 
   // todo: All the locator should be private
   readonly addAllButton: Locator;
@@ -24,6 +26,7 @@ export class FormPage extends BasePage {
     super(dashboard.rootPage);
     this.dashboard = dashboard;
     this.toolbar = new ToolbarPage(this);
+    this.topbar = new TopbarPage(this);
 
     this.addAllButton = dashboard.get().locator('[data-testid="nc-form-add-all"]');
     this.removeAllButton = dashboard.get().locator('[data-testid="nc-form-remove-all"]');
@@ -76,62 +79,60 @@ export class FormPage extends BasePage {
   }
 
   async verifyFormFieldLabel({ index, label }: { index: number; label: string }) {
-    await expect(await this.getFormFields().nth(index).locator('[data-testid="nc-form-input-label"]')).toContainText(
-      label
-    );
+    await expect(this.getFormFields().nth(index).locator('[data-testid="nc-form-input-label"]')).toContainText(label);
   }
 
   async verifyFormFieldHelpText({ index, helpText }: { index: number; helpText: string }) {
     await expect(
-      await this.getFormFields().nth(index).locator('[data-testid="nc-form-input-help-text-label"]')
+      this.getFormFields().nth(index).locator('[data-testid="nc-form-input-help-text-label"]')
     ).toContainText(helpText);
   }
 
   async verifyFieldsIsEditable({ index }: { index: number }) {
-    await expect(await this.getFormFields().nth(index)).toHaveClass(/nc-editable/);
+    await expect(this.getFormFields().nth(index)).toHaveClass(/nc-editable/);
   }
 
   async verifyAfterSubmitMsg({ msg }: { msg: string }) {
-    await expect((await this.afterSubmitMsg.inputValue()).includes(msg)).toBeTruthy();
+    expect((await this.afterSubmitMsg.inputValue()).includes(msg)).toBeTruthy();
   }
 
   async verifyFormViewFieldsOrder({ fields }: { fields: string[] }) {
-    const fieldLabels = await this.get().locator('[data-testid="nc-form-input-label"]');
-    await expect(await fieldLabels).toHaveCount(fields.length);
+    const fieldLabels = this.get().locator('[data-testid="nc-form-input-label"]');
+    await expect(fieldLabels).toHaveCount(fields.length);
     for (let i = 0; i < fields.length; i++) {
-      await expect(await fieldLabels.nth(i)).toContainText(fields[i]);
+      await expect(fieldLabels.nth(i)).toContainText(fields[i]);
     }
   }
 
   async reorderFields({ sourceField, destinationField }: { sourceField: string; destinationField: string }) {
-    await expect(await this.get().locator(`.nc-form-drag-${sourceField}`)).toBeVisible();
-    await expect(await this.get().locator(`.nc-form-drag-${destinationField}`)).toBeVisible();
-    const src = await this.get().locator(`.nc-form-drag-${sourceField.replace(' ', '')}`);
-    const dst = await this.get().locator(`.nc-form-drag-${destinationField.replace(' ', '')}`);
+    await expect(this.get().locator(`.nc-form-drag-${sourceField}`)).toBeVisible();
+    await expect(this.get().locator(`.nc-form-drag-${destinationField}`)).toBeVisible();
+    const src = this.get().locator(`.nc-form-drag-${sourceField.replace(' ', '')}`);
+    const dst = this.get().locator(`.nc-form-drag-${destinationField.replace(' ', '')}`);
     await src.dragTo(dst);
   }
 
   async removeField({ field, mode }: { mode: string; field: string }) {
     if (mode === 'dragDrop') {
-      const src = await this.get().locator(`.nc-form-drag-${field.replace(' ', '')}`);
-      const dst = await this.get().locator(`[data-testid="nc-drag-n-drop-to-hide"]`);
+      const src = this.get().locator(`.nc-form-drag-${field.replace(' ', '')}`);
+      const dst = this.get().locator(`[data-testid="nc-drag-n-drop-to-hide"]`);
       await src.dragTo(dst);
     } else if (mode === 'hideField') {
-      const src = await this.get().locator(`.nc-form-drag-${field.replace(' ', '')}`);
+      const src = this.get().locator(`.nc-form-drag-${field.replace(' ', '')}`);
       await src.locator(`[data-testid="nc-field-remove-icon"]`).click();
     }
   }
 
   async addField({ field, mode }: { mode: string; field: string }) {
     if (mode === 'dragDrop') {
-      const src = await this.get().locator(`[data-testid="nc-form-hidden-column-${field}"] > div.ant-card-body`);
-      const dst = await this.get().locator(`[data-testid="nc-form-input-Country"]`);
+      const src = this.get().locator(`[data-testid="nc-form-hidden-column-${field}"] > div.ant-card-body`);
+      const dst = this.get().locator(`[data-testid="nc-form-input-Country"]`);
       await src.waitFor({ state: 'visible' });
       await dst.waitFor({ state: 'visible' });
       await src.dragTo(dst, { trial: true });
       await src.dragTo(dst);
     } else if (mode === 'clickField') {
-      const src = await this.get().locator(`[data-testid="nc-form-hidden-column-${field}"]`);
+      const src = this.get().locator(`[data-testid="nc-form-hidden-column-${field}"]`);
       await src.click();
     }
   }
@@ -203,12 +204,12 @@ export class FormPage extends BasePage {
     if (required) expectText = label + ' *';
     else expectText = label;
 
-    const fieldLabel = await this.get()
+    const fieldLabel = this.get()
       .locator(`.nc-form-drag-${field.replace(' ', '')}`)
       .locator('div[data-testid="nc-form-input-label"]');
     await expect(fieldLabel).toHaveText(expectText);
 
-    const fieldHelpText = await this.get()
+    const fieldHelpText = this.get()
       .locator(`.nc-form-drag-${field.replace(' ', '')}`)
       .locator('div[data-testid="nc-form-input-help-text-label"]');
     await expect(fieldHelpText).toHaveText(helpText);
@@ -220,10 +221,19 @@ export class FormPage extends BasePage {
 
   async verifyStatePostSubmit(param: { message?: string; submitAnotherForm?: boolean; showBlankForm?: boolean }) {
     if (undefined !== param.message) {
-      await expect(await this.getFormAfterSubmit()).toContainText(param.message);
+      let retryCounter = 0;
+      while (retryCounter <= 5) {
+        const msg = await this.getFormAfterSubmit().innerText();
+        if (msg.includes('Form submitted successfully')) {
+          break;
+        }
+        await this.rootPage.waitForTimeout(100 * retryCounter);
+        retryCounter++;
+      }
+      await expect(this.getFormAfterSubmit()).toContainText(param.message);
     }
     if (true === param.submitAnotherForm) {
-      await expect(await this.getFormAfterSubmit().locator('button:has-text("Submit Another Form")')).toBeVisible();
+      await expect(this.getFormAfterSubmit().locator('button:has-text("Submit Another Form")')).toBeVisible();
     }
     if (true === param.showBlankForm) {
       await this.get().waitFor();

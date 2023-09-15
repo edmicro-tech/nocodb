@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { DashboardPage } from '../../../pages/Dashboard';
-import setup from '../../../setup';
+import setup, { unsetup } from '../../../setup';
 
 test.describe('Grid pagination', () => {
   let dashboard: DashboardPage;
@@ -11,7 +11,12 @@ test.describe('Grid pagination', () => {
     dashboard = new DashboardPage(page, context.project);
   });
 
+  test.afterEach(async () => {
+    await unsetup(context);
+  });
+
   test('Access next page, prev page & offset page', async () => {
+    test.slow();
     // close 'Team & Auth' tab
     await dashboard.closeTab({ title: 'Team & Auth' });
 

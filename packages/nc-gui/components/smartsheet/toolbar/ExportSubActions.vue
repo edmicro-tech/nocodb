@@ -24,7 +24,8 @@ const isPublicView = inject(IsPublicInj, ref(false))
 
 const fields = inject(FieldsInj, ref([]))
 
-const { project } = storeToRefs(useProject())
+const projectStore = useProject()
+const { project } = storeToRefs(projectStore)
 
 const { $api } = useNuxtApp()
 
@@ -54,9 +55,9 @@ const exportFile = async (exportType: ExportTypes) => {
       } else {
         res = await $api.dbViewRow.export(
           'noco',
-          project.value?.title as string,
-          meta.value?.title as string,
-          selectedView?.value.title as string,
+          project.value?.id as string,
+          meta.value?.id as string,
+          selectedView?.value.id as string,
           exportType,
           {
             responseType,
@@ -100,7 +101,7 @@ const exportFile = async (exportType: ExportTypes) => {
 <template>
   <a-menu-item>
     <div v-e="['a:actions:download-csv']" class="nc-project-menu-item" @click="exportFile(ExportTypes.CSV)">
-      <component :is="iconMap.csv" class="text-gray-500" />
+      <component :is="iconMap.csv" />
       <!-- Download as CSV -->
       {{ $t('activity.downloadCSV') }}
     </div>
@@ -108,7 +109,7 @@ const exportFile = async (exportType: ExportTypes) => {
 
   <a-menu-item>
     <div v-e="['a:actions:download-excel']" class="nc-project-menu-item" @click="exportFile(ExportTypes.EXCEL)">
-      <component :is="iconMap.excel" class="text-gray-500" />
+      <component :is="iconMap.excel" />
       <!-- Download as XLSX -->
       {{ $t('activity.downloadExcel') }}
     </div>

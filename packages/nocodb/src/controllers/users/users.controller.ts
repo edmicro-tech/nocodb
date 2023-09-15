@@ -9,25 +9,26 @@ import {
   Response,
   UseGuards,
 } from '@nestjs/common';
-import * as ejs from 'ejs';
 import { AuthGuard } from '@nestjs/passport';
-import { GlobalGuard } from '../../guards/global/global.guard';
-import { NcError } from '../../helpers/catchError';
-import {
-  Acl,
-  ExtractProjectIdMiddleware,
-} from '../../middlewares/extract-project-id/extract-project-id.middleware';
-import { User } from '../../models';
-import {
-  randomTokenString,
-  setTokenCookie,
-} from '../../services/users/helpers';
-import { UsersService } from '../../services/users/users.service';
-import extractRolesObj from '../../utils/extractRolesObj';
+import * as ejs from 'ejs';
+import { ConfigService } from '@nestjs/config';
+import { extractRolesObj } from 'nocodb-sdk';
+import type { AppConfig } from '~/interface/config';
+import { GlobalGuard } from '~/guards/global/global.guard';
+import { NcError } from '~/helpers/catchError';
+import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { User } from '~/models';
+import { AppHooksService } from '~/services/app-hooks/app-hooks.service';
+import { randomTokenString, setTokenCookie } from '~/services/users/helpers';
+import { UsersService } from '~/services/users/users.service';
 
 @Controller()
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    protected readonly usersService: UsersService,
+    protected readonly appHooksService: AppHooksService,
+    protected readonly config: ConfigService<AppConfig>,
+  ) {}
 
   @Post([
     '/auth/user/signup',
@@ -36,6 +37,9 @@ export class UsersController {
   ])
   @HttpCode(200)
   async signup(@Request() req: any, @Response() res: any): Promise<any> {
+    if (this.config.get('auth', { infer: true }).disableEmailAuth) {
+      NcError.forbidden('Email authentication is disabled');
+    }
     res.json(
       await this.usersService.signup({
         body: req.body,
@@ -69,8 +73,11 @@ export class UsersController {
   @UseGuards(AuthGuard('local'))
   @HttpCode(200)
   async signin(@Request() req, @Response() res) {
+    if (this.config.get('auth', { infer: true }).disableEmailAuth) {
+      NcError.forbidden('Email authentication is disabled');
+    }
     await this.setRefreshToken({ req, res });
-    res.json(this.usersService.login(req.user));
+    res.json(await this.usersService.login(req.user));
   }
 
   @UseGuards(GlobalGuard)
@@ -93,7 +100,7 @@ export class UsersController {
   @UseGuards(AuthGuard('google'))
   async googleSignin(@Request() req, @Response() res) {
     await this.setRefreshToken({ req, res });
-    res.json(this.usersService.login(req.user));
+    res.json(await this.usersService.login(req.user));
   }
 
   @Get('/auth/google')
@@ -103,11 +110,13 @@ export class UsersController {
   }
 
   @Get(['/auth/user/me', '/api/v1/db/auth/user/me', '/api/v1/auth/user/me'])
-  @UseGuards(ExtractProjectIdMiddleware, GlobalGuard)
+  @UseGuards(GlobalGuard)
   async me(@Request() req) {
     const user = {
       ...req.user,
       roles: extractRolesObj(req.user.roles),
+      workspace_roles: extractRolesObj(req.user.workspace_roles),
+      project_roles: extractRolesObj(req.user.project_roles),
     };
     return user;
   }
@@ -118,7 +127,9 @@ export class UsersController {
     '/api/v1/auth/password/change',
   ])
   @UseGuards(GlobalGuard)
-  @Acl('passwordChange')
+  @Acl('passwordChange', {
+    scope: 'org',
+  })
   @HttpCode(200)
   async passwordChange(@Request() req: any): Promise<any> {
     if (!(req as any).isAuthenticated()) {
@@ -233,14 +244,14 @@ export class UsersController {
 
     const refreshToken = randomTokenString();
 
-    if (!user.token_version) {
-      user.token_version = randomTokenString();
+    if (!user['token_version']) {
+      user['token_version'] = randomTokenString();
     }
 
     await User.update(user.id, {
       refresh_token: refreshToken,
       email: user.email,
-      token_version: user.token_version,
+      token_version: user['token_version'],
     });
     setTokenCookie(res, refreshToken);
   }

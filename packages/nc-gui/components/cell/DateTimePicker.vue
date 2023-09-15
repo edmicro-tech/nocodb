@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { isSystemColumn } from 'nocodb-sdk'
 import {
   ActiveCellInj,
   CellClickHookInj,
   ColumnInj,
+  EditColumnInj,
   ReadonlyInj,
   dateFormats,
   inject,
@@ -36,11 +38,15 @@ const active = inject(ActiveCellInj, ref(false))
 
 const editable = inject(EditModeInj, ref(false))
 
+const isLockedMode = inject(IsLockedInj, ref(false))
+
+const isEditColumn = inject(EditColumnInj, ref(false))
+
 const column = inject(ColumnInj)!
 
-let isDateInvalid = $ref(false)
+const isDateInvalid = ref(false)
 
-const dateTimeFormat = $computed(() => {
+const dateTimeFormat = computed(() => {
   const dateFormat = parseProp(column?.value?.meta)?.date_format ?? dateFormats[0]
   const timeFormat = parseProp(column?.value?.meta)?.time_format ?? timeFormats[0]
   return `${dateFormat} ${timeFormat}`
@@ -48,14 +54,14 @@ const dateTimeFormat = $computed(() => {
 
 let localModelValue = modelValue ? dayjs(modelValue).utc().local() : undefined
 
-let localState = $computed({
+const localState = computed({
   get() {
     if (!modelValue) {
       return undefined
     }
 
     if (!dayjs(modelValue).isValid()) {
-      isDateInvalid = true
+      isDateInvalid.value = true
       return undefined
     }
 
@@ -129,7 +135,17 @@ watch(
   { flush: 'post' },
 )
 
-const placeholder = computed(() => (modelValue === null && showNull.value ? 'NULL' : isDateInvalid ? 'Invalid date' : ''))
+const placeholder = computed(() => {
+  if (isEditColumn.value && (modelValue === '' || modelValue === null)) {
+    return '(Optional)'
+  } else if (modelValue === null && showNull.value) {
+    return 'NULL'
+  } else if (isDateInvalid.value) {
+    return 'Invalid date'
+  } else {
+    return ''
+  }
+})
 
 useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
   switch (e.key) {
@@ -158,7 +174,7 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
       }
       break
     case 'ArrowLeft':
-      if (!localState) {
+      if (!localState.value) {
         ;(document.querySelector('.nc-picker-datetime.active .ant-picker-header-prev-btn') as HTMLButtonElement)?.click()
       } else {
         const prevEl = document.querySelector('.nc-picker-datetime.active .ant-picker-cell-selected')
@@ -181,7 +197,7 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
       }
       break
     case 'ArrowRight':
-      if (!localState) {
+      if (!localState.value) {
         ;(document.querySelector('.nc-picker-datetime.active .ant-picker-header-next-btn') as HTMLButtonElement)?.click()
       } else {
         const nextEl = document.querySelector('.nc-picker-datetime.active .ant-picker-cell-selected')
@@ -204,15 +220,15 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
       }
       break
     case 'ArrowUp':
-      if (!localState)
+      if (!localState.value)
         (document.querySelector('.nc-picker-datetime.active .ant-picker-header-super-prev-btn') as HTMLButtonElement)?.click()
       break
     case 'ArrowDown':
-      if (!localState)
+      if (!localState.value)
         (document.querySelector('.nc-picker-datetime.active .ant-picker-header-super-next-btn') as HTMLButtonElement)?.click()
       break
     case ';':
-      localState = dayjs(new Date())
+      localState.value = dayjs(new Date())
       break
   }
 })
@@ -234,22 +250,26 @@ const clickHandler = () => {
   }
   cellClickHandler()
 }
+
+const isColDisabled = computed(() => {
+  return isSystemColumn(column.value) || readOnly.value || (localState.value && isPk)
+})
 </script>
 
 <template>
   <a-date-picker
     v-model:value="localState"
+    :disabled="isColDisabled"
     :show-time="true"
     :bordered="false"
-    class="!w-full !px-0 !border-none"
+    class="!w-full !px-0 !py-1 !border-none"
     :class="{ 'nc-null': modelValue === null && showNull }"
     :format="dateTimeFormat"
     :placeholder="placeholder"
     :allow-clear="!readOnly && !localState && !isPk"
     :input-read-only="true"
     :dropdown-class-name="`${randomClass} nc-picker-datetime ${open ? 'active' : ''}`"
-    :open="readOnly || (localState && isPk) ? false : open && (active || editable)"
-    :disabled="readOnly || (localState && isPk)"
+    :open="readOnly || (localState && isPk) || isLockedMode ? false : open && (active || editable)"
     @click="clickHandler"
     @ok="open = !open"
   >

@@ -11,18 +11,14 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { TableReqType } from 'nocodb-sdk';
-import { GlobalGuard } from '../guards/global/global.guard';
-import extractRolesObj from '../utils/extractRolesObj';
-import { PagedResponseImpl } from '../helpers/PagedResponse';
-import {
-  ExtractProjectIdMiddleware,
-  UseAclMiddleware,
-} from '../middlewares/extract-project-id/extract-project-id.middleware';
-import { TablesService } from '../services/tables.service';
+import { extractRolesObj, TableReqType } from 'nocodb-sdk';
+import { GlobalGuard } from '~/guards/global/global.guard';
+import { TablesService } from '~/services/tables.service';
+import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { PagedResponseImpl } from '~/helpers/PagedResponse';
 
 @Controller()
-@UseGuards(ExtractProjectIdMiddleware, GlobalGuard)
+@UseGuards(GlobalGuard)
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}
 
@@ -30,9 +26,7 @@ export class TablesController {
     '/api/v1/db/meta/projects/:projectId/tables',
     '/api/v1/db/meta/projects/:projectId/:baseId/tables',
   ])
-  @UseAclMiddleware({
-    permissionName: 'tableList',
-  })
+  @Acl('tableList')
   async tableList(
     @Param('projectId') projectId: string,
     @Param('baseId') baseId: string,
@@ -44,7 +38,7 @@ export class TablesController {
         projectId,
         baseId,
         includeM2M: includeM2M === 'true',
-        roles: extractRolesObj(req.user.roles),
+        roles: extractRolesObj(req.user.project_roles),
       }),
     );
   }
@@ -54,9 +48,7 @@ export class TablesController {
     '/api/v1/db/meta/projects/:projectId/:baseId/tables',
   ])
   @HttpCode(200)
-  @UseAclMiddleware({
-    permissionName: 'tableCreate',
-  })
+  @Acl('tableCreate')
   async tableCreate(
     @Param('projectId') projectId: string,
     @Param('baseId') baseId: string,
@@ -74,9 +66,7 @@ export class TablesController {
   }
 
   @Get('/api/v1/db/meta/tables/:tableId')
-  @UseAclMiddleware({
-    permissionName: 'tableGet',
-  })
+  @Acl('tableGet')
   async tableGet(@Param('tableId') tableId: string, @Request() req) {
     const table = await this.tablesService.getTableWithAccessibleViews({
       tableId: req.params.tableId,
@@ -87,9 +77,7 @@ export class TablesController {
   }
 
   @Patch('/api/v1/db/meta/tables/:tableId')
-  @UseAclMiddleware({
-    permissionName: 'tableUpdate',
-  })
+  @Acl('tableUpdate')
   async tableUpdate(
     @Param('tableId') tableId: string,
     @Body() body: TableReqType,
@@ -99,14 +87,13 @@ export class TablesController {
       tableId: tableId,
       table: body,
       projectId: req.ncProjectId,
+      user: req.ncProjectId,
     });
     return { msg: 'The table has been updated successfully' };
   }
 
   @Delete('/api/v1/db/meta/tables/:tableId')
-  @UseAclMiddleware({
-    permissionName: 'tableDelete',
-  })
+  @Acl('tableDelete')
   async tableDelete(@Param('tableId') tableId: string, @Request() req) {
     const result = await this.tablesService.tableDelete({
       tableId: req.params.tableId,
@@ -118,9 +105,7 @@ export class TablesController {
   }
 
   @Post('/api/v1/db/meta/tables/:tableId/reorder')
-  @UseAclMiddleware({
-    permissionName: 'tableReorder',
-  })
+  @Acl('tableReorder')
   @HttpCode(200)
   async tableReorder(
     @Param('tableId') tableId: string,

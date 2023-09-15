@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import type { ViewType, ViewTypes } from 'nocodb-sdk'
-import type { Ref } from 'vue'
 import {
   ActiveViewInj,
   MetaInj,
-  computed,
   inject,
   ref,
   resolveComponent,
   storeToRefs,
+  useCommandPalette,
   useDialog,
   useNuxtApp,
   useRoute,
   useRouter,
-  useSidebar,
   useUIPermission,
-  useViews,
+  useViewsStore,
   watch,
 } from '#imports'
+
+const { refreshCommandPalette } = useCommandPalette()
 
 const meta = inject(MetaInj, ref())
 
@@ -25,9 +25,13 @@ const activeView = inject(ActiveViewInj, ref())
 
 const { activeTab } = storeToRefs(useTabs())
 
-const { views, loadViews, isLoading } = useViews(meta)
+const viewsStore = useViewsStore()
+const { loadViews } = viewsStore
+const { isViewsLoading, views } = storeToRefs(viewsStore)
 
 const { lastOpenedViewMap } = storeToRefs(useProject())
+
+const { activeTable } = storeToRefs(useTablesStore())
 
 const setLastOpenedViewId = (viewId?: string) => {
   if (viewId && activeTab.value?.id) {
@@ -43,13 +47,9 @@ const route = useRoute()
 
 const { $e } = useNuxtApp()
 
-/** Sidebar visible */
-const { isOpen } = useSidebar('nc-right-sidebar')
+const { isRightSidebarOpen } = storeToRefs(useSidebarStore())
 
-const sidebarCollapsed = computed(() => !isOpen.value)
-
-/** Sidebar ref */
-const sidebar: Ref<Element | null> = ref(null)
+const tabBtnsContainerRef = ref<HTMLElement | null>(null)
 
 /** Watch route param and change active view based on `viewTitle` */
 watch(
@@ -69,7 +69,7 @@ watch(
         if (view) {
           router.replace({
             params: {
-              viewTitle: view.title,
+              viewTitle: view.id,
             },
           })
         }
@@ -78,7 +78,7 @@ watch(
       /** if active view is not found, set it to last opened view */
       router.replace({
         params: {
-          viewTitle: lastOpenedView.title,
+          viewTitle: lastOpenedView.id,
         },
       })
     } else {
@@ -121,9 +121,11 @@ function onOpenModal({
     'onCreated': async (view: ViewType) => {
       closeDialog()
 
+      refreshCommandPalette()
+
       await loadViews()
 
-      router.push({ params: { viewTitle: view.title || '' } })
+      router.push({ params: { viewTitle: view.id || '' } })
 
       $e('a:view:create', { view: view.type })
     },
@@ -138,35 +140,116 @@ function onOpenModal({
 </script>
 
 <template>
-  <a-layout-sider
-    ref="sidebar"
-    :collapsed="sidebarCollapsed"
-    collapsiple
-    collapsed-width="0"
-    width="0"
-    class="nc-view-sidebar relative shadow h-full w-full !flex-1 !min-w-0 !max-w-[150px] !w-[150px] lg:(!max-w-[250px] !w-[250px])"
-    theme="light"
-  >
-    <LazySmartsheetSidebarToolbar
-      class="min-h-[var(--toolbar-height)] max-h-[var(--toolbar-height)] flex items-center py-3 px-3 justify-between border-b-1"
-    />
+  <div class="relative nc-view-sidebar flex flex-col border-l-1 border-gray-200 relative h-full w-full bg-white">
+    <template v-if="isViewsLoading">
+      <a-skeleton-input :active="true" class="!h-8 !rounded overflow-hidden ml-3 mr-3 mt-3.75 mb-3.75" />
+    </template>
+    <div
+      v-else
+      ref="tabBtnsContainerRef"
+      class="flex flex-row group py-1 mx-3.25 mt-1.25 mb-2.75 rounded-md gap-x-2 nc-view-sidebar-tab items-center justify-between"
+    >
+      <div class="flex text-gray-600 ml-1.75">Views</div>
+      <NcTooltip
+        placement="bottomLeft"
+        hide-on-click
+        class="flex opacity-0 group-hover:(opacity-100) transition-all duration-50"
+        :class="{
+          '!w-8 !opacity-100': !isRightSidebarOpen,
+        }"
+      >
+        <template #title>
+          {{
+            isRightSidebarOpen
+              ? `${$t('general.hide')} ${$t('objects.sidebar').toLowerCase()}`
+              : `${$t('general.show')} ${$t('objects.sidebar').toLowerCase()}`
+          }}
+        </template>
+        <NcButton
+          type="text"
+          size="small"
+          class="nc-sidebar-left-toggle-icon !text-gray-600 !hover:text-gray-800"
+          @click="isRightSidebarOpen = !isRightSidebarOpen"
+        >
+          <div class="flex items-center text-inherit">
+            <GeneralIcon
+              icon="doubleRightArrow"
+              class="duration-150 transition-all"
+              :class="{
+                'transform rotate-180': !isRightSidebarOpen,
+              }"
+            />
+          </div>
+        </NcButton>
+      </NcTooltip>
+    </div>
 
     <div class="flex-1 flex flex-col min-h-0">
-      <GeneralOverlay v-if="!views.length" :model-value="isLoading" inline class="bg-gray-300/50">
-        <div class="w-full h-full flex items-center justify-center">
-          <a-spin />
+      <div class="flex flex-col h-full justify-between w-full">
+        <div class="flex flex-grow nc-scrollbar-md pr-1.75 mr-0.5">
+          <div v-if="isViewsLoading" class="flex flex-col w-full">
+            <div class="flex flex-row items-center w-full mt-1.5 ml-5 gap-x-3">
+              <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              <a-skeleton-input :active="true" class="!w-1/2 !h-4 !rounded overflow-hidden" />
+            </div>
+            <div class="flex flex-row items-center w-full mt-4 ml-5 gap-x-3">
+              <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              <a-skeleton-input :active="true" class="!w-1/2 !h-4 !rounded overflow-hidden" />
+            </div>
+            <div class="flex flex-row items-center w-full mt-4 ml-5 gap-x-3">
+              <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              <a-skeleton-input :active="true" class="!w-1/2 !h-4 !rounded overflow-hidden" />
+            </div>
+          </div>
+          <LazySmartsheetSidebarMenuTop v-else :views="views" @open-modal="onOpenModal" @deleted="loadViews" />
         </div>
-      </GeneralOverlay>
+        <div v-if="isUIAllowed('virtualViewsCreateOrEdit')" class="flex flex-col">
+          <div class="!mb-3 w-full border-b-1 border-gray-200" />
 
-      <LazySmartsheetSidebarMenuTop :views="views" @open-modal="onOpenModal" @deleted="loadViews" />
-
-      <template v-if="isUIAllowed('virtualViewsCreateOrEdit')">
-        <div class="!my-3 w-full border-b-1" />
-
-        <LazySmartsheetSidebarMenuBottom @open-modal="onOpenModal" />
-      </template>
+          <div v-if="!activeTable" class="flex flex-col pt-2 pb-5 px-6">
+            <a-skeleton-input :active="true" class="!w-3/5 !h-4 !rounded overflow-hidden" />
+            <div class="flex flex-row justify-between items-center w-full mt-4.75">
+              <div class="flex flex-row items-center flex-grow gap-x-3">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+                <a-skeleton-input :active="true" class="!w-3/5 !h-4 !rounded overflow-hidden" />
+              </div>
+              <div class="flex">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              </div>
+            </div>
+            <div class="flex flex-row justify-between items-center w-full mt-3.75">
+              <div class="flex flex-row items-center flex-grow gap-x-3">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+                <a-skeleton-input :active="true" class="!w-3/5 !h-4 !rounded overflow-hidden" />
+              </div>
+              <div class="flex">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              </div>
+            </div>
+            <div class="flex flex-row justify-between items-center w-full mt-3.75">
+              <div class="flex flex-row items-center flex-grow gap-x-3">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+                <a-skeleton-input :active="true" class="!w-3/5 !h-4 !rounded overflow-hidden" />
+              </div>
+              <div class="flex">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              </div>
+            </div>
+            <div class="flex flex-row justify-between items-center w-full mt-3.75">
+              <div class="flex flex-row items-center flex-grow gap-x-3">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+                <a-skeleton-input :active="true" class="!w-3/5 !h-4 !rounded overflow-hidden" />
+              </div>
+              <div class="flex">
+                <a-skeleton-input :active="true" class="!w-4 !h-4 !rounded overflow-hidden" />
+              </div>
+            </div>
+          </div>
+          <LazySmartsheetSidebarMenuBottom v-else @open-modal="onOpenModal" />
+        </div>
+      </div>
     </div>
-  </a-layout-sider>
+  </div>
 </template>
 
 <style scoped>
@@ -176,5 +259,23 @@ function onOpenModal({
 
 :deep(.ant-layout-sider-children) {
   @apply flex flex-col;
+}
+
+.tab {
+  @apply flex flex-row items-center h-7.5 justify-center w-1/2 py-1 bg-gray-100 rounded-md gap-x-1.5 text-gray-500 hover:text-black cursor-pointer transition-all duration-300 select-none;
+}
+
+.tab-icon {
+  @apply transition-all duration-300;
+}
+.tab .tab-title {
+  @apply min-w-0;
+  word-break: 'keep-all';
+  white-space: 'nowrap';
+  display: 'inline';
+}
+
+.active {
+  @apply bg-white shadow text-gray-700;
 }
 </style>

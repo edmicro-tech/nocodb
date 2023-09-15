@@ -1332,3 +1332,4 @@ const duplicateTable = async (table: TableType) => {
   @apply !border-0;
 }
 </style>
+

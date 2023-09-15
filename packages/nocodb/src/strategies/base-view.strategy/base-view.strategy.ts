@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
-import { Project } from '../../models';
-import extractRolesObj from '../../utils/extractRolesObj';
+import { extractRolesObj } from 'nocodb-sdk';
+import { Project } from '~/models';
 
 @Injectable()
 export class BaseViewStrategy extends PassportStrategy(Strategy, 'base-view') {
@@ -11,17 +11,18 @@ export class BaseViewStrategy extends PassportStrategy(Strategy, 'base-view') {
     try {
       let user;
       if (req.headers['xc-shared-base-id']) {
-        // const cacheKey = `nc_shared_bases||${req.headers['xc-shared-base-id']}`;
+        const sharedProject = await Project.getByUuid(
+          req.headers['xc-shared-base-id'],
+        );
 
-        let sharedProject = null;
-
-        if (!sharedProject) {
-          sharedProject = await Project.getByUuid(
-            req.headers['xc-shared-base-id'],
-          );
+        // validate project id
+        if (!sharedProject || req.ncProjectId !== sharedProject.id) {
+          return callback(new UnauthorizedException());
         }
+
         user = {
           roles: extractRolesObj(sharedProject?.roles),
+          project_roles: extractRolesObj(sharedProject?.roles),
         };
       }
 

@@ -1,5 +1,4 @@
 import { DashboardPage } from '../pages/Dashboard';
-import { ProjectsPage } from '../pages/ProjectsPage';
 import { NcContext } from '../setup';
 import { isMysql, isPg } from '../setup/db';
 
@@ -99,7 +98,7 @@ const quickVerify = async ({
     rating: recordsVirtualCells.Rating,
   });
 
-  // LinkToAnotherRecord
+  // Links
   await dashboard.grid.cell.verifyVirtualCell({
     index: cellIndex,
     columnHeader: 'Actor',
@@ -121,7 +120,7 @@ const quickVerify = async ({
       value: recordsVirtualCells.Computation,
     });
 
-    // LinkToAnotherRecord
+    // Links
     await dashboard.grid.cell.verifyVirtualCell({
       index: cellIndex,
       columnHeader: 'Producer',
@@ -192,9 +191,9 @@ const quickVerify = async ({
 
   // Verify pagination
   await dashboard.grid.verifyActivePage({ page: '1' });
-  await dashboard.grid.clickPagination({ page: '>' });
+  await dashboard.grid.clickPagination({ page: '>', skipWait: true });
   await dashboard.grid.verifyActivePage({ page: '2' });
-  await dashboard.grid.clickPagination({ page: '<' });
+  await dashboard.grid.clickPagination({ page: '<', skipWait: true });
   await dashboard.grid.verifyActivePage({ page: '1' });
 
   await dashboard.viewSidebar.openView({ title: 'Filter&Sort' });
@@ -247,15 +246,10 @@ const quickVerify = async ({
 
   if (airtableImport) {
     // Delete default context project
-    await dashboard.clickHome();
-    const projectsPage = new ProjectsPage(dashboard.rootPage);
-    const projExists: boolean = await projectsPage
-      .get()
-      .locator(`[data-testid="delete-project-${context.project.title}"]`)
-      .isVisible();
-    if (projExists) {
-      await projectsPage.deleteProject({ title: context.project.title, withoutPrefix: true });
-    }
+    // await dashboard.clickHome();
+    // const workspacePage = new WorkspacePage(dashboard.rootPage);
+    // await workspacePage.projectDelete({ title: context.project.title });
+    await dashboard.treeView.deleteProject({ title: context.project.title });
   }
 };
 

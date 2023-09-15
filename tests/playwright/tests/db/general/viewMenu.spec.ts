@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { DashboardPage } from '../../../pages/Dashboard';
-import setup from '../../../setup';
+import setup, { unsetup } from '../../../setup';
 import { isPg } from '../../../setup/db';
 
 test.describe('Grid view locked', () => {
@@ -12,12 +12,14 @@ test.describe('Grid view locked', () => {
     dashboard = new DashboardPage(page, context.project);
   });
 
+  test.afterEach(async () => {
+    await unsetup(context);
+  });
+
   test('ReadOnly lock & collaboration mode', async () => {
-    // close 'Team & Auth' tab
-    await dashboard.closeTab({ title: 'Team & Auth' });
     await dashboard.treeView.openTable({ title: 'Country' });
 
-    await dashboard.grid.toolbar.viewsMenu.verifyCollaborativeMode();
+    await dashboard.grid.verifyCollaborativeMode();
 
     // enable view lock
     await dashboard.grid.toolbar.viewsMenu.click({
@@ -26,7 +28,7 @@ test.describe('Grid view locked', () => {
     });
 
     // verify view lock
-    await dashboard.grid.toolbar.viewsMenu.verifyLockMode();
+    await dashboard.grid.verifyLockMode();
 
     // enable collaborative view
     await dashboard.grid.toolbar.viewsMenu.click({
@@ -34,7 +36,7 @@ test.describe('Grid view locked', () => {
       subMenu: 'Collaborative View',
     });
 
-    await dashboard.grid.toolbar.viewsMenu.verifyCollaborativeMode();
+    await dashboard.grid.verifyCollaborativeMode();
   });
 
   test('Download CSV', async () => {

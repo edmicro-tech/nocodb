@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { DashboardPage } from '../../../pages/Dashboard';
-import setup from '../../../setup';
+import setup, { unsetup } from '../../../setup';
 import { ToolbarPage } from '../../../pages/Dashboard/common/Toolbar';
 import { UITypes } from 'nocodb-sdk';
 import { Api } from 'nocodb-sdk';
@@ -90,6 +90,10 @@ test.describe('Checkbox - cell, filter, sort', () => {
     await page.reload();
   });
 
+  test.afterEach(async () => {
+    await unsetup(context);
+  });
+
   test('Checkbox', async () => {
     // close 'Team & Auth' tab
     await dashboard.closeTab({ title: 'Team & Auth' });
@@ -139,7 +143,14 @@ test.describe('Checkbox - cell, filter, sort', () => {
       ascending: true,
       locallySaved: false,
     });
-    await validateRowArray(['1b', '1d', '1e', '1a', '1c', '1f']);
+
+    for (let i = 0; i < 3; i++) {
+      await dashboard.grid.cell.checkbox.verifyUnchecked({ index: i, columnHeader: 'checkbox' });
+    }
+    for (let i = 3; i < 6; i++) {
+      await dashboard.grid.cell.checkbox.verifyChecked({ index: i, columnHeader: 'checkbox' });
+    }
+
     await toolbar.sort.reset();
 
     // sort descending & validate
@@ -148,7 +159,14 @@ test.describe('Checkbox - cell, filter, sort', () => {
       ascending: false,
       locallySaved: false,
     });
-    await validateRowArray(['1a', '1c', '1f', '1b', '1d', '1e']);
+
+    for (let i = 0; i < 3; i++) {
+      await dashboard.grid.cell.checkbox.verifyChecked({ index: i, columnHeader: 'checkbox' });
+    }
+    for (let i = 3; i < 6; i++) {
+      await dashboard.grid.cell.checkbox.verifyUnchecked({ index: i, columnHeader: 'checkbox' });
+    }
+
     await toolbar.sort.reset();
 
     // TBD: Add more tests

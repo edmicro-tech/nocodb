@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { iconMap, navigateTo, useUIPermission } from '#imports'
+import { iconMap, isEeUI, navigateTo, useUIPermission } from '#imports'
 
 const { isUIAllowed } = useUIPermission()
 
 const $route = useRoute()
-
-const { appInfo } = useGlobal()
 
 const selectedKeys = computed(() => [
   /^\/account\/users\/?$/.test($route.fullPath)
@@ -39,7 +37,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
               <template #title>Users</template>
 
               <a-menu-item
-                v-if="isUIAllowed('superAdminUserManagement')"
+                v-if="isUIAllowed('superAdminUserManagement') && !isEeUI"
                 key="list"
                 class="text-xs"
                 @click="navigateTo('/account/users/list')"
@@ -50,7 +48,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
                 <span class="ml-4">{{ $t('title.resetPasswordMenu') }}</span>
               </a-menu-item>
               <a-menu-item
-                v-if="isUIAllowed('superAdminAppSettings')"
+                v-if="isUIAllowed('superAdminAppSettings') && !isEeUI"
                 key="settings"
                 class="text-xs"
                 @click="navigateTo('/account/users/settings')"
@@ -71,7 +69,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
               </div>
             </a-menu-item>
             <a-menu-item
-              v-if="isUIAllowed('appStore') && !appInfo.isCloud"
+              v-if="isUIAllowed('appStore') && !isEeUI"
               key="apps"
               class="group active:(!ring-0) hover:(!bg-primary !bg-opacity-25)"
               @click="navigateTo('/account/apps')"

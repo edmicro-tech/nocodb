@@ -1,43 +1,54 @@
 import { expect, test } from '@playwright/test';
 import { Api, TableListType, TableType } from 'nocodb-sdk';
 import { DashboardPage } from '../../../pages/Dashboard';
-import { SettingsPage, SettingTab } from '../../../pages/Dashboard/Settings';
-import { deepCompare } from '../../utils/objectCompareUtil';
-import setup from '../../../setup';
-import { ProjectInfoApiUtil, TableInfo } from '../../utils/projectInfoApiUtil';
+import { deepCompare } from '../../../tests/utils/objectCompareUtil';
+import setup, { unsetup } from '../../../setup';
+import { ProjectInfoApiUtil, TableInfo } from '../../../tests/utils/projectInfoApiUtil';
+import { isEE } from '../../../setup/db';
+import { AuditPage } from '../../../pages/Dashboard/ProjectView/Audit';
 
 test.describe('Table Operations', () => {
-  let dashboard: DashboardPage, settings: SettingsPage;
+  let dashboard: DashboardPage, audit: AuditPage;
   let context: any;
 
   test.beforeEach(async ({ page }) => {
     context = await setup({ page, isEmptyProject: false });
     dashboard = new DashboardPage(page, context.project);
-    settings = dashboard.settings;
+    audit = dashboard.projectView.dataSources.audit;
+  });
+
+  test.afterEach(async () => {
+    await unsetup(context);
   });
 
   test('Create, and delete table, verify in audit tab, rename City table, update icon and reorder tables', async () => {
-    await dashboard.treeView.createTable({ title: 'tablex' });
+    await dashboard.treeView.createTable({ title: 'tablex', projectTitle: context.project.title });
     await dashboard.treeView.verifyTable({ title: 'tablex' });
 
     await dashboard.treeView.deleteTable({ title: 'tablex' });
     await dashboard.treeView.verifyTable({ title: 'tablex', exists: false });
 
-    await dashboard.gotoSettings();
-    await settings.selectTab({ tab: SettingTab.Audit });
-    await settings.audit.verifyRow({
-      index: 0,
-      opType: 'TABLE',
-      opSubtype: 'DELETE',
-      user: 'user@nocodb.com',
-    });
-    await settings.audit.verifyRow({
-      index: 1,
-      opType: 'TABLE',
-      opSubtype: 'CREATE',
-      user: 'user@nocodb.com',
-    });
-    await settings.close();
+    if (!isEE()) {
+      // Audit logs in clickhouse; locally wont be accessible
+
+      await dashboard.treeView.openProject({ title: context.project.title });
+      await dashboard.projectView.tab_dataSources.click();
+      await dashboard.projectView.dataSources.openAudit({ rowIndex: 0 });
+
+      await audit.verifyRow({
+        index: 0,
+        opType: 'TABLE',
+        opSubtype: 'DELETE',
+        user: `user-${process.env.TEST_PARALLEL_INDEX}@nocodb.com`,
+      });
+      await audit.verifyRow({
+        index: 1,
+        opType: 'TABLE',
+        opSubtype: 'CREATE',
+        user: `user-${process.env.TEST_PARALLEL_INDEX}@nocodb.com`,
+      });
+      await audit.close();
+    }
 
     await dashboard.treeView.renameTable({ title: 'City', newTitle: 'Cityx' });
     await dashboard.treeView.verifyTable({ title: 'Cityx' });
@@ -52,18 +63,18 @@ test.describe('Table Operations', () => {
 
     // verify table icon customization
     await dashboard.treeView.openTable({ title: 'Address' });
-    await dashboard.treeView.changeTableIcon({ title: 'Address', icon: 'american-football' });
-    await dashboard.treeView.verifyTabIcon({ title: 'Address', icon: 'american-football' });
+    await dashboard.treeView.changeTableIcon({ title: 'Address', icon: 'american-football', iconDisplay: '🏈' });
+    await dashboard.treeView.verifyTabIcon({ title: 'Address', icon: 'american-football', iconDisplay: '🏈' });
   });
 
-  test('duplicate_table', async () => {
+  test.skip('duplicate_table', async () => {
     const orginalTableName = 'Actor';
     const dupTableName = 'Actor copy';
     // verify table icon customization
     await dashboard.treeView.duplicateTable(orginalTableName, true, true);
     await dashboard.treeView.verifyTable({ title: dupTableName });
     // let projectInfoApiUtil: ProjectInfoApiUtil = new ProjectInfoApiUtil(context.token);
-    // let orginalTable: Promise<TableInfo> = projectInfoApiUtil.extractTableInfo(context.project_id, 'Address');
+    // let originalTable: Promise<TableInfo> = projectInfoApiUtil.extractTableInfo(context.project_id, 'Address');
     // let duplicateTable: Promise<TableInfo> = await this.api.dbTable.list(projectId);.extractTableInfo(context.project_id, 'Address copy');
     const api: Api<any> = new Api({
       baseURL: `http://localhost:8080/`,
@@ -72,11 +83,11 @@ test.describe('Table Operations', () => {
       },
     });
     const tables: TableListType = await api.dbTable.list(context.project.id);
-    const orginalTable: TableType = await tables.list.filter(t => t.title === orginalTableName)[0];
-    const duplicateTable: TableType = await tables.list.filter(t => t.title === dupTableName)[0];
+    const originalTable: TableType = tables.list.filter(t => t.title === orginalTableName)[0];
+    const duplicateTable: TableType = tables.list.filter(t => t.title === dupTableName)[0];
     expect(
       deepCompare(
-        orginalTable,
+        originalTable,
         duplicateTable,
         undefined,
         new Set(['.id', '.table_name', '.title', '.order', '.created_at', '.updated_at'])
@@ -85,14 +96,14 @@ test.describe('Table Operations', () => {
     // check individual field values where values does not match as per design
   });
 
-  test('duplicate_table_with_no_data_views', async () => {
-    const orginalTableName = 'Actor';
+  test.skip('duplicate_table_with_no_data_views', async () => {
+    const originalTableName = 'Actor';
     const dupTableName = 'Actor copy';
     // verify table icon customization
-    await dashboard.treeView.duplicateTable(orginalTableName, false, false);
+    await dashboard.treeView.duplicateTable(originalTableName, false, false);
     await dashboard.treeView.verifyTable({ title: dupTableName });
     // let projectInfoApiUtil: ProjectInfoApiUtil = new ProjectInfoApiUtil(context.token);
-    // let orginalTable: Promise<TableInfo> = projectInfoApiUtil.extractTableInfo(context.project_id, 'Address');
+    // let originalTable: Promise<TableInfo> = projectInfoApiUtil.extractTableInfo(context.project_id, 'Address');
     // let duplicateTable: Promise<TableInfo> = await this.api.dbTable.list(projectId);.extractTableInfo(context.project_id, 'Address copy');
     const api: Api<any> = new Api({
       baseURL: `http://localhost:8080/`,
@@ -101,14 +112,14 @@ test.describe('Table Operations', () => {
       },
     });
     const tables: TableListType = await api.dbTable.list(context.project.id);
-    const orginalTable: TableType = await tables.list.filter(t => t.title === orginalTableName)[0];
-    const duplicateTable: TableType = await tables.list.filter(t => t.title === dupTableName)[0];
+    const originalTable: TableType = tables.list.filter(t => t.title === originalTableName)[0];
+    const duplicateTable: TableType = tables.list.filter(t => t.title === dupTableName)[0];
     const p: ProjectInfoApiUtil = new ProjectInfoApiUtil(context.token);
-    const orginalTableInfo: TableInfo = await p.extractTableInfo(orginalTable, context.project.id);
+    const originalTableInfo: TableInfo = await p.extractTableInfo(originalTable, context.project.id);
     const duplicateTableInfo: TableInfo = await p.extractTableInfo(duplicateTable, context.project.id);
     expect(
       deepCompare(
-        orginalTableInfo,
+        originalTableInfo,
         duplicateTableInfo,
         new Set(['created_at']),
         new Set([

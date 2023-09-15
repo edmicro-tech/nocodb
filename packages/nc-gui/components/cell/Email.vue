@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import type { VNodeRef } from '@vue/runtime-core'
-import { EditModeInj, IsExpandedFormOpenInj, IsSurveyFormInj, computed, inject, useI18n, validateEmail } from '#imports'
+import {
+  EditColumnInj,
+  EditModeInj,
+  IsExpandedFormOpenInj,
+  IsSurveyFormInj,
+  computed,
+  inject,
+  useI18n,
+  validateEmail,
+} from '#imports'
 
 interface Props {
   modelValue: string | null | undefined
@@ -9,6 +18,8 @@ interface Props {
 const { modelValue: value } = defineProps<Props>()
 
 const emit = defineEmits(['update:modelValue'])
+
+const rowHeight = inject(RowHeightInj, ref(undefined))
 
 const { t } = useI18n()
 
@@ -22,6 +33,8 @@ const column = inject(ColumnInj)!
 const localState = ref(value)
 
 const isSurveyForm = inject(IsSurveyFormInj, ref(false))
+
+const isEditColumn = inject(EditColumnInj, ref(false))
 
 const vModel = computed({
   get: () => value,
@@ -37,7 +50,7 @@ const validEmail = computed(() => vModel.value && validateEmail(vModel.value))
 
 const isExpandedFormOpen = inject(IsExpandedFormOpenInj, ref(false))!
 
-const focus: VNodeRef = (el) => !isExpandedFormOpen.value && (el as HTMLInputElement)?.focus()
+const focus: VNodeRef = (el) => !isExpandedFormOpen.value && !isEditColumn.value && (el as HTMLInputElement)?.focus()
 
 watch(
   () => editEnabled.value,
@@ -57,7 +70,8 @@ watch(
     v-if="editEnabled"
     :ref="focus"
     v-model="vModel"
-    class="w-full outline-none text-sm px-2"
+    class="w-full outline-none text-sm px-1 py-2"
+    :placeholder="isEditColumn ? '(Optional)' : ''"
     @blur="editEnabled = false"
     @keydown.down.stop
     @keydown.left.stop
@@ -73,8 +87,8 @@ watch(
   <span v-else-if="vModel === null && showNull" class="nc-null">NULL</span>
 
   <a v-else-if="validEmail" class="text-sm underline hover:opacity-75" :href="`mailto:${vModel}`" target="_blank">
-    {{ vModel }}
+    <LazyCellClampedText :value="vModel" :lines="rowHeight" />
   </a>
 
-  <span v-else>{{ vModel }}</span>
+  <LazyCellClampedText v-else :value="vModel" :lines="rowHeight" />
 </template>
