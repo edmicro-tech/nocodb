@@ -7,8 +7,8 @@ import Metadata from './Metadata.vue'
 import UIAcl from './UIAcl.vue'
 import Erd from './Erd.vue'
 import BaseAudit from './BaseAudit.vue'
-import { ClientType, DataSourcesSubTab, storeToRefs, useNuxtApp, useProject } from '#imports'
-const { t } = useI18n()
+import { ClientType, DataSourcesSubTab, storeToRefs, useCommandPalette, useNuxtApp, useProject } from '#imports'
+
 interface Props {
   state: string
   reload?: boolean

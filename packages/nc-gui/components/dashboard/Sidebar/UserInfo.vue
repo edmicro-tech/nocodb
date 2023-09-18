@@ -82,15 +82,15 @@ onMounted(() => {
             <GeneralIcon v-else icon="signout" class="menu-icon" />
             Log Out</NcMenuItem
           >
-          <NcDivider />
-          <a href="https://docs.nocodb.com" target="_blank" class="!underline-transparent">
+          <!-- <NcDivider /> -->
+          <!-- <a href="https://docs.nocodb.com" target="_blank" class="!underline-transparent">
             <NcMenuItem>
               <GeneralIcon icon="help" class="menu-icon" />
               Help Center</NcMenuItem
             >
-          </a>
-          <NcDivider />
-          <a href="https://discord.gg/5RgZmkW" target="_blank" class="!underline-transparent">
+          </a> -->
+          <!-- <NcDivider /> -->
+          <!-- <a href="https://discord.gg/5RgZmkW" target="_blank" class="!underline-transparent">
             <NcMenuItem class="social-icon-wrapper"
               ><GeneralIcon class="social-icon" icon="discord" />Join our Discord</NcMenuItem
             >
@@ -102,7 +102,7 @@ onMounted(() => {
             <NcMenuItem class="social-icon-wrapper group"
               ><GeneralIcon class="text-gray-500 group-hover:text-gray-800" icon="twitter" />Twitter</NcMenuItem
             >
-          </a>
+          </a> -->
           <template v-if="!appInfo.ee">
             <NcDivider />
             <a-popover key="language" class="lang-menu !py-1.5" placement="rightBottom">
@@ -139,7 +139,7 @@ onMounted(() => {
         </NcMenu>
       </template>
     </NcDropdown>
-
+<!-- 
     <div v-if="appInfo.ee" class="text-gray-500 text-xs pl-3">© 2023 NocoDB. Inc</div>
     <div v-else-if="isMounted" class="flex flex-col gap-y-1 pt-1">
       <div class="flex items-start flex-row justify-center px-2 gap-2">
@@ -151,7 +151,7 @@ onMounted(() => {
       <div class="flex items-start flex-row justify-center gap-2">
         <GeneralJoinCloud class="color-transition px-2 text-gray-500 cursor-pointer select-none hover:text-accent" />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

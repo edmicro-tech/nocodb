@@ -12,10 +12,10 @@
           href="https://github.com/nocodb/nocodb"
           target="_blank"
         >
-          <img width="25" alt="NocoDB" src="~/assets/img/icons/256x256.png" />
+          <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
         </a>
 
-        <div class="font-semibold text-base">Nocodb</div>
+        <div class="font-semibold text-base">Hệ thống cơ sở dữ liệu</div>
         <div class="flex flex-grow"></div>
       </div>
     </div>
