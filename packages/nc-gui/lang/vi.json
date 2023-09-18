@@ -83,7 +83,7 @@
     "edittingAccess": "Chỉnh sửa truy cập",
     "manageProjectAccess": "Xác nhận quyền truy cập dữ liệu",
     "logOut": "Đăng xuất",
-    "copyAuthToken": "Sao chép Token",
+    "copyAuthToken": "Sao chép Token", 
     "accountSettings": "Cài đặt tài khoản"
   },
   "objects": {
@@ -480,6 +480,8 @@
     "toggleCommentsDraw": "Toggle comments draw",
     "expandRecord": "Xem chi tiết bản ghi",
     "deleteRecord": "Xóa bản ghi",
+    "groupBy": "Nhóm theo",
+    "newRecord": "Tạo bản ghi",
     "erd": {
       "showColumns": "Xem cột",
       "showPkAndFk": "Xem khóa chính & khóa ngoại",
