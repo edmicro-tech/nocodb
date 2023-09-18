@@ -279,9 +279,9 @@ watch(
       </div>
 
       <div class="flex flex-row justify-end gap-x-2 border-t-1 border-gray-100 pt-3">
-        <a-button key="back" class="!rounded-md" @click="cancel">Cancel</a-button>
-        <a-button class="!rounded-md">Manage project access</a-button>
-        <a-button key="submit" class="!rounded-md" type="primary" :loading="loading">Share</a-button>
+        <a-button key="back" class="!rounded-md" @click="cancel">{{ $t('general.cancel') }}</a-button>
+        <a-button class="!rounded-md">{{ $t('general.manageProjectAccess') }}</a-button>
+        <a-button key="submit" class="!rounded-md" type="primary" :loading="loading">{{ $t('activity.share') }}</a-button>
       </div>
     </div>
   </GeneralModal>

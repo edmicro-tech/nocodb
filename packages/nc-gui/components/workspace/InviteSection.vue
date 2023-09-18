@@ -31,7 +31,7 @@ const allowedRoles = computed<WorkspaceUserRoles[]>(() => {
 
 <template>
   <div class="my-2 pt-3 ml-2" data-testid="invite">
-    <div class="text-xl mb-4">Invite</div>
+    <div class="text-xl mb-4">{{ $t('activity.inviteTeam') }}</div>
     <a-form>
       <div class="flex gap-2">
         <a-input
@@ -63,7 +63,7 @@ const allowedRoles = computed<WorkspaceUserRoles[]>(() => {
           <div class="flex flex-row items-center gap-x-2 pr-1">
             <GeneralLoader v-if="isInvitingCollaborators" class="flex" />
             <MdiPlus v-else />
-            {{ isInvitingCollaborators ? 'Adding' : 'Add' }} User/s
+            {{ $t('objects.users') }}
           </div>
         </a-button>
       </div>

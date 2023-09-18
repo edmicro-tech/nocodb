@@ -166,13 +166,13 @@ watch(showShareModal, (val) => {
         <LazyDlgShareAndCollaborateShareBase />
       </div>
       <div class="flex flex-row justify-end mx-3 mt-1 mb-2 pt-4 gap-x-2">
-        <NcButton type="secondary" data-testid="docs-cancel-btn" @click="showShareModal = false"> Close </NcButton>
+        <NcButton type="secondary" data-testid="docs-cancel-btn" @click="showShareModal = false"> {{ $t('general.close') }} </NcButton>
         <NcButton
           data-testid="docs-share-manage-access"
           type="secondary"
           :loading="isOpeningManageAccess"
           @click="openManageAccess"
-          >Manage project access</NcButton
+          >{{ $t('general.manageProjectAccess') }}</NcButton
         >
 
         <!-- <a-button

@@ -107,7 +107,7 @@ const copyUrl = async () => {
     </template>
 
     <template v-else>
-      <div class="text-xl mb-4">Invite</div>
+      <div class="text-xl mb-4">{{ $t('activity.inviteTeam') }}</div>
       <a-form>
         <div class="flex gap-2">
           <a-input
@@ -157,7 +157,7 @@ const copyUrl = async () => {
             <div class="flex flex-row items-center gap-x-2 pr-1">
               <GeneralLoader v-if="isInvitingCollaborators" class="flex" />
               <MdiPlus v-else />
-              {{ isInvitingCollaborators ? 'Adding' : 'Add' }} User/s
+               {{ $t('objects.users') }}
             </div>
           </a-button>
         </div>

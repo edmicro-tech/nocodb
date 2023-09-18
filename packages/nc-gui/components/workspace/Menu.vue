@@ -9,8 +9,7 @@
       >
         <a
           class="w-10 min-w-10 transition-all duration-200 p-1 transform"
-          href="https://github.com/nocodb/nocodb"
-          target="_blank"
+          href="#"
         >
           <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
         </a>

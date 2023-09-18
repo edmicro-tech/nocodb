@@ -34,7 +34,7 @@ const openKeys = ref([/^\/account\/users/.test($route.fullPath) && 'users'])
               <template #icon>
                 <MdiAccountSupervisorOutline />
               </template>
-              <template #title>Users</template>
+              <template #title>{{ $t('objects.users') }}</template>
 
               <a-menu-item
                 v-if="isUIAllowed('superAdminUserManagement') && !isEeUI"

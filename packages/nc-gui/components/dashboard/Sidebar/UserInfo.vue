@@ -80,7 +80,7 @@ onMounted(() => {
           <NcMenuItem data-testid="nc-sidebar-user-logout" @click="logout">
             <GeneralLoader v-if="isLoggingOut" class="!ml-0.5 !mr-0.5 !max-h-4.5 !-mt-0.5" />
             <GeneralIcon v-else icon="signout" class="menu-icon" />
-            Log Out</NcMenuItem
+            {{ $t('general.logOut') }}</NcMenuItem
           >
           <!-- <NcDivider /> -->
           <!-- <a href="https://docs.nocodb.com" target="_blank" class="!underline-transparent">
@@ -131,10 +131,10 @@ onMounted(() => {
               class="menu-icon"
             />
             <template v-if="isAuthTokenCopied"> Copied Auth Token </template>
-            <template v-else> Copy Auth Token </template>
+            <template v-else>  {{ $t('general.copyAuthToken') }} </template>
           </NcMenuItem>
           <nuxt-link v-e="['c:navbar:user:email']" class="!no-underline" to="/account/tokens">
-            <NcMenuItem><GeneralIcon icon="settings" class="menu-icon" /> Account Settings</NcMenuItem>
+            <NcMenuItem><GeneralIcon icon="settings" class="menu-icon" /> {{ $t('general.accountSettings') }} </NcMenuItem>
           </nuxt-link>
         </NcMenu>
       </template>

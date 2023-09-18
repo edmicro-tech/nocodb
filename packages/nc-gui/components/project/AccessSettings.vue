@@ -155,9 +155,9 @@ onMounted(async () => {
       </div>
       <div v-else class="nc-collaborators-list nc-scrollbar-md">
         <div class="nc-collaborators-list-header">
-          <div class="flex w-3/5">Users</div>
-          <div class="flex w-2/5">Date Joined</div>
-          <div class="flex w-1/5">Access</div>
+          <div class="flex w-3/5">{{ $t('objects.users') }}</div>
+          <div class="flex w-2/5">{{ $t('objects.dateJoined') }}</div>
+          <div class="flex w-1/5">{{ $t('objects.access') }}</div>
           <div class="flex w-1/5"></div>
           <div class="flex w-1/5"></div>
         </div>

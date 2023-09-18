@@ -77,11 +77,11 @@ function openTableCreateDialog(baseIndex?: number | undefined) {
     <div v-if="isUIAllowed('tableCreate', false, stringifyRolesObj(allRoles))" class="flex flex-row gap-x-6 pb-3 pt-6">
       <div class="nc-project-view-all-table-btn" data-testid="proj-view-btn__add-new-table" @click="openTableCreateDialog()">
         <GeneralIcon icon="addOutlineBox" />
-        <div class="label">{{ $t('general.new') }} {{ $t('objects.table') }}</div>
+        <div class="label">{{ $t('activity.createTable') }}</div>
       </div>
       <div class="nc-project-view-all-table-btn" data-testid="proj-view-btn__import-data" @click="isImportModalOpen = true">
         <GeneralIcon icon="download" />
-        <div class="label">{{ $t('activity.import') }} {{ $t('general.data') }}</div>
+        <div class="label">{{ $t('labels.importData') }}</div>
       </div>
     </div>
     <div class="flex flex-row w-full text-gray-400 border-b-1 border-gray-50 py-3 px-2.5">

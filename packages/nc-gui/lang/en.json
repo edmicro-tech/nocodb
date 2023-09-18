@@ -128,7 +128,13 @@
     "old": "Old",
     "data": "Data",
     "source": "Source",
-    "destination": "Destination"
+    "destination": "Destination",
+    "enablePublicAccess": "Enable Public Access",
+    "edittingAccess": "Editing access",
+    "manageProjectAccess": "Manage Project Access",
+    "logOut": "Log Out",
+    "copyAuthToken": "Copy Auth Token",
+    "accountSettings": "Account Settings"
   },
   "objects": {
     "workspace": "Workspace",
@@ -160,6 +166,8 @@
     },
     "user": "User",
     "users": "Users",
+    "dateJoined": "Date Joined",
+    "access": "Access",
     "role": "Role",
     "roles": "Roles",
     "developer": "Developer",
@@ -291,6 +299,9 @@
     "searchProjects": "Search Projects",
     "createdBy": "Created By",
     "createdOn": "Created On",
+    "allTable": "All Tables",
+    "collaborator": "Collaborator",
+    "dataSource": "Data soucres",
     "notifyVia": "Notify Via",
     "projName": "Project name",
     "tableName": "Table name",
