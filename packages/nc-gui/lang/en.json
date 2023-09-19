@@ -134,7 +134,8 @@
     "manageProjectAccess": "Manage Project Access",
     "logOut": "Log Out",
     "copyAuthToken": "Copy Auth Token",
-    "accountSettings": "Account Settings"
+    "accountSettings": "Account Settings",
+    "details": "Details"
   },
   "objects": {
     "workspace": "Workspace",

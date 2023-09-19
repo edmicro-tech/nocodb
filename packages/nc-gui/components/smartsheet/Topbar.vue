@@ -33,7 +33,7 @@ const isSharedBase = computed(() => route.value.params.typeOrId === 'base')
 
       <div v-if="!isMobileMode" class="flex-1" />
 
-      <div v-if="!isSharedBase" class="absolute mx-auto -left-1/8 right-0 w-47.5"><SmartsheetTopbarSelectMode /></div>
+      <div v-if="!isSharedBase" class="absolute mx-auto -left-1/8 right-0 w-70"><SmartsheetTopbarSelectMode /></div>
 
       <GeneralApiLoader />
 

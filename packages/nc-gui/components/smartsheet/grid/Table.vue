@@ -473,8 +473,8 @@ const getContainerScrollForElement = (
     relativePos.right + (offset?.right || 0) > 0
       ? container.scrollLeft + relativePos.right + (offset?.right || 0) + extraOffset
       : relativePos.left - (offset?.left || 0) < 0
-      ? container.scrollLeft + relativePos.left - (offset?.left || 0) - extraOffset
-      : container.scrollLeft
+        ? container.scrollLeft + relativePos.left - (offset?.left || 0) - extraOffset
+        : container.scrollLeft
 
   /*
    * If the element is below the container, scroll down (positive)
@@ -484,8 +484,8 @@ const getContainerScrollForElement = (
     relativePos.bottom + (offset?.bottom || 0) > 0
       ? container.scrollTop + relativePos.bottom + (offset?.bottom || 0) + extraOffset
       : relativePos.top - (offset?.top || 0) < 0
-      ? container.scrollTop + relativePos.top - (offset?.top || 0) - extraOffset
-      : container.scrollTop
+        ? container.scrollTop + relativePos.top - (offset?.top || 0) - extraOffset
+        : container.scrollTop
 
   return scroll
 }
@@ -609,7 +609,7 @@ const {
             activeCell.col = 0
             resetSelectedRange()
             nextTick(() => {
-              ;(document.querySelector('td.cell.active') as HTMLInputElement | HTMLTextAreaElement)?.scrollIntoView({
+              ; (document.querySelector('td.cell.active') as HTMLInputElement | HTMLTextAreaElement)?.scrollIntoView({
                 behavior: 'smooth',
               })
             })
@@ -1138,43 +1138,26 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
 <template>
   <div class="flex flex-col" :class="`${headerOnly !== true ? 'h-full w-full' : ''}`">
     <div ref="gridWrapper" class="nc-grid-wrapper min-h-0 flex-1 relative" :class="gridWrapperClass">
-      <a-dropdown
-        v-model:visible="contextMenu"
-        :trigger="isSqlView ? [] : ['contextmenu']"
-        overlay-class-name="nc-dropdown-grid-context-menu"
-      >
+      <a-dropdown v-model:visible="contextMenu" :trigger="isSqlView ? [] : ['contextmenu']"
+        overlay-class-name="nc-dropdown-grid-context-menu">
         <div class="table-overlay" :class="{ 'nc-grid-skelton-loader': showSkeleton }">
-          <table
-            ref="smartTable"
-            class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white"
-            @contextmenu="showContextMenu"
-          >
+          <table ref="smartTable" class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white"
+            @contextmenu="showContextMenu">
             <thead v-show="hideHeader !== true" ref="tableHeadEl">
               <tr v-if="showSkeleton">
-                <td
-                  v-for="(col, colIndex) of dummyDataForLoading"
-                  :key="colIndex"
-                  class="!bg-gray-50 h-full"
-                  :class="{ 'min-w-50': colIndex !== 0, 'min-w-21.25': colIndex === 0 }"
-                >
-                  <a-skeleton
-                    :active="true"
-                    :title="true"
-                    :paragraph="false"
-                    class="ml-2 -mt-2"
-                    :class="{ 'max-w-32': colIndex !== 0, 'max-w-5 !ml-3.5': colIndex === 0 }"
-                  />
+                <td v-for="(col, colIndex) of dummyDataForLoading" :key="colIndex" class="!bg-gray-50 h-full"
+                  :class="{ 'min-w-50': colIndex !== 0, 'min-w-21.25': colIndex === 0 }">
+                  <a-skeleton :active="true" :title="true" :paragraph="false" class="ml-2 -mt-2"
+                    :class="{ 'max-w-32': colIndex !== 0, 'max-w-5 !ml-3.5': colIndex === 0 }" />
                 </td>
               </tr>
               <tr v-else class="nc-grid-header">
-                <th class="w-[85px] min-w-[85px]" data-testid="grid-id-column" @dblclick="() => {}">
+                <th class="w-[85px] min-w-[85px]" data-testid="grid-id-column" @dblclick="() => { }">
                   <div class="w-full h-full flex pl-5 pr-1 items-center" data-testid="nc-check-all">
                     <template v-if="!readOnly">
                       <div class="nc-no-label text-gray-500" :class="{ hidden: vSelectedAllRecords }">#</div>
-                      <div
-                        :class="{ hidden: !vSelectedAllRecords, flex: vSelectedAllRecords }"
-                        class="nc-check-all w-full items-center"
-                      >
+                      <div :class="{ hidden: !vSelectedAllRecords, flex: vSelectedAllRecords }"
+                        class="nc-check-all w-full items-center">
                         <a-checkbox v-model:checked="vSelectedAllRecords" />
 
                         <span class="flex-1" />
@@ -1185,40 +1168,26 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                     </template>
                   </div>
                 </th>
-                <th
-                  v-for="col in fields"
-                  :key="col.title"
-                  v-xc-ver-resize
-                  :data-col="col.id"
-                  :data-title="col.title"
-                  @xcresize="onresize(col.id, $event)"
-                  @xcresizing="onXcResizing(col.title, $event)"
-                  @xcresized="resizingCol = null"
-                >
+                <th v-for="col in fields" :key="col.title" v-xc-ver-resize :data-col="col.id" :data-title="col.title"
+                  @xcresize="onresize(col.id, $event)" @xcresizing="onXcResizing(col.title, $event)"
+                  @xcresized="resizingCol = null">
                   <div class="w-full h-full flex items-center">
                     <LazySmartsheetHeaderVirtualCell v-if="isVirtualCol(col)" :column="col" :hide-menu="readOnly" />
                     <LazySmartsheetHeaderCell v-else :column="col" :hide-menu="readOnly" />
                   </div>
                 </th>
-                <th
-                  v-if="isAddingColumnAllowed"
-                  v-e="['c:column:add']"
-                  class="cursor-pointer !border-0 relative"
-                  :style="{
-                    borderWidth: '0px !important',
-                  }"
-                  @click.stop="addColumnDropdown = true"
-                >
-                  <div class="absolute top-0 left-0 h-10.25 border-b-1 border-r-1 border-gray-200 nc-grid-add-edit-column group">
-                    <a-dropdown
-                      v-model:visible="addColumnDropdown"
-                      :trigger="['click']"
-                      overlay-class-name="nc-dropdown-grid-add-column"
-                      @visible-change="persistMenu = altModifier"
-                    >
+                <th v-if="isAddingColumnAllowed" v-e="['c:column:add']" class="cursor-pointer !border-0 relative" :style="{
+                  borderWidth: '0px !important',
+                }" @click.stop="addColumnDropdown = true">
+                  <div
+                    class="absolute top-0 left-0 h-10.25 border-b-1 border-r-1 border-gray-200 nc-grid-add-edit-column group">
+                    <a-dropdown v-model:visible="addColumnDropdown" :trigger="['click']"
+                      overlay-class-name="nc-dropdown-grid-add-column" @visible-change="persistMenu = altModifier">
                       <div class="h-full w-[60px] flex items-center justify-center">
-                        <GeneralIcon v-if="isEeUI && (altModifier || persistMenu)" icon="magic" class="text-sm text-orange-400" />
-                        <component :is="iconMap.plus" class="text-base nc-column-add text-gray-500 !group-hover:text-black" />
+                        <GeneralIcon v-if="isEeUI && (altModifier || persistMenu)" icon="magic"
+                          class="text-sm text-orange-400" />
+                        <component :is="iconMap.plus"
+                          class="text-base nc-column-add text-gray-500 !group-hover:text-black" />
                       </div>
 
                       <template v-if="isEeUI && persistMenu" #overlay>
@@ -1271,10 +1240,8 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                             <a-menu>
                               <template v-for="col in predictedNextFormulas" :key="`predict-${col.title}-formula`">
                                 <a-menu-item>
-                                  <div
-                                    class="flex flex-row items-center py-3"
-                                    @click="loadColumn(col.title, 'Formula', { formula_raw: col.formula })"
-                                  >
+                                  <div class="flex flex-row items-center py-3"
+                                    @click="loadColumn(col.title, 'Formula', { formula_raw: col.formula })">
                                     <div class="text-xs pl-2">{{ col.title }}</div>
                                   </div>
                                 </a-menu-item>
@@ -1292,16 +1259,10 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                         </a-menu>
                       </template>
                       <template v-else #overlay>
-                        <SmartsheetColumnEditOrAddProvider
-                          v-if="addColumnDropdown"
-                          :preload="preloadColumn"
-                          :column-position="columnOrder"
-                          @submit="closeAddColumnDropdown(true)"
-                          @cancel="closeAddColumnDropdown()"
-                          @click.stop
-                          @keydown.stop
-                          @mounted="preloadColumn = undefined"
-                        />
+                        <SmartsheetColumnEditOrAddProvider v-if="addColumnDropdown" :preload="preloadColumn"
+                          :column-position="columnOrder" @submit="closeAddColumnDropdown(true)"
+                          @cancel="closeAddColumnDropdown()" @click.stop @keydown.stop
+                          @mounted="preloadColumn = undefined" />
                       </template>
                     </a-dropdown>
                   </div>
@@ -1311,92 +1272,57 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
             <tbody v-if="headerOnly !== true" ref="tableBodyEl">
               <template v-if="showSkeleton">
                 <tr v-for="(row, rowIndex) of dummyDataForLoading" :key="rowIndex">
-                  <td
-                    v-for="(col, colIndex) of dummyDataForLoading"
-                    :key="colIndex"
-                    :class="{ 'min-w-50': colIndex !== 0, 'min-w-21.25': colIndex === 0 }"
-                  ></td>
+                  <td v-for="(col, colIndex) of dummyDataForLoading" :key="colIndex"
+                    :class="{ 'min-w-50': colIndex !== 0, 'min-w-21.25': colIndex === 0 }"></td>
                 </tr>
               </template>
               <template v-else>
                 <LazySmartsheetRow v-for="(row, rowIndex) of dataRef" ref="rowRefs" :key="rowIndex" :row="row">
                   <template #default="{ state }">
-                    <tr
-                      class="nc-grid-row"
-                      :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
-                      :data-testid="`grid-row-${rowIndex}`"
-                    >
-                      <td
-                        key="row-index"
-                        class="caption nc-grid-cell pl-5 pr-1"
-                        :data-testid="`cell-Id-${rowIndex}`"
-                        @contextmenu="contextMenuTarget = null"
-                      >
+                    <tr class="nc-grid-row" :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
+                      :data-testid="`grid-row-${rowIndex}`">
+                      <td key="row-index" class="caption nc-grid-cell pl-5 pr-1" :data-testid="`cell-Id-${rowIndex}`"
+                        @contextmenu="contextMenuTarget = null">
                         <div class="items-center flex gap-1 min-w-[60px]">
-                          <div
-                            v-if="!readOnly || !isLocked"
-                            class="nc-row-no text-xs text-gray-500"
-                            :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }"
-                          >
-                            {{ ((paginationDataRef?.page ?? 1) - 1) * (paginationDataRef?.pageSize ?? 25) + rowIndex + 1 }}
+                          <div v-if="!readOnly || !isLocked" class="nc-row-no text-xs text-gray-500"
+                            :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }">
+                            {{ ((paginationDataRef?.page ?? 1) - 1) * (paginationDataRef?.pageSize ?? 25) + rowIndex + 1
+                            }}
                           </div>
-                          <div
-                            v-if="!readOnly"
-                            :class="{ hidden: !row.rowMeta.selected, flex: row.rowMeta.selected }"
-                            class="nc-row-expand-and-checkbox"
-                          >
+                          <div v-if="!readOnly" :class="{ hidden: !row.rowMeta.selected, flex: row.rowMeta.selected }"
+                            class="nc-row-expand-and-checkbox">
                             <a-checkbox v-model:checked="row.rowMeta.selected" />
                           </div>
                           <span class="flex-1" />
 
-                          <div
-                            v-if="
-                              !readOnly ||
-                              hasRole('commenter', true) ||
-                              hasRole('viewer', true) ||
-                              hasRole(WorkspaceUserRoles.COMMENTER, true) ||
-                              hasRole(WorkspaceUserRoles.VIEWER, true)
-                            "
-                            class="nc-expand"
-                            :data-testid="`nc-expand-${rowIndex}`"
-                            :class="{ 'nc-comment': row.rowMeta?.commentCount }"
-                          >
-                            <a-spin
-                              v-if="row.rowMeta.saving"
-                              class="!flex items-center"
-                              :data-testid="`row-save-spinner-${rowIndex}`"
-                            />
+                          <div v-if="!readOnly ||
+                            hasRole('commenter', true) ||
+                            hasRole('viewer', true) ||
+                            hasRole(WorkspaceUserRoles.COMMENTER, true) ||
+                            hasRole(WorkspaceUserRoles.VIEWER, true)
+                            " class="nc-expand" :data-testid="`nc-expand-${rowIndex}`"
+                            :class="{ 'nc-comment': row.rowMeta?.commentCount }">
+                            <a-spin v-if="row.rowMeta.saving" class="!flex items-center"
+                              :data-testid="`row-save-spinner-${rowIndex}`" />
                             <template v-else-if="!isLocked">
-                              <span
-                                v-if="row.rowMeta?.commentCount && expandForm"
+                              <span v-if="row.rowMeta?.commentCount && expandForm"
                                 class="py-1 px-3 rounded-full text-xs cursor-pointer select-none transform hover:(scale-110)"
                                 :style="{ backgroundColor: enumColor.light[row.rowMeta.commentCount % enumColor.light.length] }"
-                                @click="expandAndLooseFocus(row, state)"
-                              >
+                                @click="expandAndLooseFocus(row, state)">
                                 {{ row.rowMeta.commentCount }}
                               </span>
-                              <div
-                                v-else
-                                class="cursor-pointer flex items-center border-1 border-gray-100 active:ring rounded p-1 hover:(bg-gray-50)"
-                              >
-                                <component
-                                  :is="iconMap.expand"
-                                  v-if="expandForm"
-                                  v-e="['c:row-expand']"
+                              <div v-else
+                                class="cursor-pointer flex items-center border-1 border-gray-100 active:ring rounded p-1 hover:(bg-gray-50)">
+                                <component :is="iconMap.expand" v-if="expandForm" v-e="['c:row-expand']"
                                   class="select-none transform hover:(text-black scale-120) nc-row-expand"
-                                  @click="expandAndLooseFocus(row, state)"
-                                />
+                                  @click="expandAndLooseFocus(row, state)" />
                               </div>
                             </template>
                           </div>
                         </div>
                       </td>
-                      <SmartsheetTableDataCell
-                        v-for="(columnObj, colIndex) of fields"
-                        :key="columnObj.id"
-                        ref="cellRefs"
-                        class="cell relative nc-grid-cell"
-                        :class="{
+                      <SmartsheetTableDataCell v-for="(columnObj, colIndex) of fields" :key="columnObj.id" ref="cellRefs"
+                        class="cell relative nc-grid-cell" :class="{
                           'cursor-pointer': hasEditPermission,
                           'active': hasEditPermission && isCellSelected(rowIndex, colIndex),
                           'active-cell':
@@ -1410,46 +1336,26 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                           'align-middle': !rowHeight || rowHeight === 1,
                           'align-top': rowHeight && rowHeight !== 1,
                           'filling': isCellInFillRange(rowIndex, colIndex),
-                        }"
-                        :data-testid="`cell-${columnObj.title}-${rowIndex}`"
-                        :data-key="`data-key-${rowIndex}-${columnObj.id}`"
-                        :data-col="columnObj.id"
-                        :data-title="columnObj.title"
-                        :data-row-index="rowIndex"
-                        :data-col-index="colIndex"
+                        }" :data-testid="`cell-${columnObj.title}-${rowIndex}`"
+                        :data-key="`data-key-${rowIndex}-${columnObj.id}`" :data-col="columnObj.id"
+                        :data-title="columnObj.title" :data-row-index="rowIndex" :data-col-index="colIndex"
                         @mousedown="handleMouseDown($event, rowIndex, colIndex)"
                         @mouseover="handleMouseOver($event, rowIndex, colIndex)"
-                        @click="handleCellClick($event, rowIndex, colIndex)"
-                        @dblclick="makeEditable(row, columnObj)"
-                        @contextmenu="showContextMenu($event, { row: rowIndex, col: colIndex })"
-                      >
+                        @click="handleCellClick($event, rowIndex, colIndex)" @dblclick="makeEditable(row, columnObj)"
+                        @contextmenu="showContextMenu($event, { row: rowIndex, col: colIndex })">
                         <div v-if="!switchingTab" class="w-full h-full">
-                          <LazySmartsheetVirtualCell
-                            v-if="isVirtualCol(columnObj) && columnObj.title"
-                            v-model="row.row[columnObj.title]"
-                            :column="columnObj"
-                            :active="activeCell.col === colIndex && activeCell.row === rowIndex"
-                            :row="row"
-                            :read-only="readOnly"
-                            @navigate="onNavigate"
-                            @save="updateOrSaveRow?.(row, '', state)"
-                          />
+                          <LazySmartsheetVirtualCell v-if="isVirtualCol(columnObj) && columnObj.title"
+                            v-model="row.row[columnObj.title]" :column="columnObj"
+                            :active="activeCell.col === colIndex && activeCell.row === rowIndex" :row="row"
+                            :read-only="readOnly" @navigate="onNavigate" @save="updateOrSaveRow?.(row, '', state)" />
 
-                          <LazySmartsheetCell
-                            v-else-if="columnObj.title"
-                            v-model="row.row[columnObj.title]"
-                            :column="columnObj"
-                            :edit-enabled="
-                              !!hasEditPermission && !!editEnabled && activeCell.col === colIndex && activeCell.row === rowIndex
-                            "
-                            :row-index="rowIndex"
-                            :active="activeCell.col === colIndex && activeCell.row === rowIndex"
-                            :read-only="readOnly"
+                          <LazySmartsheetCell v-else-if="columnObj.title" v-model="row.row[columnObj.title]"
+                            :column="columnObj" :edit-enabled="!!hasEditPermission && !!editEnabled && activeCell.col === colIndex && activeCell.row === rowIndex
+                              " :row-index="rowIndex"
+                            :active="activeCell.col === colIndex && activeCell.row === rowIndex" :read-only="readOnly"
                             @update:edit-enabled="editEnabled = $event"
-                            @save="updateOrSaveRow?.(row, columnObj.title, state)"
-                            @navigate="onNavigate"
-                            @cancel="editEnabled = false"
-                          />
+                            @save="updateOrSaveRow?.(row, columnObj.title, state)" @navigate="onNavigate"
+                            @cancel="editEnabled = false" />
                         </div>
                       </SmartsheetTableDataCell>
                     </tr>
@@ -1457,19 +1363,14 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                 </LazySmartsheetRow>
               </template>
 
-              <tr
-                v-if="isAddingEmptyRowAllowed && !isGroupBy"
-                v-e="['c:row:add:grid-bottom']"
-                class="text-left nc-grid-add-new-cell cursor-pointer group relative z-3"
-                :class="{
+              <tr v-if="isAddingEmptyRowAllowed && !isGroupBy" v-e="['c:row:add:grid-bottom']"
+                class="text-left nc-grid-add-new-cell cursor-pointer group relative z-3" :class="{
                   '!border-r-2 !border-r-gray-100': visibleColLength === 1,
-                }"
-                @mouseup.stop
-                @click="addEmptyRow()"
-              >
+                }" @mouseup.stop @click="addEmptyRow()">
                 <td class="text-left pointer sticky left-0 !border-r-0">
                   <div class="px-2 w-full flex items-center text-gray-500">
-                    <component :is="iconMap.plus" class="text-pint-500 text-base ml-2 text-gray-600 group-hover:text-black" />
+                    <component :is="iconMap.plus"
+                      class="text-pint-500 text-base ml-2 text-gray-600 group-hover:text-black" />
                   </div>
                 </td>
                 <td class="!border-gray-100" :colspan="visibleColLength"></td>
@@ -1478,25 +1379,17 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
           </table>
 
           <!-- Fill Handle -->
-          <div
-            v-show="showFillHandle"
-            ref="fillHandle"
-            class="nc-fill-handle"
-            :class="
-              (!selectedRange.isEmpty() && selectedRange.end.col !== 0) || (selectedRange.isEmpty() && activeCell.col !== 0)
-                ? 'z-3'
-                : 'z-4'
-            "
-            :style="{ top: `${fillHandleTop}px`, left: `${fillHandleLeft}px`, cursor: 'crosshair' }"
-          />
+          <div v-show="showFillHandle" ref="fillHandle" class="nc-fill-handle" :class="(!selectedRange.isEmpty() && selectedRange.end.col !== 0) || (selectedRange.isEmpty() && activeCell.col !== 0)
+              ? 'z-3'
+              : 'z-4'
+            " :style="{ top: `${fillHandleTop}px`, left: `${fillHandleLeft}px`, cursor: 'crosshair' }" />
         </div>
 
         <template v-if="!isLocked && hasEditPermission" #overlay>
           <a-menu class="shadow !rounded !py-0" @click="contextMenu = false">
             <a-menu-item
               v-if="isEeUI && !contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected)"
-              @click="emits('bulkUpdateDlg')"
-            >
+              @click="emits('bulkUpdateDlg')">
               <div v-e="['a:row:update-bulk']" class="nc-project-menu-item">
                 <component :is="iconMap.edit" />
                 <!-- TODO i18n -->
@@ -1505,9 +1398,8 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
             </a-menu-item>
 
             <a-menu-item
-              v-if="!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected)"
-              @click="deleteSelectedRows"
-            >
+              v-if="!contextMenuClosing && !contextMenuTarget && data.filter((r) => r.rowMeta.selected).length === 1 && hasRole('editor', true)"
+              @click="deleteSelectedRows">
               <div v-e="['a:row:delete-bulk']" class="nc-project-menu-item">
                 <component :is="iconMap.delete" />
                 <!-- Delete Selected Rows -->
@@ -1515,7 +1407,18 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
               </div>
             </a-menu-item>
 
-            <a-menu-item v-if="contextMenuTarget && selectedRange.isSingleCell()" @click="addEmptyRow(contextMenuTarget.row + 1)">
+            <a-menu-item
+              v-if="!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected) && !hasRole('editor', true)"
+              @click="deleteSelectedRows">
+              <div v-e="['a:row:delete-bulk']" class="nc-project-menu-item">
+                <component :is="iconMap.delete" />
+                <!-- Delete Selected Rows -->
+                {{ $t('activity.deleteSelectedRow') }}
+              </div>
+            </a-menu-item>
+
+            <a-menu-item v-if="contextMenuTarget && selectedRange.isSingleCell()"
+              @click="addEmptyRow(contextMenuTarget.row + 1)">
               <div v-e="['a:row:insert']" class="nc-project-menu-item">
                 <GeneralIcon icon="plus" />
                 <!-- Insert New Row -->
@@ -1523,7 +1426,8 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
               </div>
             </a-menu-item>
 
-            <a-menu-item v-if="contextMenuTarget" data-testid="context-menu-item-copy" @click="copyValue(contextMenuTarget)">
+            <a-menu-item v-if="contextMenuTarget" data-testid="context-menu-item-copy"
+              @click="copyValue(contextMenuTarget)">
               <div v-e="['a:row:copy']" class="nc-project-menu-item">
                 <GeneralIcon icon="copy" />
                 <!-- Copy -->
@@ -1532,14 +1436,10 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
             </a-menu-item>
 
             <!--            Clear cell -->
-            <a-menu-item
-              v-if="
-                contextMenuTarget &&
-                selectedRange.isSingleCell() &&
-                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
-              "
-              @click="clearCell(contextMenuTarget)"
-            >
+            <a-menu-item v-if="contextMenuTarget &&
+              selectedRange.isSingleCell() &&
+              (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              " @click="clearCell(contextMenuTarget)">
               <div v-e="['a:row:clear']" class="nc-project-menu-item">
                 <GeneralIcon icon="close" />
                 {{ $t('general.clear') }}
@@ -1554,10 +1454,8 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
               </div>
             </a-menu-item>
 
-            <a-menu-item
-              v-if="contextMenuTarget && (selectedRange.isSingleCell() || selectedRange.isSingleRow())"
-              @click="confirmDeleteRow(contextMenuTarget.row)"
-            >
+            <a-menu-item v-if="contextMenuTarget && (selectedRange.isSingleCell() || selectedRange.isSingleRow())"
+              @click="confirmDeleteRow(contextMenuTarget.row)">
               <div v-e="['a:row:delete']" class="nc-project-menu-item text-red-600">
                 <GeneralIcon icon="delete" />
                 <!-- Delete Row -->
@@ -1580,22 +1478,13 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
     <div v-if="showSkeleton && headerOnly !== true" class="flex flex-row justify-center item-center min-h-10">
       <a-skeleton :active="true" :title="true" :paragraph="false" class="-mt-1 max-w-60" />
     </div>
-    <LazySmartsheetPagination
-      v-else-if="headerOnly !== true"
-      v-model:pagination-data="paginationDataRef"
-      align-count-on-right
-      :change-page="changePage"
-      :hide-sidebars="paginationStyleRef?.hideSidebars === true"
-      :fixed-size="paginationStyleRef?.fixedSize"
-      :extra-style="paginationStyleRef?.extraStyle"
-    >
+    <LazySmartsheetPagination v-else-if="headerOnly !== true" v-model:pagination-data="paginationDataRef"
+      align-count-on-right :change-page="changePage" :hide-sidebars="paginationStyleRef?.hideSidebars === true"
+      :fixed-size="paginationStyleRef?.fixedSize" :extra-style="paginationStyleRef?.extraStyle">
       <template #add-record>
         <div v-if="isAddingEmptyRowAllowed" class="flex ml-1">
-          <a-dropdown-button
-            class="nc-grid-add-new-row"
-            placement="top"
-            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()"
-          >
+          <a-dropdown-button class="nc-grid-add-new-row" placement="top"
+            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()">
             <div class="flex items-center px-2 text-gray-600 hover:text-black">
               <span>
                 <template v-if="isAddNewRecordGridMode"> {{ $t('activity.newRecord') }} </template>
@@ -1605,20 +1494,14 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
 
             <template #overlay>
               <div class="relative overflow-visible min-h-17 w-10">
-                <div
-                  class="absolute -top-19 flex flex-col h-34.5 w-70 bg-white rounded-lg justify-start overflow-hidden"
-                  style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)"
-                  :class="{
+                <div class="absolute -top-19 flex flex-col h-34.5 w-70 bg-white rounded-lg justify-start overflow-hidden"
+                  style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)" :class="{
                     '-left-44': !isAddNewRecordGridMode,
                     '-left-32': isAddNewRecordGridMode,
-                  }"
-                >
-                  <div
-                    v-e="['c:row:add:grid-top']"
-                    :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
+                  }">
+                  <div v-e="['c:row:add:grid-top']" :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-grid"
-                    @click="onNewRecordToGridClick"
-                  >
+                    @click="onNewRecordToGridClick">
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-3">
                         <component :is="viewIcons[ViewTypes.GRID]?.icon" class="nc-view-icon text-inherit" />
@@ -1630,12 +1513,9 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
                     </div>
                     <div class="flex flex-row text-xs text-gray-400 ml-7.25">{{ $t('labels.addRowGrid') }}</div>
                   </div>
-                  <div
-                    v-e="['c:row:add:expanded-form']"
-                    :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
+                  <div v-e="['c:row:add:expanded-form']" :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-form"
-                    @click="onNewRecordToFormClick"
-                  >
+                    @click="onNewRecordToFormClick">
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-2.5">
                         <GeneralIcon class="h-4.5 w-4.5" icon="article" />
@@ -1662,11 +1542,11 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
 
 <style lang="scss">
 .nc-pagination-wrapper .ant-dropdown-button {
-  > .ant-btn {
-    @apply !p-0 !rounded-l-lg hover:border-gray-400;
+  >.ant-btn {
+    @apply !p-0 !rounded-l-lg hover: border-gray-400;
   }
 
-  > .ant-dropdown-trigger {
+  >.ant-dropdown-trigger {
     @apply !rounded-r-lg;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -1683,6 +1563,7 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
   .nc-grid-add-edit-column {
     @apply bg-gray-50;
   }
+
   .nc-grid-add-new-cell:hover td {
     @apply text-black bg-gray-50;
   }
@@ -1707,7 +1588,7 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
     @apply bg-white border-b;
   }
 
-  td:not(:first-child) > div {
+  td:not(:first-child)>div {
     overflow: hidden;
     @apply flex px-1 h-auto;
   }
@@ -1797,6 +1678,7 @@ const expandAndLooseFocus = (row: Row, col: Record<string, any>) => {
     thead th:nth-child(2) {
       @apply border-r-1 !border-r-gray-50;
     }
+
     tbody td:nth-child(2) {
       @apply border-r-1 !border-r-gray-50;
     }

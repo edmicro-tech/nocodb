@@ -84,7 +84,10 @@
     "manageProjectAccess": "Xác nhận quyền truy cập dữ liệu",
     "logOut": "Đăng xuất",
     "copyAuthToken": "Sao chép Token", 
-    "accountSettings": "Cài đặt tài khoản"
+    "accountSettings": "Cài đặt tài khoản",
+    "data": "Dữ liệu",
+    "details": "Thông tin chi tiết",
+    "clear": "Làm trắng"
   },
   "objects": {
     "project": "Dự định",
@@ -111,6 +114,7 @@
       "calendar": "Lịch",
       "map": "Map"
     },
+    "sidebar": "Thanh công cụ",
     "user": "Người dùng",
     "users": "Người dùng",
     "dateJoined": "Ngày tham gia",
@@ -125,6 +129,13 @@
       "viewer": "Người xem",
       "orgLevelCreator": "Organization Level Creator",
       "orgLevelViewer": "Organization Level Viewer"
+    },
+    "rowHeight": "Khoảng cách dòng",
+    "heightClass": {
+      "short": "Ngắn",
+      "medium": "Trung bình",
+      "tall": "Dài",
+      "extra": "Rất dài"
     },
     "sqlVIew": "SQL View"
   },
@@ -350,7 +361,11 @@
     "welcomeToNc": "Chào mừng đến với ứng dụng",
     "inviteOnlySignup": "Chỉ cho phép đăng ký tài khoản khi được mời",
     "nextRow": "Tiếp theo",
-    "prevRow": "Trở về"
+    "prevRow": "Trở về",
+    "signUpWithProvider": "Đăng nhập với {provider}",
+    "signInWithProvider": "Đăng ký với {provider}",
+    "addRowGrid": "Thêm dữ liệu trực tiếp trên bảng",
+    "addRowForm": "Thêm dữ liệu bằng biểu mẫu"
   },
   "activity": {
     "createProject": "Tạo cơ sở dữ liệu",
@@ -387,6 +402,7 @@
     "filter": "Lọc",
     "addFilter": "Thêm bộ lọc",
     "share": "Chia sẻ",
+    "addSubGroup": "Thêm nhóm phụ",
     "shareBase": {
       "disable": "Vô hiệu hóa chia sẻ",
       "enable": "Bất cứ ai có liên kết",
