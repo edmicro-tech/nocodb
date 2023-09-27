@@ -50,7 +50,7 @@ const logout = async () => {
             >
               <div class="flex flex-row gap-x-2 items-center h-8.5">
                 <GeneralIcon icon="arrowLeft" class="-mt-0.1" />
-                <div class="flex text-xs text-gray-800">Back to Workspace</div>
+                <div class="flex text-xs text-gray-800">{{ $t('labels.backWorkspace') }}</div>
               </div>
             </div>
 

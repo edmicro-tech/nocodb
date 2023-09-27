@@ -35,7 +35,7 @@ onMounted(() => {
   if (sharedView.value?.title) {
     document.title = `${sharedView.value.title}`
   } else {
-    document.title = 'NocoDB'
+    document.title = 'Hệ thống cơ sở dữ liệu'
   }
 })
 </script>

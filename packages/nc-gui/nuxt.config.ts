@@ -44,7 +44,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/x-icon',
-          href: './favicon.ico',
+          href: './mic_vietnam_logo.png',
         },
 
         ...(process.env.NC_CDN_URL

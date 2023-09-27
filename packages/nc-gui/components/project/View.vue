@@ -49,7 +49,7 @@ watch(activeKey, () => {
 watch(
   () => openedProject.value?.title,
   () => {
-    useTitle(`${openedProject.value?.title ?? activeWorkspace.value?.title ?? 'NocoDB'}`)
+    useTitle(`${openedProject.value?.title ?? activeWorkspace.value?.title ?? 'Hệ thống cơ sở dữ liệu'}`)
   },
 )
 </script>

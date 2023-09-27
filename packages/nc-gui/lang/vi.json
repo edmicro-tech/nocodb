@@ -252,6 +252,11 @@
     "defaultView": "View mặc định"
   },
   "labels": {
+    "profile": "Thông tin tài khoản",
+    "accountDetail": "Thông tin tài khoản",
+    "controlAppearance": "Thay đổi thông tin của bạn",
+    "name": "Tên",
+    "backWorkspace": "Trở lại",
     "createdBy": "Tạo bởi",
     "notifyVia": "Thông báo qua",
     "projName": "Tên cơ sở dữ liệu",

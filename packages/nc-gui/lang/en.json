@@ -302,6 +302,7 @@
   },
   "labels": {
     "searchProjects": "Search Projects",
+    "backWorkspace": "Back to workspace",
     "createdBy": "Created By",
     "createdOn": "Created On",
     "allTable": "All Tables",
@@ -310,6 +311,9 @@
     "notifyVia": "Notify Via",
     "projName": "Project name",
     "profile": "Profile",
+    "accountDetail": "Account details",
+    "controlAppearance": "Control your appearance.",
+    "name": "Name",
     "tableName": "Table name",
     "dashboardName": "Dashboard name",
     "viewName": "View name",
