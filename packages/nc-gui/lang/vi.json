@@ -83,13 +83,16 @@
     "edittingAccess": "Chỉnh sửa truy cập",
     "manageProjectAccess": "Xác nhận quyền truy cập dữ liệu",
     "logOut": "Đăng xuất",
-    "copyAuthToken": "Sao chép Token", 
+    "copyAuthToken": "Sao chép Token",
     "accountSettings": "Cài đặt tài khoản",
     "data": "Dữ liệu",
-    "details": "Thông tin chi tiết",
+    "details": "Thông tin",
     "clear": "Làm trắng",
     "type": "(Kiểu dữ liệu)",
-    "name": "(Tên)"
+    "name": "(Tên)",
+    "enablePublic": "Cho phép chia sẻ công khai",
+    "restrictAccess": "Đặt mật khẩu truy cập",
+    "allowDownload": "Cho phép tải xuống"
   },
   "objects": {
     "project": "Dự định",
@@ -245,7 +248,8 @@
     "keyboardShortcut": "Keyboard Shortcuts",
     "generateRandomName": "Tạo tên ngẫu",
     "findRowByScanningCode": "Find row by scanning a QR or Barcode",
-    "addNewToken": "Tạo mới token"
+    "addNewToken": "Tạo mới token",
+    "defaultView": "View mặc định"
   },
   "labels": {
     "createdBy": "Tạo bởi",

@@ -9,16 +9,16 @@ html {
 }
 
 body , *  {
-  font-family: Manrope, 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  font-family: 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, Vazirmatn,
     sans-serif;
 }
 
 /*
-Apply Manrope for rtl
+Apply Vazirmatn for rtl
 */
 
 .rtl .v-application *:not(.material-icons) {
-  font-family: Manrope !important;
+  font-family: Vazirmatn !important;
 }
 
 .rtl .v-application .ml-n1 {

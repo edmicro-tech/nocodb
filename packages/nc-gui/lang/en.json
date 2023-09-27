@@ -135,7 +135,10 @@
     "logOut": "Log Out",
     "copyAuthToken": "Copy Auth Token",
     "accountSettings": "Account Settings",
-    "details": "Details"
+    "details": "Details",
+    "enablePublic": "Enable public viewing",
+    "restrictAccess": "Restrict access with password",
+    "allowDownload": "Allow Download"
   },
   "objects": {
     "workspace": "Workspace",

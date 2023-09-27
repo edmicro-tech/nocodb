@@ -70,6 +70,7 @@ const rolePermissions = {
       csvImport: true,
       projectRename: true,
       projectDuplicate: true,
+      multipleDelete: true,
     },
   },
   [ProjectRoles.EDITOR]: {

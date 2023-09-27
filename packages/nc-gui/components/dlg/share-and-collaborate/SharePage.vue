@@ -268,15 +268,9 @@ const isPublicShareDisabled = computed(() => {
   <div class="flex flex-col py-2 px-3 mb-1">
     <div class="flex flex-col w-full mt-2.5 px-3 py-2.5 border-gray-200 border-1 rounded-md gap-y-2">
       <div class="flex flex-row w-full justify-between py-0.5">
-        <div class="flex" :style="{ fontWeight: 500 }">Enable public viewing</div>
-        <a-switch
-          data-testid="share-view-toggle"
-          :checked="isPublicShared"
-          :loading="isUpdating.public"
-          class="share-view-toggle !mt-0.25"
-          :disabled="isPublicShareDisabled"
-          @click="toggleShare"
-        />
+        <div class="flex" :style="{ fontWeight: 500 }">{{ $t("general.enablePublic") }}</div>
+        <a-switch data-testid="share-view-toggle" :checked="isPublicShared" :loading="isUpdating.public"
+          class="share-view-toggle !mt-0.25" :disabled="isPublicShareDisabled" @click="toggleShare" />
       </div>
       <template v-if="isPublicShared">
         <div class="mt-0.5 border-t-1 border-gray-100 pt-3">
@@ -284,46 +278,28 @@ const isPublicShareDisabled = computed(() => {
         </div>
         <div class="flex flex-col justify-between mt-1 py-2 px-3 bg-gray-50 rounded-md">
           <div class="flex flex-row justify-between">
-            <div class="flex text-black">Restrict access with password</div>
-            <a-switch
-              data-testid="share-password-toggle"
-              :checked="passwordProtected"
-              :loading="isUpdating.password"
-              class="share-password-toggle !mt-0.25"
-              @click="togglePasswordProtected"
-            />
+            <div class="flex text-black">{{ $t("general.restrictAccess") }}</div>
+            <a-switch data-testid="share-password-toggle" :checked="passwordProtected" :loading="isUpdating.password"
+              class="share-password-toggle !mt-0.25" @click="togglePasswordProtected" />
           </div>
           <Transition name="layout" mode="out-in">
             <div v-if="passwordProtected" class="flex gap-2 mt-2 w-2/3">
-              <a-input-password
-                v-model:value="password"
-                data-testid="nc-modal-share-view__password"
-                class="!rounded-lg !py-1 !bg-white"
-                size="small"
-                type="password"
-                :placeholder="$t('placeholder.password.enter')"
-              />
+              <a-input-password v-model:value="password" data-testid="nc-modal-share-view__password"
+                class="!rounded-lg !py-1 !bg-white" size="small" type="password"
+                :placeholder="$t('placeholder.password.enter')" />
             </div>
           </Transition>
         </div>
         <div class="flex flex-col justify-between gap-y-3 mt-1 py-2 px-3 bg-gray-50 rounded-md">
-          <div
-            v-if="
-              activeView &&
-              (activeView.type === ViewTypes.GRID ||
-                activeView.type === ViewTypes.KANBAN ||
-                activeView.type === ViewTypes.GALLERY ||
-                activeView.type === ViewTypes.MAP)
-            "
-            class="flex flex-row justify-between"
-          >
-            <div class="flex text-black">Allow Download</div>
-            <a-switch
-              v-model:checked="allowCSVDownload"
-              data-testid="share-download-toggle"
-              :loading="isUpdating.download"
-              class="public-password-toggle !mt-0.25"
-            />
+          <div v-if="activeView &&
+            (activeView.type === ViewTypes.GRID ||
+              activeView.type === ViewTypes.KANBAN ||
+              activeView.type === ViewTypes.GALLERY ||
+              activeView.type === ViewTypes.MAP)
+            " class="flex flex-row justify-between">
+            <div class="flex text-black">{{ $t("general.allowDownload") }}</div>
+            <a-switch v-model:checked="allowCSVDownload" data-testid="share-download-toggle"
+              :loading="isUpdating.download" class="public-password-toggle !mt-0.25" />
           </div>
 
           <div v-if="activeView?.type === ViewTypes.FORM" class="flex flex-row justify-between">
@@ -340,30 +316,20 @@ const isPublicShareDisabled = computed(() => {
               <!-- todo i18n -->
             </a-switch>
           </div>
-          <div v-if="activeView?.type === ViewTypes.FORM" class="flex flex-col justify-between gap-y-1 bg-gray-50 rounded-md">
+          <div v-if="activeView?.type === ViewTypes.FORM"
+            class="flex flex-col justify-between gap-y-1 bg-gray-50 rounded-md">
             <!-- todo: i18n -->
             <div class="flex flex-row justify-between">
               <div class="text-black">Use Theme</div>
-              <a-switch
-                data-testid="share-theme-toggle"
-                :checked="viewTheme"
-                :loading="isUpdating.password"
-                class="share-theme-toggle !mt-0.25"
-                @click="viewTheme = !viewTheme"
-              />
+              <a-switch data-testid="share-theme-toggle" :checked="viewTheme" :loading="isUpdating.password"
+                class="share-theme-toggle !mt-0.25" @click="viewTheme = !viewTheme" />
             </div>
 
             <Transition name="layout" mode="out-in">
               <div v-if="viewTheme" class="flex -ml-1">
-                <LazyGeneralColorPicker
-                  data-testid="nc-modal-share-view__theme-picker"
-                  class="!p-0 !bg-inherit"
-                  :model-value="activeView?.meta?.theme?.primaryColor"
-                  :colors="projectThemeColors"
-                  :row-size="9"
-                  :advanced="false"
-                  @input="onChangeTheme"
-                />
+                <LazyGeneralColorPicker data-testid="nc-modal-share-view__theme-picker" class="!p-0 !bg-inherit"
+                  :model-value="activeView?.meta?.theme?.primaryColor" :colors="projectThemeColors" :row-size="9"
+                  :advanced="false" @input="onChangeTheme" />
               </div>
             </Transition>
           </div>
@@ -385,6 +351,7 @@ const isPublicShareDisabled = computed(() => {
     min-width: 1rem !important;
     line-height: 0.8rem !important;
   }
+
   .ant-switch-inner {
     height: 1rem !important;
     min-width: 1rem !important;

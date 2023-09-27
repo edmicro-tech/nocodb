@@ -1150,21 +1150,13 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
 <template>
   <div class="flex flex-col" :class="`${headerOnly !== true ? 'h-full w-full' : ''}`">
     <div ref="gridWrapper" class="nc-grid-wrapper min-h-0 flex-1 relative" :class="gridWrapperClass">
-      <NcDropdown
-        v-model:visible="contextMenu"
-        :trigger="isSqlView ? [] : ['contextmenu']"
-        overlay-class-name="nc-dropdown-grid-context-menu"
-      >
+      <NcDropdown v-model:visible="contextMenu" :trigger="isSqlView ? [] : ['contextmenu']"
+        overlay-class-name="nc-dropdown-grid-context-menu">
         <div class="table-overlay" :class="{ 'nc-grid-skelton-loader': showSkeleton }">
-          <table
-            ref="smartTable"
-            class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white"
-            :class="{
-              mobile: isMobileMode,
-              desktop: !isMobileMode,
-            }"
-            @contextmenu="showContextMenu"
-          >
+          <table ref="smartTable" class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white" :class="{
+            mobile: isMobileMode,
+            desktop: !isMobileMode,
+          }" @contextmenu="showContextMenu">
             <thead v-show="hideHeader !== true" ref="tableHeadEl">
               <tr v-if="showSkeleton">
                 <td v-for="(col, colIndex) of dummyDataForLoading" :key="colIndex" class="!bg-gray-50 h-full"
@@ -1194,30 +1186,19 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                   @xcresize="onresize(col.id, $event)" @xcresizing="onXcResizing(col.title, $event)"
                   @xcresized="resizingCol = null">
                   <div class="w-full h-full flex items-center">
-                    <LazySmartsheetHeaderVirtualCell
-                      v-if="isVirtualCol(col)"
-                      :column="col"
-                      :hide-menu="readOnly || isMobileMode"
-                    />
+                    <LazySmartsheetHeaderVirtualCell v-if="isVirtualCol(col)" :column="col"
+                      :hide-menu="readOnly || isMobileMode" />
                     <LazySmartsheetHeaderCell v-else :column="col" :hide-menu="readOnly || isMobileMode" />
                   </div>
                 </th>
-                <th
-                  v-if="isAddingColumnAllowed"
-                  v-e="['c:column:add']"
-                  class="cursor-pointer !border-0 relative !xs:hidden"
-                  :style="{
+                <th v-if="isAddingColumnAllowed" v-e="['c:column:add']"
+                  class="cursor-pointer !border-0 relative !xs:hidden" :style="{
                     borderWidth: '0px !important',
-                  }"
-                  @click.stop="addColumnDropdown = true"
-                >
-                  <div class="absolute top-0 left-0 h-10.25 border-b-1 border-r-1 border-gray-200 nc-grid-add-edit-column group">
-                    <a-dropdown
-                      v-model:visible="addColumnDropdown"
-                      :trigger="['click']"
-                      overlay-class-name="nc-dropdown-grid-add-column"
-                      @visible-change="persistMenu = altModifier"
-                    >
+                  }" @click.stop="addColumnDropdown = true">
+                  <div
+                    class="absolute top-0 left-0 h-10.25 border-b-1 border-r-1 border-gray-200 nc-grid-add-edit-column group">
+                    <a-dropdown v-model:visible="addColumnDropdown" :trigger="['click']"
+                      overlay-class-name="nc-dropdown-grid-add-column" @visible-change="persistMenu = altModifier">
                       <div class="h-full w-[60px] flex items-center justify-center">
                         <GeneralIcon v-if="isEeUI && (altModifier || persistMenu)" icon="magic"
                           class="text-sm text-orange-400" />
@@ -1275,10 +1256,8 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                             <NcMenu>
                               <template v-for="col in predictedNextFormulas" :key="`predict-${col.title}-formula`">
                                 <NcMenuItem>
-                                  <div
-                                    class="flex flex-row items-center py-3"
-                                    @click="loadColumn(col.title, 'Formula', { formula_raw: col.formula })"
-                                  >
+                                  <div class="flex flex-row items-center py-3"
+                                    @click="loadColumn(col.title, 'Formula', { formula_raw: col.formula })">
                                     <div class="text-xs pl-2">{{ col.title }}</div>
                                   </div>
                                 </NcMenuItem>
@@ -1316,17 +1295,10 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
               <template v-else>
                 <LazySmartsheetRow v-for="(row, rowIndex) of dataRef" ref="rowRefs" :key="rowIndex" :row="row">
                   <template #default="{ state }">
-                    <tr
-                      class="nc-grid-row !xs:h-14"
-                      :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
-                      :data-testid="`grid-row-${rowIndex}`"
-                    >
-                      <td
-                        key="row-index"
-                        class="caption nc-grid-cell pl-5 pr-1"
-                        :data-testid="`cell-Id-${rowIndex}`"
-                        @contextmenu="contextMenuTarget = null"
-                      >
+                    <tr class="nc-grid-row !xs:h-14" :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
+                      :data-testid="`grid-row-${rowIndex}`">
+                      <td key="row-index" class="caption nc-grid-cell pl-5 pr-1" :data-testid="`cell-Id-${rowIndex}`"
+                        @contextmenu="contextMenuTarget = null">
                         <div class="items-center flex gap-1 min-w-[60px]">
                           <div v-if="!readOnly || !isLocked" class="nc-row-no text-xs text-gray-500"
                             :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }">
@@ -1339,17 +1311,10 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                           </div>
                           <span class="flex-1" />
 
-                          <div
-                            v-if="isUIAllowed('expandedForm')"
-                            class="nc-expand"
-                            :data-testid="`nc-expand-${rowIndex}`"
-                            :class="{ 'nc-comment': row.rowMeta?.commentCount }"
-                          >
-                            <a-spin
-                              v-if="row.rowMeta.saving"
-                              class="!flex items-center"
-                              :data-testid="`row-save-spinner-${rowIndex}`"
-                            />
+                          <div v-if="isUIAllowed('expandedForm')" class="nc-expand" :data-testid="`nc-expand-${rowIndex}`"
+                            :class="{ 'nc-comment': row.rowMeta?.commentCount }">
+                            <a-spin v-if="row.rowMeta.saving" class="!flex items-center"
+                              :data-testid="`row-save-spinner-${rowIndex}`" />
                             <template v-else-if="!isLocked">
                               <span v-if="row.rowMeta?.commentCount && expandForm"
                                 class="py-1 px-3 rounded-full text-xs cursor-pointer select-none transform hover:(scale-110)"
@@ -1409,11 +1374,8 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                 </LazySmartsheetRow>
               </template>
 
-              <tr
-                v-if="isAddingEmptyRowAllowed && !isGroupBy"
-                v-e="['c:row:add:grid-bottom']"
-                class="text-left nc-grid-add-new-cell cursor-pointer group relative z-3 xs:hidden"
-                :class="{
+              <tr v-if="isAddingEmptyRowAllowed && !isGroupBy" v-e="['c:row:add:grid-bottom']"
+                class="text-left nc-grid-add-new-cell cursor-pointer group relative z-3 xs:hidden" :class="{
                   '!border-r-2 !border-r-gray-100': visibleColLength === 1,
                 }" @mouseup.stop @click="addEmptyRow()">
                 <td class="text-left pointer sticky left-0 !border-r-0">
@@ -1429,30 +1391,33 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
 
           <!-- Fill Handle -->
           <div v-show="showFillHandle" ref="fillHandle" class="nc-fill-handle" :class="(!selectedRange.isEmpty() && selectedRange.end.col !== 0) || (selectedRange.isEmpty() && activeCell.col !== 0)
-              ? 'z-3'
-              : 'z-4'
+            ? 'z-3'
+            : 'z-4'
             " :style="{ top: `${fillHandleTop}px`, left: `${fillHandleLeft}px`, cursor: 'crosshair' }" />
         </div>
 
         <template v-if="!isLocked && hasEditPermission" #overlay>
           <NcMenu class="!rounded !py-0" @click="contextMenu = false">
-            <NcMenuItem
-              v-if="isEeUI && !contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected)"
-              v-e="['a:row:update-bulk']"
-              @click="emits('bulkUpdateDlg')"
-            >
+            <NcMenuItem v-if="isEeUI && !contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected)"
+              v-e="['a:row:update-bulk']" @click="emits('bulkUpdateDlg')">
               <component :is="iconMap.edit" />
               <!-- TODO i18n -->
               Update Selected Rows
             </NcMenuItem>
 
             <NcMenuItem
-              v-if="!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected)"
-              v-e="['a:row:delete-bulk']"
-              class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
-              data-testid="nc-delete-row"
-              @click="deleteSelectedRows"
-            >
+              v-if="!contextMenuClosing && !contextMenuTarget && data.filter((r) => r.rowMeta.selected).length === 1"
+              v-e="['a:row:delete-bulk']" class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
+              data-testid="nc-delete-row" @click="deleteSelectedRows">
+              <component :is="iconMap.delete" />
+              <!-- Delete Selected Rows -->
+              {{ $t('activity.deleteSelectedRow') }}
+            </NcMenuItem>
+
+            <NcMenuItem
+              v-if="!contextMenuClosing && !contextMenuTarget && data.filter((r) => r.rowMeta.selected).length > 1 && isUIAllowed('multipleDelete')"
+              v-e="['a:row:delete-bulk']" class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
+              data-testid="nc-delete-row" @click="deleteSelectedRows">
               <component :is="iconMap.delete" />
               <!-- Delete Selected Rows -->
               {{ $t('activity.deleteSelectedRow') }}
@@ -1469,56 +1434,39 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
             <!-- {{ $t('activity.insertRow') }} -->
             <!-- </NcMenuItem> -->
 
-            <NcMenuItem
-              v-if="contextMenuTarget"
-              v-e="['a:row:copy']"
-              class="nc-project-menu-item"
-              data-testid="context-menu-item-copy"
-              @click="copyValue(contextMenuTarget)"
-            >
+            <NcMenuItem v-if="contextMenuTarget" v-e="['a:row:copy']" class="nc-project-menu-item"
+              data-testid="context-menu-item-copy" @click="copyValue(contextMenuTarget)">
               <GeneralIcon icon="copy" />
               <!-- Copy -->
               {{ $t('general.copy') }}
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem
-              v-if="
-                contextMenuTarget &&
-                selectedRange.isSingleCell() &&
-                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
-              "
-              v-e="['a:row:clear']"
-              class="nc-project-menu-item"
-              @click="clearCell(contextMenuTarget)"
-            >
+            <NcMenuItem v-if="contextMenuTarget &&
+              selectedRange.isSingleCell() &&
+              (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              " v-e="['a:row:clear']" class="nc-project-menu-item" @click="clearCell(contextMenuTarget)">
               <GeneralIcon icon="close" />
               {{ $t('general.clear') }}
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem
-              v-else-if="contextMenuTarget"
-              v-e="['a:row:clear-range']"
-              class="nc-project-menu-item"
-              @click="clearSelectedRangeOfCells()"
-            >
+            <NcMenuItem v-else-if="contextMenuTarget" v-e="['a:row:clear-range']" class="nc-project-menu-item"
+              @click="clearSelectedRangeOfCells()">
               <GeneralIcon icon="closeBox" class="text-gray-500" />
               Clear
             </NcMenuItem>
             <NcDivider v-if="!(!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected))" />
-            <NcMenuItem
-              v-if="contextMenuTarget && (selectedRange.isSingleCell() || selectedRange.isSingleRow())"
-              v-e="['a:row:delete']"
-              class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
-              @click="confirmDeleteRow(contextMenuTarget.row)"
-            >
+            <NcMenuItem v-if="contextMenuTarget && (selectedRange.isSingleCell() || selectedRange.isSingleRow())"
+              v-e="['a:row:delete']" class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
+              @click="confirmDeleteRow(contextMenuTarget.row)">
               <GeneralIcon icon="delete" />
               <!-- Delete Row -->
               {{ $t('activity.deleteRow') }}
             </NcMenuItem>
             <div v-else-if="contextMenuTarget && deleteRangeOfRows">
-              <NcMenuItem v-e="['a:row:delete']" class="nc-project-menu-item text-red-600" @click="deleteSelectedRangeOfRows">
+              <NcMenuItem v-e="['a:row:delete']" class="nc-project-menu-item text-red-600"
+                @click="deleteSelectedRangeOfRows">
                 <GeneralIcon icon="delete" class="text-gray-500 text-error" />
                 <!-- Delete Rows -->
                 Delete rows
@@ -1529,28 +1477,17 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
       </NcDropdown>
     </div>
 
-    <LazySmartsheetPagination
-      v-if="headerOnly !== true"
-      :key="isMobileMode"
-      v-model:pagination-data="paginationDataRef"
-      show-api-timing
-      align-count-on-right
-      :change-page="changePage"
-      :hide-sidebars="paginationStyleRef?.hideSidebars === true"
-      :fixed-size="paginationStyleRef?.fixedSize"
-      :extra-style="paginationStyleRef?.extraStyle"
-    >
+    <LazySmartsheetPagination v-if="headerOnly !== true" :key="isMobileMode" v-model:pagination-data="paginationDataRef"
+      show-api-timing align-count-on-right :change-page="changePage"
+      :hide-sidebars="paginationStyleRef?.hideSidebars === true" :fixed-size="paginationStyleRef?.fixedSize"
+      :extra-style="paginationStyleRef?.extraStyle">
       <template #add-record>
         <div v-if="isAddingEmptyRowAllowed" class="flex ml-1">
           <NcButton v-if="isMobileMode" class="nc-grid-add-new-row" type="secondary" @click="onNewRecordToFormClick()">
             {{ $t('activity.newRecord') }}
           </NcButton>
-          <a-dropdown-button
-            v-else
-            class="nc-grid-add-new-row"
-            placement="top"
-            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()"
-          >
+          <a-dropdown-button v-else class="nc-grid-add-new-row" placement="top"
+            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()">
             <div data-testid="nc-pagination-add-record" class="flex items-center px-2 text-gray-600 hover:text-black">
               <span>
                 <template v-if="isAddNewRecordGridMode"> {{ $t('activity.newRecord') }} </template>
@@ -1608,7 +1545,7 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
 
 <style lang="scss">
 .nc-grid-pagination-wrapper .ant-dropdown-button {
-  > .ant-btn {
+  >.ant-btn {
     @apply !p-0 !rounded-l-lg hover:border-gray-400;
   }
 
