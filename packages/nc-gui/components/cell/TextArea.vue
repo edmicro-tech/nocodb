@@ -6,11 +6,11 @@ import {
   EditColumnInj,
   EditModeInj,
   IsExpandedFormOpenInj,
+  ReadonlyInj,
   RowHeightInj,
   iconMap,
   inject,
   useVModel,
-  ReadonlyInj
 } from '#imports'
 
 const props = defineProps<{
@@ -26,7 +26,7 @@ const editEnabled = inject(EditModeInj, ref(false))
 
 const isEditColumn = inject(EditColumnInj, ref(false))
 
-const rowHeight = inject(RowHeightInj, ref(undefined))
+const rowHeight = inject(RowHeightInj, ref(1 as const))
 
 const { showNull } = useGlobal()
 
@@ -139,9 +139,9 @@ onClickOutside(inputWrapperRef, (e) => {
           class="p-1 !pt-1 !pr-3 !border-0 !border-r-0 !focus:outline-transparent nc-scrollbar-md !text-black"
           :bordered="false"
           :auto-size="{ minRows: 20, maxRows: 20 }"
+          :disabled="readOnly"
           @keydown.stop
           @keydown.escape="isVisible = false"
-          :disabled="readOnly"
         />
       </div>
     </template>

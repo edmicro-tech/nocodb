@@ -294,7 +294,8 @@
     "tokens": "Tokens",
     "userManagement": "User Management",
     "licence": "Licence",
-    "inviteUser": "Invite new user"
+    "inviteUser": "Invite new user",
+    "defaultView": "Default View"
   },
   "labels": {
     "searchProjects": "Search Projects",
@@ -305,6 +306,7 @@
     "dataSource": "Data soucres",
     "notifyVia": "Notify Via",
     "projName": "Project name",
+    "profile": "Profile",
     "tableName": "Table name",
     "dashboardName": "Dashboard name",
     "viewName": "View name",
@@ -580,7 +582,8 @@
       "openInGoogleMaps": "Google Maps",
       "openInOpenStreetMap": "OSM"
     },
-    "toggleMobileMode": "Toggle Mobile Mode"
+    "toggleMobileMode": "Toggle Mobile Mode",
+    "startCommenting": "Start commenting!"
   },
   "tooltip": {
     "saveChanges": "Save changes",

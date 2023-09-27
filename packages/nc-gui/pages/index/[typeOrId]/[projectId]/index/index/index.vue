@@ -6,6 +6,8 @@ import { message, ref, resolveComponent, storeToRefs, useDialog, useFileDialog, 
 const projectStore = useProject()
 const { project } = storeToRefs(projectStore)
 
+const { isMobileMode } = useGlobal()
+
 const { files, reset } = useFileDialog()
 
 const { bases } = storeToRefs(projectStore)
@@ -112,7 +114,7 @@ function openQuickImportDialog(type: QuickImportTypes, file: File) {
 }
 
 watch(
-  () => project.value.id,
+  () => project.value?.id,
   () => {
     if (project.value?.id && project.value.type === 'database') {
       const { addTab } = useTabs()
@@ -129,5 +131,5 @@ watch(
 </script>
 
 <template>
-  <ProjectView />
+  <ProjectView v-if="!isMobileMode" />
 </template>

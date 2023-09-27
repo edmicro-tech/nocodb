@@ -21,14 +21,12 @@ const baseIndex = toRef(props, 'baseIndex')
 
 const base = computed(() => project.value?.bases?.[baseIndex.value])
 
+const { isMobileMode } = useGlobal()
+
 const { projectTables } = storeToRefs(useTablesStore())
 const tables = computed(() => projectTables.value.get(project.value.id!) ?? [])
 
 const { $api } = useNuxtApp()
-
-const { openTable } = useTableNew({
-  projectId: project.value.id!,
-})
 
 const tablesById = computed(() =>
   tables.value.reduce<Record<string, TableType>>((acc, table) => {
@@ -48,6 +46,7 @@ const sortables: Record<string, Sortable> = {}
 const initSortable = (el: Element) => {
   const base_id = el.getAttribute('nc-base')
   if (!base_id) return
+  if (isMobileMode.value) return
 
   if (sortables[base_id]) sortables[base_id].destroy()
   Sortable.create(el as HTMLLIElement, {
@@ -153,17 +152,15 @@ const availableTables = computed(() => {
           v-for="table of availableTables"
           :key="table.id"
           v-e="['a:table:open']"
-          class="nc-tree-item text-sm cursor-pointer group"
+          class="nc-tree-item text-sm"
           :data-order="table.order"
           :data-id="table.id"
-          :data-testid="`tree-view-table-${table.title}`"
           :table="table"
           :project="project"
           :base-index="baseIndex"
           :data-title="table.title"
           :data-base-id="base?.id"
           :data-type="table.type"
-          @click="openTable(table)"
         >
         </TableNode>
       </div>

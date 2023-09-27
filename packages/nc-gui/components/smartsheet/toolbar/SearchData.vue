@@ -23,6 +23,8 @@ const { search, loadFieldQuery } = useFieldQuery()
 
 const isDropdownOpen = ref(false)
 
+const { isMobileMode } = useGlobal()
+
 const isFocused = ref(false)
 
 const searchDropdown = ref(null)
@@ -63,13 +65,6 @@ const displayColumnLabel = computed(() => {
   return columns.value?.find((column) => column.primaryValue)?.label
 })
 
-watch(
-  () => search.value.field,
-  () => {
-    onPressEnter()
-  },
-)
-
 watchDebounced(
   () => search.value.query,
   () => {
@@ -90,7 +85,7 @@ watch(columns, () => {
 
 <template>
   <div
-    class="flex flex-row border-1 rounded-lg h-8 ml-1 border-gray-200 overflow-hidden"
+    class="flex flex-row border-1 rounded-lg h-8 xs:(h-10 ml-0) ml-1 border-gray-200 overflow-hidden"
     :class="{ 'border-primary': search.query.length !== 0 || isFocused }"
   >
     <div
@@ -100,11 +95,23 @@ watch(columns, () => {
       @click="isDropdownOpen = !isDropdownOpen"
     >
       <GeneralIcon icon="search" class="ml-1 mr-2 h-3.5 w-3.5 text-gray-500 group-hover:text-black" />
-      <div class="w-16 group-hover:w-12 text-[0.75rem] font-medium text-gray-400 truncate">
+      <div v-if="!isMobileMode" class="w-16 group-hover:w-12 text-[0.75rem] font-medium text-gray-400 truncate">
         {{ displayColumnLabel }}
       </div>
-      <div class="hidden group-hover:block">
-        <component :is="iconMap.arrowDown" class="text-gray-400 text-sm" />
+      <div
+        :class="{
+          'hidden group-hover:block': !isMobileMode,
+          'text-gray-700': isMobileMode,
+        }"
+      >
+        <component
+          :is="iconMap.arrowDown"
+          class="text-sm"
+          :class="{
+            'text-gray-400': !isMobileMode,
+            'text-gray-600': isMobileMode,
+          }"
+        />
       </div>
       <a-select
         v-model:value="search.field"
@@ -113,6 +120,7 @@ watch(columns, () => {
         :dropdown-match-select-width="false"
         dropdown-class-name="!rounded-lg nc-dropdown-toolbar-search-field-option w-48"
         class="py-1 !absolute top-0 left-0 w-full h-full z-10 text-xs opacity-0"
+        @change="onPressEnter"
       >
         <a-select-option v-for="op of columns" :key="op.value" :value="op.value">
           <div class="text-[0.75rem] flex items-center -ml-1 gap-2">
@@ -126,10 +134,7 @@ watch(columns, () => {
     <a-input
       v-model:value="search.query"
       size="small"
-      class="text-xs"
-      :style="{
-        width: '10rem',
-      }"
+      class="text-xs w-40"
       :placeholder="`${$t('general.search')} in ${columns?.find((column) => column.value === search.field)?.label}`"
       :bordered="false"
       data-testid="search-data-input"

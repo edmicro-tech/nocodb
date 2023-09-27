@@ -2,9 +2,11 @@
 const workspaceStore = useWorkspace()
 const projectStore = useProject()
 
+const { isUIAllowed } = useRoles()
+
 const { appInfo } = useGlobal()
 
-const { isWorkspaceLoading, isWorkspaceOwnerOrCreator, isWorkspaceSettingsPageOpened } = storeToRefs(workspaceStore)
+const { isWorkspaceLoading, isWorkspaceSettingsPageOpened } = storeToRefs(workspaceStore)
 
 const { navigateToWorkspaceSettings } = workspaceStore
 
@@ -45,10 +47,10 @@ const navigateToSettings = () => {
       <DashboardSidebarTopSectionHeader />
 
       <NcButton
-        v-if="isWorkspaceOwnerOrCreator"
+        v-if="isUIAllowed('workspaceSettings')"
         type="text"
         size="small"
-        class="nc-sidebar-top-button"
+        class="nc-sidebar-top-button !xs:hidden"
         data-testid="nc-sidebar-team-settings-btn"
         :centered="false"
         :class="{
@@ -66,7 +68,7 @@ const navigateToSettings = () => {
         v-model:is-open="isCreateProjectOpen"
         modal
         type="text"
-        class="nc-sidebar-top-button !hover:bg-gray-200"
+        class="nc-sidebar-top-button !hover:bg-gray-200 !xs:hidden"
         data-testid="nc-sidebar-create-project-btn"
       >
         <div class="gap-x-2 flex flex-row w-full items-center !font-normal">

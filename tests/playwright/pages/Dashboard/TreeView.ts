@@ -1,6 +1,8 @@
 import { expect, Locator } from '@playwright/test';
 import { DashboardPage } from '.';
 import BasePage from '../Base';
+import { NcContext } from '../../setup';
+import { isEE } from '../../setup/db';
 
 export class TreeViewPage extends BasePage {
   readonly dashboard: DashboardPage;
@@ -25,7 +27,7 @@ export class TreeViewPage extends BasePage {
       .locator('[data-testid="nc-sidebar-add-project-entity"]');
   }
 
-  getProjectContextMenu({ projectTitle }: { projectTitle: string }) {
+  private getProjectContextMenu({ projectTitle }: { projectTitle: string }) {
     return this.dashboard
       .get()
       .getByTestId(`nc-sidebar-project-title-${projectTitle}`)
@@ -70,7 +72,7 @@ export class TreeViewPage extends BasePage {
 
   async getTable({ index, tableTitle }: { index: number; tableTitle?: string }) {
     if (tableTitle) {
-      return this.get().getByTestId(`tree-view-table-${tableTitle}`);
+      return this.get().getByTestId(`nc-tbl-side-node-${tableTitle}`);
     }
 
     return this.get().locator('.nc-tree-item').nth(index);
@@ -93,18 +95,26 @@ export class TreeViewPage extends BasePage {
       await this.rootPage.locator('.h-full > div > .nc-sidebar-left-toggle-icon').click();
     }
 
-    await this.get().getByTestId(`tree-view-table-${title}`).waitFor({ state: 'visible' });
+    await this.get().getByTestId(`nc-tbl-title-${title}`).waitFor({ state: 'visible' });
 
     if (networkResponse === true) {
       await this.waitForResponse({
-        uiAction: () => this.get().getByTestId(`tree-view-table-${title}`).click(),
+        uiAction: () =>
+          this.get()
+            .getByTestId(`nc-tbl-title-${title}`)
+            .click({
+              position: {
+                x: 10,
+                y: 10,
+              },
+            }),
         httpMethodsToMatch: ['GET'],
         requestUrlPathToMatch: `/api/v1/db/data/noco/`,
         responseJsonMatcher: json => json.pageInfo,
       });
       await this.dashboard.waitForTabRender({ title, mode });
     } else {
-      await this.get().getByTestId(`tree-view-table-${title}`).click();
+      await this.get().getByTestId(`nc-tbl-title-${title}`).click();
       await this.rootPage.waitForTimeout(1000);
     }
   }
@@ -146,13 +156,13 @@ export class TreeViewPage extends BasePage {
 
   async verifyTable({ title, index, exists = true }: { title: string; index?: number; exists?: boolean }) {
     if (exists) {
-      await expect(this.get().getByTestId(`tree-view-table-${title}`)).toHaveCount(1);
+      await expect(this.get().getByTestId(`nc-tbl-title-${title}`)).toHaveCount(1);
 
       if (index) {
         await expect(this.get().locator('.nc-tbl-title').nth(index)).toHaveText(title);
       }
     } else {
-      await expect(this.get().getByTestId(`tree-view-table-${title}`)).toHaveCount(0);
+      await expect(this.get().getByTestId(`nc-tbl-title-${title}`)).toHaveCount(0);
     }
   }
 
@@ -204,7 +214,7 @@ export class TreeViewPage extends BasePage {
     await this.dashboard
       .get()
       .locator(`[data-testid="tree-view-table-draggable-handle-${sourceTable}"]`)
-      .dragTo(this.get().locator(`[data-testid="tree-view-table-${destinationTable}"]`));
+      .dragTo(this.get().locator(`[data-testid="nc-tbl-title-${destinationTable}"]`));
   }
 
   async projectSettings({ title }: { title?: string }) {
@@ -214,7 +224,9 @@ export class TreeViewPage extends BasePage {
     await settingsMenu.locator(`.nc-sidebar-project-project-settings`).click();
   }
 
-  async quickImport({ title, projectTitle }: { title: string; projectTitle: string }) {
+  async quickImport({ title, projectTitle, context }: { title: string; projectTitle: string; context: NcContext }) {
+    projectTitle = this.scopedProjectTitle({ title: projectTitle, context });
+
     await this.getProjectContextMenu({ projectTitle }).hover();
     await this.getProjectContextMenu({ projectTitle }).click();
     const importMenu = this.dashboard.get().locator('.ant-dropdown-menu');
@@ -257,7 +269,7 @@ export class TreeViewPage extends BasePage {
       httpMethodsToMatch: ['POST'],
       requestUrlPathToMatch: `/api/v1/db/meta/duplicate/`,
     });
-    await this.get().locator(`[data-testid="tree-view-table-${title} copy"]`).waitFor();
+    await this.get().locator(`[data-testid="nc-tbl-title-${title} copy"]`).waitFor();
   }
 
   async verifyTabIcon({ title, icon, iconDisplay }: { title: string; icon: string; iconDisplay?: string }) {
@@ -269,14 +281,17 @@ export class TreeViewPage extends BasePage {
     ).toHaveCount(1);
   }
 
-  async validateRoleAccess(param: { role: string; projectTitle?: string; tableTitle?: string }) {
+  async validateRoleAccess(param: { role: string; projectTitle?: string; tableTitle?: string; context: NcContext }) {
+    const context = param.context;
+    param.projectTitle = param.projectTitle ?? context.project.title;
+
     const count = param.role.toLowerCase() === 'creator' || param.role.toLowerCase() === 'owner' ? 1 : 0;
-    const pjtNode = await this.getProject({ index: 0, title: param.projectTitle });
+    const pjtNode = await this.getProject({ title: param.projectTitle });
     await pjtNode.hover();
 
     // add new table button & context menu is visible only for owner & creator
     await expect(pjtNode.locator('[data-testid="nc-sidebar-add-project-entity"]')).toHaveCount(count);
-    await expect(pjtNode.locator('[data-testid="nc-sidebar-context-menu"]')).toHaveCount(count);
+    await expect(pjtNode.locator('[data-testid="nc-sidebar-context-menu"]')).toHaveCount(1);
 
     // table context menu
     const tblNode = await this.getTable({ index: 0, tableTitle: param.tableTitle });
@@ -284,59 +299,46 @@ export class TreeViewPage extends BasePage {
     await expect(tblNode.locator('.nc-tbl-context-menu')).toHaveCount(count);
   }
 
-  async openProject({ title, projectCount }: { title: string; projectCount?: number }) {
-    const nodes = this.get().locator(`.project-title-node`);
-
-    // at times, page is not rendered yet when trying to open project
-    // hence retry logic to wait for expected number of projects to be available
-    if (projectCount) {
-      let retryCount = 0;
-      while (retryCount < 5) {
-        if ((await nodes.count()) === projectCount) break;
-        await this.rootPage.waitForTimeout(retryCount * 500);
-        retryCount++;
-      }
-    }
+  async openProject({ title, context }: { title: string; context: NcContext }) {
+    title = this.scopedProjectTitle({ title, context });
 
     // loop through nodes.count() to find the node with title
-    for (let i = 0; i < (await nodes.count()); i++) {
-      const node = nodes.nth(i);
-      const nodeTitle = await node.innerText();
-
-      // check if nodeTitle contains title
-      if (nodeTitle.toLowerCase().includes(title.toLowerCase())) {
-        // click on node
-        await node.waitFor({ state: 'visible' });
-        await node.click();
-        break;
-      }
-    }
+    await this.get().getByTestId(`nc-sidebar-project-title-${title}`).click();
 
     await this.rootPage.waitForTimeout(1000);
   }
 
-  private async getProject(param: { index: number; title?: string }) {
-    if (param.title) {
-      return this.get().getByTestId(`nc-sidebar-project-title-${param.title}`);
-    }
+  scopedProjectTitle({ title, context }: { title: string; context: NcContext }) {
+    if (isEE()) return title;
 
-    return this.get().locator(`.project-title-node`).nth(param.index);
+    if (title.toLowerCase().startsWith('xcdb')) return `${title}`;
+
+    return title === context.project.title ? context.project.title : `nc-${context.workerId}-${title}`;
   }
 
-  async renameProject(param: { newTitle: string; title: string }) {
+  private async getProject(param: { title?: string }) {
+    return this.get().getByTestId(`nc-sidebar-project-title-${param.title}`);
+  }
+
+  async renameProject(param: { newTitle: string; title: string; context: NcContext }) {
+    param.title = this.scopedProjectTitle({ title: param.title, context: param.context });
+    param.newTitle = this.scopedProjectTitle({ title: param.newTitle, context: param.context });
+
     await this.getProjectContextMenu({ projectTitle: param.title }).hover();
     await this.getProjectContextMenu({ projectTitle: param.title }).click();
     const contextMenu = this.dashboard.get().locator('.ant-dropdown-menu.nc-scrollbar-md:visible').last();
     await contextMenu.waitFor();
     await contextMenu.locator(`.ant-dropdown-menu-item:has-text("Rename")`).click();
 
-    const projectNodeInput = (await this.getProject({ index: 0, title: param.title })).locator('input');
+    const projectNodeInput = (await this.getProject({ title: param.title })).locator('input');
     await projectNodeInput.clear();
     await projectNodeInput.fill(param.newTitle);
     await projectNodeInput.press('Enter');
   }
 
-  async deleteProject(param: { title: string }) {
+  async deleteProject(param: { title: string; context: NcContext }) {
+    param.title = this.scopedProjectTitle({ title: param.title, context: param.context });
+
     await this.getProjectContextMenu({ projectTitle: param.title }).hover();
     await this.getProjectContextMenu({ projectTitle: param.title }).click();
     const contextMenu = this.dashboard.get().locator('.ant-dropdown-menu.nc-scrollbar-md:visible').last();
@@ -346,7 +348,9 @@ export class TreeViewPage extends BasePage {
     await this.rootPage.locator('div.ant-modal-content').locator(`button.ant-btn:has-text("Delete")`).click();
   }
 
-  async duplicateProject(param: { title: string }) {
+  async duplicateProject(param: { title: string; context: NcContext }) {
+    param.title = this.scopedProjectTitle({ title: param.title, context: param.context });
+
     await this.getProjectContextMenu({ projectTitle: param.title }).hover();
     await this.getProjectContextMenu({ projectTitle: param.title }).click();
     const contextMenu = this.dashboard.get().locator('.ant-dropdown-menu.nc-scrollbar-md:visible');
@@ -354,5 +358,7 @@ export class TreeViewPage extends BasePage {
     await contextMenu.locator(`.ant-dropdown-menu-item:has-text("Duplicate")`).click();
 
     await this.rootPage.locator('div.ant-modal-content').locator(`button.ant-btn:has-text("Confirm")`).click();
+
+    await this.rootPage.waitForTimeout(10000);
   }
 }

@@ -2,7 +2,7 @@
 import { onKeyDown, useEventListener } from '@vueuse/core'
 import { useAttachmentCell } from './utils'
 import { useSortable } from './sort'
-import { iconMap, isImage, ref, useAttachment, useDropZone, useUIPermission, watch } from '#imports'
+import { iconMap, isImage, ref, useAttachment, useDropZone, useRoles, watch } from '#imports'
 
 const { isUIAllowed } = useUIPermission()
 const { t } = useI18n()
@@ -90,8 +90,12 @@ const handleFileDelete = (i: number) => {
     :footer="null" wrap-class-name="nc-modal-attachment-expand-cell">
     <template #title>
       <div class="flex gap-4">
-        <div v-if="isSharedForm || (!readOnly && isUIAllowed('tableAttachment') && !isPublic && !isLocked)"
-          class="nc-attach-file group" data-testid="attachment-expand-file-picker-button" @click="open">
+        <div
+          v-if="isSharedForm || (!readOnly && isUIAllowed('dataEdit') && !isPublic && !isLocked)"
+          class="nc-attach-file group"
+          data-testid="attachment-expand-file-picker-button"
+          @click="open"
+        >
           <MaterialSymbolsAttachFile class="transform group-hover:(text-accent scale-120)" />
           Attach File
         </div>
@@ -125,9 +129,12 @@ const handleFileDelete = (i: number) => {
 
             <a-tooltip v-if="!readOnly">
               <template #title> Remove File </template>
-              <component :is="iconMap.closeCircle"
-                v-if="isSharedForm || (isUIAllowed('tableAttachment') && !isPublic && !isLocked)"
-                class="nc-attachment-remove" @click.stop="onRemoveFileClick(item.title, i)" />
+              <component
+                :is="iconMap.closeCircle"
+                v-if="isSharedForm || (isUIAllowed('dataEdit') && !isPublic && !isLocked)"
+                class="nc-attachment-remove"
+                @click.stop="onRemoveFileClick(item.title, i)"
+              />
             </a-tooltip>
 
             <a-tooltip placement="bottom">
@@ -138,8 +145,7 @@ const handleFileDelete = (i: number) => {
               </div>
             </a-tooltip>
 
-            <a-tooltip v-if="isSharedForm || (!readOnly && isUIAllowed('tableAttachment') && !isPublic && !isLocked)"
-              placement="bottom">
+            <a-tooltip v-if="isSharedForm || (!readOnly && isUIAllowed('dataEdit') && !isPublic && !isLocked)" placement="bottom">
               <template #title> Rename File </template>
 
               <div class="nc-attachment-download group-hover:(opacity-100) mr-[35px]">

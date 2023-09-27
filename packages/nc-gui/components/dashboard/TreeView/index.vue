@@ -20,14 +20,14 @@ import {
   useNuxtApp,
   useProject,
   useProjects,
+  useRoles,
   useTablesStore,
   useTabs,
-  useUIPermission,
 } from '#imports'
 
 import { useRouter } from '#app'
 
-const { isUIAllowed } = useUIPermission()
+const { isUIAllowed } = useRoles()
 
 const { addTab } = useTabs()
 
@@ -145,7 +145,7 @@ const duplicateTable = async (table: TableType) => {
 
 const isCreateTableAllowed = computed(
   () =>
-    isUIAllowed('table-create') &&
+    isUIAllowed('tableCreate') &&
     route.value.name !== 'index' &&
     route.value.name !== 'index-index' &&
     route.value.name !== 'index-index-create' &&
@@ -212,10 +212,8 @@ const scrollTableNode = () => {
   const activeTableDom = document.querySelector(`.nc-treeview [data-table-id="${_activeTable.value?.id}"]`)
   if (!activeTableDom) return
 
-  if (isElementInvisible(activeTableDom)) {
-    // Scroll to the table node
-    activeTableDom?.scrollIntoView({ behavior: 'smooth' })
-  }
+  // Scroll to the table node
+  activeTableDom?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 }
 
 watch(

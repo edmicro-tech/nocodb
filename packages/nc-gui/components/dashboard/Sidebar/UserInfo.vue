@@ -2,6 +2,8 @@
 import GithubButton from 'vue-github-button'
 
 const { user, signOut, token, appInfo } = useGlobal()
+// So watcher in users store is triggered
+useUsers()
 
 const { clearWorkspaces } = useWorkspace()
 
@@ -9,13 +11,15 @@ const { leftSidebarState } = storeToRefs(useSidebarStore())
 
 const { copy } = useCopy(true)
 
-const name = computed(() => `${user.value?.firstname ?? ''} ${user.value?.lastname ?? ''}`.trim())
+const name = computed(() => user.value?.display_name?.trim())
 
 const isMenuOpen = ref(false)
 
 const isAuthTokenCopied = ref(false)
 
 const isLoggingOut = ref(false)
+
+const { isMobileMode } = useGlobal()
 
 const logout = async () => {
   isLoggingOut.value = true
@@ -65,10 +69,8 @@ onMounted(() => {
 <template>
   <div class="flex w-full flex-col p-1 border-t-1 border-gray-200 gap-y-2">
     <NcDropdown v-model:visible="isMenuOpen" placement="topLeft" overlay-class-name="!min-w-64">
-      <div
-        class="flex flex-row py-2 px-3 gap-x-2 items-center hover:bg-gray-200 rounded-lg cursor-pointer h-10"
-        data-testid="nc-sidebar-userinfo"
-      >
+      <div class="flex flex-row py-2 px-3 gap-x-2 items-center hover:bg-gray-200 rounded-lg cursor-pointer h-10"
+        data-testid="nc-sidebar-userinfo">
         <GeneralUserIcon />
         <div class="flex truncate">
           {{ name ? name : user?.email }}
@@ -76,12 +78,12 @@ onMounted(() => {
         <GeneralIcon icon="arrowUp" class="!min-w-5" />
       </div>
       <template #overlay>
-        <NcMenu>
+        <NcMenu data-testid="nc-sidebar-userinfo">
           <NcMenuItem data-testid="nc-sidebar-user-logout" @click="logout">
             <GeneralLoader v-if="isLoggingOut" class="!ml-0.5 !mr-0.5 !max-h-4.5 !-mt-0.5" />
             <GeneralIcon v-else icon="signout" class="menu-icon" />
-            {{ $t('general.logOut') }}</NcMenuItem
-          >
+            {{ $t('general.logOut') }}
+          </NcMenuItem>
           <!-- <NcDivider /> -->
           <!-- <a href="https://docs.nocodb.com" target="_blank" class="!underline-transparent">
             <NcMenuItem>
@@ -96,7 +98,10 @@ onMounted(() => {
             >
           </a>
           <a href="https://www.reddit.com/r/NocoDB" target="_blank" class="!underline-transparent">
-            <NcMenuItem class="social-icon-wrapper"><GeneralIcon class="social-icon" icon="reddit" />/r/NocoDB</NcMenuItem>
+            <NcMenuItem class="social-icon-wrapper">
+              <GeneralIcon class="social-icon" icon="reddit" />
+              <span class="menu-btn"> /r/NocoDB </span>
+            </NcMenuItem>
           </a>
           <a href="https://twitter.com/nocodb" target="_blank" class="!underline-transparent">
             <NcMenuItem class="social-icon-wrapper group"
@@ -112,7 +117,8 @@ onMounted(() => {
                 <div class="flex items-center text-gray-400 text-xs">(Community Translated)</div>
                 <div class="flex-1" />
 
-                <MaterialSymbolsChevronRightRounded class="transform group-hover:(scale-115 text-accent) text-xl text-gray-400" />
+                <MaterialSymbolsChevronRightRounded
+                  class="transform group-hover:(scale-115 text-accent) text-xl text-gray-400" />
               </NcMenuItem>
 
               <template #content>
@@ -124,38 +130,40 @@ onMounted(() => {
           </template>
 
           <NcDivider />
-          <NcMenuItem @click="onCopy"
-            ><GeneralIcon v-if="isAuthTokenCopied" icon="check" class="group-hover:text-black menu-icon" /><GeneralIcon
-              v-else
-              icon="copy"
-              class="menu-icon"
-            />
+          <NcMenuItem @click="onCopy">
+            <GeneralIcon v-if="isAuthTokenCopied" icon="check" class="group-hover:text-black menu-icon" />
+            <GeneralIcon v-else icon="copy" class="menu-icon" />
             <template v-if="isAuthTokenCopied"> Copied Auth Token </template>
-            <template v-else>  {{ $t('general.copyAuthToken') }} </template>
+            <template v-else> {{ $t('general.copyAuthToken') }} </template>
           </NcMenuItem>
           <nuxt-link v-e="['c:navbar:user:email']" class="!no-underline" to="/account/tokens">
-            <NcMenuItem><GeneralIcon icon="settings" class="menu-icon" /> {{ $t('general.accountSettings') }} </NcMenuItem>
+            <NcMenuItem>
+              <GeneralIcon icon="settings" class="menu-icon" /> {{ $t('general.accountSettings') }}
+            </NcMenuItem>
           </nuxt-link>
         </NcMenu>
       </template>
     </NcDropdown>
-<!-- 
+    <!-- 
     <div v-if="appInfo.ee" class="text-gray-500 text-xs pl-3">© 2023 NocoDB. Inc</div>
     <div v-else-if="isMounted" class="flex flex-row justify-between flex-wrap pt-1 truncate">
       <div class="flex items-start flex-row justify-center px-3 gap-2">
         <GithubButton href="https://github.com/nocodb/nocodb" data-icon="octicon-star" data-show-count="true" data-size="large">
           Star
         </GithubButton>
-      </div>
-
-      <div class="flex items-start flex-row justify-center gap-2">
-        <GeneralJoinCloud class="color-transition px-3 text-gray-500 cursor-pointer select-none hover:text-accent" />
+        <div>
+          <GeneralJoinCloud class="color-transition px-2 text-gray-500 cursor-pointer select-none hover:text-accent" />
+        </div>
       </div>
     </div> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
+.menu-btn {
+  line-height: 1.5;
+}
+
 .menu-icon {
   @apply !min-h-4.5;
   line-height: 1rem;
@@ -165,7 +173,9 @@ onMounted(() => {
 :deep(.ant-popover-inner-content) {
   @apply !p-0 !rounded-md;
 }
+
 .social-icon {
+  @apply my-0.5;
   // Make icon black and white
   filter: grayscale(100%);
 
@@ -179,6 +189,7 @@ onMounted(() => {
   .nc-icon {
     @apply mr-0.15;
   }
+
   &:hover {
     .social-icon {
       filter: none !important;

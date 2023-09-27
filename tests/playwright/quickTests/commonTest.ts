@@ -190,11 +190,11 @@ const quickVerify = async ({
   }
 
   // Verify pagination
-  await dashboard.grid.verifyActivePage({ page: '1' });
-  await dashboard.grid.clickPagination({ page: '>', skipWait: true });
-  await dashboard.grid.verifyActivePage({ page: '2' });
-  await dashboard.grid.clickPagination({ page: '<', skipWait: true });
-  await dashboard.grid.verifyActivePage({ page: '1' });
+  await dashboard.grid.verifyActivePage({ pageNumber: '1' });
+  await dashboard.grid.clickPagination({ type: 'next-page', skipWait: true });
+  await dashboard.grid.verifyActivePage({ pageNumber: '2' });
+  await dashboard.grid.clickPagination({ type: 'prev-page', skipWait: true });
+  await dashboard.grid.verifyActivePage({ pageNumber: '1' });
 
   await dashboard.viewSidebar.openView({ title: 'Filter&Sort' });
 
@@ -249,7 +249,7 @@ const quickVerify = async ({
     // await dashboard.clickHome();
     // const workspacePage = new WorkspacePage(dashboard.rootPage);
     // await workspacePage.projectDelete({ title: context.project.title });
-    await dashboard.treeView.deleteProject({ title: context.project.title });
+    await dashboard.treeView.deleteProject({ title: context.project.title, context });
   }
 };
 

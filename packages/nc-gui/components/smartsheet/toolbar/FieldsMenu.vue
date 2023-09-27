@@ -286,7 +286,12 @@ useMenuCloseOnEsc(open)
 </script>
 
 <template>
-  <NcDropdown v-model:visible="open" :trigger="['click']" overlay-class-name="nc-dropdown-fields-menu nc-toolbar-dropdown">
+  <NcDropdown
+    v-model:visible="open"
+    :trigger="['click']"
+    overlay-class-name="nc-dropdown-fields-menu nc-toolbar-dropdown"
+    class="!xs:hidden"
+  >
     <div :class="{ 'nc-active-btn': numberOfHiddenFields }">
       <a-button v-e="['c:fields']" class="nc-fields-menu-btn nc-toolbar-btn" :disabled="isLocked">
         <div class="flex items-center gap-2">
@@ -316,7 +321,7 @@ useMenuCloseOnEsc(open)
     <template #overlay>
       <div class="p-4 pr-0 bg-white w-90 rounded-2xl nc-table-toolbar-menu" data-testid="nc-fields-menu" @click.stop>
         <div
-          v-if="!filterQuery && (activeView?.type === ViewTypes.GALLERY || activeView?.type === ViewTypes.KANBAN)"
+          v-if="!filterQuery && !isPublic && (activeView?.type === ViewTypes.GALLERY || activeView?.type === ViewTypes.KANBAN)"
           class="flex flex-col gap-y-2 pr-6 mb-6"
         >
           <div class="flex text-sm select-none">Select cover image field</div>

@@ -16,11 +16,11 @@ import {
   useI18n,
   useNuxtApp,
   useProject,
+  useRoles,
   useRouter,
   useSharedView,
   useSmartsheetStoreOrThrow,
   useState,
-  useUIPermission,
 } from '#imports'
 import type { Row } from '#imports'
 
@@ -32,11 +32,16 @@ const formatData = (list: Record<string, any>[]) =>
   }))
 
 export function useViewData(
-  meta: Ref<TableType | undefined> | ComputedRef<TableType | undefined>,
+  _meta: Ref<TableType | undefined> | ComputedRef<TableType | undefined>,
   viewMeta: Ref<ViewType | undefined> | ComputedRef<(ViewType & { id: string }) | undefined>,
   where?: ComputedRef<string | undefined>,
 ) {
-  if (!meta) {
+  const { activeTableId, activeTable } = storeToRefs(useTablesStore())
+
+  const meta = computed(() => _meta.value || activeTable.value)
+  const metaId = computed(() => _meta.value?.id || activeTableId.value)
+
+  if (!meta.value) {
     throw new Error('Table meta is not available')
   }
 
@@ -76,9 +81,11 @@ export function useViewData(
 
   const { sorts, nestedFilters } = useSmartsheetStoreOrThrow()
 
-  const { isUIAllowed } = useUIPermission()
+  const { isUIAllowed } = useRoles()
 
   const routeQuery = computed(() => route.value.query as Record<string, string>)
+
+  const { isPaginationLoading } = storeToRefs(useViewsStore())
 
   const paginationData = computed({
     get: () => (isPublic.value ? sharedPaginationData.value : _paginationData.value),
@@ -101,7 +108,7 @@ export function useViewData(
     const { count } = await $api.dbViewRow.count(
       NOCO,
       project?.value?.id as string,
-      meta?.value?.id as string,
+      metaId.value as string,
       viewMeta?.value?.id as string,
     )
     paginationData.value.totalRows = count
@@ -136,7 +143,7 @@ export function useViewData(
 
   /** load row comments count */
   async function loadAggCommentsCount() {
-    if (!isUIAllowed('commentsCount')) return
+    if (!isUIAllowed('commentCount')) return
 
     if (isPublic.value || isSharedBase.value) return
 
@@ -150,7 +157,7 @@ export function useViewData(
 
     aggCommentCount.value = await $api.utils.commentCount({
       ids,
-      fk_model_id: meta.value?.id as string,
+      fk_model_id: metaId.value as string,
     })
 
     for (const row of formattedData.value) {
@@ -160,9 +167,9 @@ export function useViewData(
   }
 
   async function loadData(params: Parameters<Api<any>['dbViewRow']['list']>[4] = {}) {
-    if ((!project?.value?.id || !meta.value?.id || !viewMeta.value?.id) && !isPublic.value) return
+    if ((!project?.value?.id || !metaId.value || !viewMeta.value?.id) && !isPublic.value) return
     const response = !isPublic.value
-      ? await api.dbViewRow.list('noco', project.value.id!, meta.value!.id!, viewMeta.value!.id!, {
+      ? await api.dbViewRow.list('noco', project.value.id!, metaId.value!, viewMeta.value!.id!, {
           ...queryParams.value,
           ...params,
           ...(isUIAllowed('sortSync') ? {} : { sortArrJson: JSON.stringify(sorts.value) }),
@@ -173,6 +180,7 @@ export function useViewData(
 
     formattedData.value = formatData(response.list)
     paginationData.value = response.pageInfo
+    isPaginationLoading.value = false
 
     // to cater the case like when querying with a non-zero offset
     // the result page may point to the target page where the actual returned data don't display on

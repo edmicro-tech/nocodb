@@ -151,6 +151,7 @@ watch(open, () => {
     v-model:visible="open"
     offset-y
     :trigger="['click']"
+    class="!xs:hidden"
     overlay-class-name="nc-dropdown-group-by-menu nc-toolbar-dropdown"
   >
     <div :class="{ 'nc-active-btn': groupedByColumnIds?.length }">
@@ -170,7 +171,7 @@ watch(open, () => {
     <template #overlay>
       <div
         :class="{ ' min-w-[400px]': _groupBy.length }"
-        class="flex flex-col bg-white shadow-lg rounded-md overflow-auto border-1 border-gray-50 menu-filter-dropdown max-h-[max(80vh,500px)] py-6 pl-6"
+        class="flex flex-col bg-white rounded-md overflow-auto menu-filter-dropdown max-h-[max(80vh,500px)] py-6 pl-6"
         data-testid="nc-group-by-menu"
       >
         <div class="group-by-grid pb-1 mb-2 max-h-100 nc-scrollbar-md pr-5" @click.stop>
