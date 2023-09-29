@@ -68,13 +68,13 @@ hooks.hook('page:finish', () => {
 
         <LazyGeneralReleaseInfo />
 
-        <a-tooltip v-if="!appInfo.ee" placement="bottom" :mouse-enter-delay="1">
+        <!-- <a-tooltip v-if="!appInfo.ee" placement="bottom" :mouse-enter-delay="1">
           <template #title> Switch language</template>
 
           <div class="flex pr-4 items-center">
             <LazyGeneralLanguage class="cursor-pointer text-2xl hover:text-accent" />
           </div>
-        </a-tooltip>
+        </a-tooltip> -->
 
         <template v-if="signedIn">
           <a-dropdown :trigger="['click']" overlay-class-name="nc-dropdown-user-accounts-menu">
@@ -128,11 +128,11 @@ hooks.hook('page:finish', () => {
         </template>
       </a-layout-header>
 
-      <a-tooltip v-if="!appInfo.ee" placement="bottom">
+      <!-- <a-tooltip v-if="!appInfo.ee" placement="bottom">
         <template #title> Switch language</template>
 
         <LazyGeneralLanguage v-if="!signedIn && !route.params.projectId && !route.params.erdUuid" class="nc-lang-btn" />
-      </a-tooltip>
+      </a-tooltip> -->
 
       <div class="w-full h-full overflow-hidden nc-layout-base-inner">
         <slot />

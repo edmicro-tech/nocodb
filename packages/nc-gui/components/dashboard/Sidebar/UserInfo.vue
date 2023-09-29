@@ -109,7 +109,7 @@ onMounted(() => {
             >
           </a> -->
           <template v-if="!appInfo.ee">
-            <NcDivider />
+            <!-- <NcDivider />
             <a-popover key="language" class="lang-menu !py-1.5" placement="rightBottom">
               <NcMenuItem>
                 <GeneralIcon icon="translate" class="group-hover:text-black nc-language ml-0.25 menu-icon" />
@@ -119,14 +119,14 @@ onMounted(() => {
 
                 <MaterialSymbolsChevronRightRounded
                   class="transform group-hover:(scale-115 text-accent) text-xl text-gray-400" />
-              </NcMenuItem>
+              </NcMenuItem> -->
 
-              <template #content>
+              <!-- <template #content>
                 <div class="bg-white max-h-50vh scrollbar-thin-dull min-w-50 !overflow-auto">
                   <LazyGeneralLanguageMenu />
                 </div>
               </template>
-            </a-popover>
+            </a-popover> -->
           </template>
 
           <NcDivider />

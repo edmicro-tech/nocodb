@@ -12,7 +12,7 @@ const refreshSidebar = ref(false)
 
 const sidebarReady = ref(false)
 
-useTitle(route.meta?.title && te(route.meta.title) ? `${t(route.meta.title)}` : 'Hệ thống cơ sở dữ liệu')
+useTitle(route.meta?.title && te(route.meta.title) ? `${t(route.meta.title)}` : 'Mic Database System')
 
 watch(hasSidebar, (val) => {
   if (!val) {

@@ -14,7 +14,7 @@
           <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
         </a>
 
-        <div class="font-semibold text-base">Hệ thống cơ sở dữ liệu</div>
+        <div class="font-semibold text-base">Mic Database System</div>
         <div class="flex flex-grow"></div>
       </div>
     </div>

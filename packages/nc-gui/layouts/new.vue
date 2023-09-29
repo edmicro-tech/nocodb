@@ -20,7 +20,7 @@ const email = computed(() => user.value?.email ?? '---')
 
 const refreshSidebar = ref(false)
 
-useTitle(route.meta?.title && te(route.meta.title) ? `${t(route.meta.title)}` : 'Hệ thống cơ sở dữ liệu')
+useTitle(route.meta?.title && te(route.meta.title) ? `${t(route.meta.title)}` : 'Mic Database System')
 
 const isPublic = computed(() => route.meta?.public)
 

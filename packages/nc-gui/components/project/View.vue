@@ -49,7 +49,7 @@ watch(activeKey, () => {
 watch(
   () => openedProject.value?.title,
   () => {
-    useTitle(`${openedProject.value?.title ?? activeWorkspace.value?.title ?? 'Hệ thống cơ sở dữ liệu'}`)
+    useTitle(`${openedProject.value?.title ?? activeWorkspace.value?.title ?? 'Mic Database System'}`)
   },
 )
 </script>

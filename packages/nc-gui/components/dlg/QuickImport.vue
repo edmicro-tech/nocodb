@@ -92,7 +92,7 @@ const defaultImportState = {
   url: '',
   jsonEditor: {},
   parserConfig: {
-    maxRowsToParse: 500,
+    maxRowsToParse: 50000,
     normalizeNested: true,
     autoSelectFieldTypes: true,
     firstRowAsHeaders: true,
@@ -340,9 +340,9 @@ const customReqCbk = (customReqArgs: { file: any; onSuccess: () => void }) => {
 
 /** check if the file size exceeds the limit */
 const beforeUpload = (file: UploadFile) => {
-  const exceedLimit = file.size! / 1024 / 1024 > 30
+  const exceedLimit = file.size! / 1024 / 1024 > 300
   if (exceedLimit) {
-    message.error(`File ${file.name} is too big. The accepted file size is less than 30MB.`)
+    message.error(`File ${file.name} is too big. The accepted file size is less than 300MB.`)
   }
   return !exceedLimit || Upload.LIST_IGNORE
 }

@@ -35,7 +35,7 @@ onMounted(() => {
   if (sharedView.value?.title) {
     document.title = `${sharedView.value.title}`
   } else {
-    document.title = 'Hệ thống cơ sở dữ liệu'
+    document.title = 'Mic Database System'
   }
 })
 </script>

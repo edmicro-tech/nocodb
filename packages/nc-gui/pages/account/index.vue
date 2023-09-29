@@ -150,13 +150,13 @@ const logout = async () => {
 
             <LazyGeneralReleaseInfo />
 
-            <a-tooltip v-if="!appInfo.ee" placement="bottom" :mouse-enter-delay="1">
+            <!-- <a-tooltip v-if="!appInfo.ee" placement="bottom" :mouse-enter-delay="1">
               <template #title> Switch language</template>
 
               <div class="flex pr-4 items-center">
                 <LazyGeneralLanguage class="cursor-pointer text-2xl hover:text-gray-800" />
               </div>
-            </a-tooltip>
+            </a-tooltip> -->
 
             <template v-if="signedIn">
               <NcDropdown :trigger="['click']" overlay-class-name="nc-dropdown-user-accounts-menu">
