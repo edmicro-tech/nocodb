@@ -80,7 +80,7 @@ watch(
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__all-tables">
               <NcLayout />
-              <div>{{ $t('labels.allTable') }}</div>
+              <div>All tables</div>
               <div
                 class="flex pl-1.25 px-1.5 py-0.75 rounded-md text-xs"
                 :class="{
@@ -101,7 +101,7 @@ watch(
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__access-settings">
               <GeneralIcon icon="users" class="!h-3.5 !w-3.5" />
-              <div>{{ $t('labels.collaborator') }}</div>
+              <div>Members</div>
             </div>
           </template>
           <ProjectAccessSettings />
@@ -110,7 +110,7 @@ watch(
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__data-sources">
               <GeneralIcon icon="database" />
-              <div>{{ $t('labels.dataSource') }}</div>
+              <div>Data sources</div>
             </div>
           </template>
           <DashboardSettingsDataSources v-model:state="baseSettingsState" />

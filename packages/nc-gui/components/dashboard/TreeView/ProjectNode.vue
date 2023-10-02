@@ -344,30 +344,44 @@ const duplicateProject = (project: ProjectType) => {
   selectedProjectToDuplicate.value = project
   isDuplicateDlgOpen.value = true
 }
-const { $jobs } = useNuxtApp()
+const { $poller } = useNuxtApp()
 
 const DlgProjectDuplicateOnOk = async (jobData: { id: string; project_id: string }) => {
   await loadProjects('workspace')
 
-  $jobs.subscribe({ id: jobData.id }, undefined, async (status: string) => {
-    if (status === JobStatus.COMPLETED) {
-      await loadProjects('workspace')
-
-      const project = projects.value.get(jobData.project_id)
-
-      // open project after duplication
-      if (project) {
-        await navigateToProject({
-          projectId: project.id,
-          type: project.type,
-        })
+  $poller.subscribe(
+    { id: jobData.id },
+    async (data: {
+      id: string
+      status?: string
+      data?: {
+        error?: {
+          message: string
+        }
+        message?: string
+        result?: any
       }
-    } else if (status === JobStatus.FAILED) {
-      message.error('Failed to duplicate project')
-      await loadProjects('workspace')
-    }
-  })
+    }) => {
+      if (data.status !== 'close') {
+        if (data.status === JobStatus.COMPLETED) {
+          await loadProjects('workspace')
 
+          const project = projects.value.get(jobData.project_id)
+
+          // open project after duplication
+          if (project) {
+            await navigateToProject({
+              projectId: project.id,
+              type: project.type,
+            })
+          }
+        } else if (data.status === JobStatus.FAILED) {
+          message.error('Failed to duplicate project')
+          await loadProjects('workspace')
+        }
+      }
+    },
+  )
   $e('a:project:duplicate')
 }
 </script>
@@ -501,7 +515,7 @@ const DlgProjectDuplicateOnOk = async (jobData: { id: string; project_id: string
                   <!-- ERD View -->
                   <NcMenuItem key="erd" data-testid="nc-sidebar-project-relations" @click="openProjectErdView(project)">
                     <GeneralIcon icon="erd" />
-                    Relations
+                    {{ $t('title.relations') }}
                   </NcMenuItem>
 
                   <!-- Swagger: Rest APIs -->
@@ -610,7 +624,7 @@ const DlgProjectDuplicateOnOk = async (jobData: { id: string; project_id: string
                             @contextmenu="setMenuContext('base', base)"
                           >
                             <GeneralBaseLogo :base-type="base.type" class="min-w-4 !xs:(min-w-4.25 w-4.25 text-sm)" />
-                            Default
+                            {{ $t('general.default') }}
                           </div>
                           <div
                             v-else
@@ -626,7 +640,7 @@ const DlgProjectDuplicateOnOk = async (jobData: { id: string; project_id: string
                               {{ base.alias || '' }}
                             </div>
                             <a-tooltip class="xs:(hidden)">
-                              <template #title>External DB</template>
+                              <template #title>{{ $t('objects.externalDb') }}</template>
                               <div>
                                 <GeneralIcon icon="info" class="text-gray-400 -mt-0.5 hover:text-gray-700 mr-1" />
                               </div>
@@ -659,7 +673,7 @@ const DlgProjectDuplicateOnOk = async (jobData: { id: string; project_id: string
                                   <!-- ERD View -->
                                   <NcMenuItem key="erd" @click="openErdView(base)">
                                     <GeneralIcon icon="erd" />
-                                    Relations
+                                    {{ $t('title.relations') }}
                                   </NcMenuItem>
 
                                   <DashboardTreeViewBaseOptions v-if="showBaseOption" v-model:project="project" :base="base" />

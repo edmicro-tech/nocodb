@@ -53,8 +53,6 @@ const activeView = inject(ActiveViewInj, ref())
 
 const isLocked = inject(IsLockedInj, ref(false))
 
-const { rightSidebarState } = storeToRefs(useSidebarStore())
-
 const isDefaultBase = computed(() => {
   const base = project.value?.bases?.find((b) => b.id === vModel.value.base_id)
   if (!base) return false
@@ -82,6 +80,7 @@ const onClick = useDebounceFn(() => {
 
 /** Enable editing view name on dbl click */
 function onDblClick() {
+  if (isMobileMode.value) return
   if (!isUIAllowed('viewCreateOrEdit')) return
 
   if (!isEditing.value) {
@@ -193,12 +192,6 @@ function onStopEdit() {
   }, 250)
 }
 
-watch(rightSidebarState, () => {
-  if (rightSidebarState.value === 'peekCloseEnd') {
-    isDropdownOpen.value = false
-  }
-})
-
 function onRef(el: HTMLElement) {
   if (activeViewTitleOrId.value === vModel.value.id) {
     nextTick(() => {
@@ -286,11 +279,11 @@ function onRef(el: HTMLElement) {
             <NcMenu class="min-w-27" :data-testid="`view-sidebar-view-actions-${vModel.alias || vModel.title}`">
               <NcMenuItem @click.stop="onDblClick">
                 <GeneralIcon icon="edit" />
-                <div class="-ml-0.25">Rename</div>
+                <div class="-ml-0.25">{{ $t('general.rename') }}</div>
               </NcMenuItem>
               <NcMenuItem @click.stop="onDuplicate">
                 <GeneralIcon icon="duplicate" class="nc-view-copy-icon" />
-                Duplicate
+                {{ $t('general.duplicate') }}
               </NcMenuItem>
 
               <NcDivider />
@@ -298,7 +291,7 @@ function onRef(el: HTMLElement) {
               <template v-if="!vModel.is_default">
                 <NcMenuItem class="!text-red-500 !hover:bg-red-50" @click.stop="onDelete">
                   <GeneralIcon icon="delete" class="text-sm nc-view-delete-icon" />
-                  <div class="-ml-0.25">Delete</div>
+                  <div class="-ml-0.25">{{ $t('general.delete') }}</div>
                 </NcMenuItem>
               </template>
             </NcMenu>

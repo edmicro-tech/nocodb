@@ -97,17 +97,19 @@ const handleFileDelete = (i: number) => {
           @click="open"
         >
           <MaterialSymbolsAttachFile class="transform group-hover:(text-accent scale-120)" />
-          Attach File
+          {{ $t('activity.attachFile') }}
         </div>
 
         <div class="flex items-center gap-2">
-          <div v-if="readOnly" class="text-gray-400">[Readonly]</div>
-          Viewing Attachments of
+          <div v-if="readOnly" class="text-gray-400">[{{ $t('labels.readOnly') }}]</div>
+          {{ $t('labels.viewingAttachmentsOf') }}
           <div class="font-semibold underline">{{ column?.title }}</div>
         </div>
 
         <div v-if="selectedVisibleItems.includes(true)" class="flex flex-1 items-center gap-3 justify-end mr-[30px]">
-          <NcButton type="primary" class="nc-attachment-download-all" @click="bulkDownloadFiles"> Bulk Download </NcButton>
+          <NcButton type="primary" class="nc-attachment-download-all" @click="bulkDownloadFiles">
+            {{ $t('activity.bulkDownload') }}
+          </NcButton>
         </div>
       </div>
     </template>
@@ -116,7 +118,7 @@ const handleFileDelete = (i: number) => {
         <general-overlay v-model="isOverDropZone" inline
           class="text-white ring ring-accent ring-opacity-100 bg-gray-700/75 flex items-center justify-center gap-2 backdrop-blur-xl">
           <MaterialSymbolsFileCopyOutline class="text-accent" height="35" width="35" />
-          <div class="text-white text-3xl">Drop here</div>
+          <div class="text-white text-3xl">{{ $t('labels.dropHere') }}</div>
         </general-overlay>
       </template>
 
@@ -128,7 +130,7 @@ const handleFileDelete = (i: number) => {
               :class="{ '!opacity-100': selectedVisibleItems[i] }" />
 
             <a-tooltip v-if="!readOnly">
-              <template #title> Remove File </template>
+              <template #title> {{ $t('title.removeFile') }} </template>
               <component
                 :is="iconMap.closeCircle"
                 v-if="isSharedForm || (isUIAllowed('dataEdit') && !isPublic && !isLocked)"
@@ -138,7 +140,7 @@ const handleFileDelete = (i: number) => {
             </a-tooltip>
 
             <a-tooltip placement="bottom">
-              <template #title> Download File </template>
+              <template #title> {{ $t('title.downloadFile') }} </template>
 
               <div class="nc-attachment-download group-hover:(opacity-100)">
                 <component :is="iconMap.download" @click.stop="downloadFile(item)" />
@@ -146,7 +148,7 @@ const handleFileDelete = (i: number) => {
             </a-tooltip>
 
             <a-tooltip v-if="isSharedForm || (!readOnly && isUIAllowed('dataEdit') && !isPublic && !isLocked)" placement="bottom">
-              <template #title> Rename File </template>
+              <template #title> {{ $t('title.renameFile') }} </template>
 
               <div class="nc-attachment-download group-hover:(opacity-100) mr-[35px]">
                 <component :is="iconMap.edit" @click.stop="renameFile(item, i)" />

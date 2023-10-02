@@ -133,16 +133,16 @@ watch(showShareModal, (val) => {
     </div>
     <div v-else class="flex flex-col px-1">
       <div class="flex flex-row justify-between items-center pb-1 mx-4 mt-3">
-        <div class="flex text-base font-medium">Share</div>
+        <div class="flex text-base font-medium">{{ $t('activity.share') }}</div>
       </div>
-      <div v-if="isViewToolbar" class="share-view">
+      <div v-if="isViewToolbar && activeView" class="share-view">
         <div class="flex flex-row items-center gap-x-2 px-4 pt-3 pb-3 select-none">
           <component
             :is="viewIcons[view?.type]?.icon"
             class="nc-view-icon group-hover"
             :style="{ color: viewIcons[view?.type]?.color }"
           />
-          <div>Share View</div>
+          <div>{{ $t('activity.shareView') }}</div>
           <div
             class="max-w-79/100 ml-2 px-2 py-0.5 rounded-md bg-gray-100 capitalize text-ellipsis overflow-hidden"
             :style="{ wordBreak: 'keep-all', whiteSpace: 'nowrap' }"
@@ -156,7 +156,7 @@ watch(showShareModal, (val) => {
         <div class="flex flex-row items-center gap-x-2 px-4 pt-3 pb-3 select-none">
           <GeneralProjectIcon :type="project.type" class="nc-view-icon group-hover" />
 
-          <div>Share Base</div>
+          <div>{{ $t('activity.shareBase.label') }}</div>
           <div
             class="max-w-79/100 ml-2 px-2 py-0.5 rounded-md bg-gray-100 capitalize text-ellipsis overflow-hidden"
             :style="{ wordBreak: 'keep-all', whiteSpace: 'nowrap' }"
@@ -175,11 +175,7 @@ watch(showShareModal, (val) => {
           @click="openManageAccess"
           >{{ $t('general.manageProjectAccess') }}</NcButton
         >
-
         <!-- <a-button
-          v-if="formStatus === 'project-collaborate'"
-          data-testid="docs-share-btn"
-          class="!border-0 !rounded-md"
           type="primary"
           :disabled="!invitationValid"
           @click="onShare"

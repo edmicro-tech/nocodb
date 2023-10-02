@@ -46,6 +46,7 @@ const { setMenuContext, openRenameTableDialog, duplicateTable } = inject(TreeVie
 
 const { loadViews: _loadViews } = useViewsStore()
 const { activeView } = storeToRefs(useViewsStore())
+const { isLeftSidebarOpen } = storeToRefs(useSidebarStore())
 
 // todo: temp
 const { projectTables } = storeToRefs(useTablesStore())
@@ -108,6 +109,10 @@ const onOpenTable = async () => {
   isLoading.value = true
   try {
     await _openTable(table.value)
+
+    if (isMobileMode.value) {
+      isLeftSidebarOpen.value = false
+    }
   } catch (e) {
     message.error(await extractSdkResponseErrorMsg(e))
   } finally {
@@ -187,7 +192,7 @@ const isTableOpened = computed(() => {
                 <template #default>
                   <NcTooltip class="flex" placement="topLeft" hide-on-click :disabled="!canUserEditEmote">
                     <template #title>
-                      {{ 'Change icon' }}
+                      {{ $t('general.changeIcon') }}
                     </template>
 
                     <MdiTable
@@ -224,7 +229,6 @@ const isTableOpened = computed(() => {
           {{ table.title }}
         </span>
         <div class="flex flex-grow h-full"></div>
-
         <div class="flex flex-row items-center">
           <NcDropdown
             v-if="

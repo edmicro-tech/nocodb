@@ -304,14 +304,14 @@ const isPublicShareDisabled = computed(() => {
 
           <div v-if="activeView?.type === ViewTypes.FORM" class="flex flex-row justify-between">
             <!-- use RTL orientation in form - todo: i18n -->
-            <div class="text-black">Survey Mode</div>
+            <div class="text-black">{{ $t('activity.surveyMode') }}</div>
             <a-switch v-model:checked="surveyMode" data-testid="nc-modal-share-view__surveyMode">
               <!-- todo i18n -->
             </a-switch>
           </div>
           <div v-if="activeView?.type === ViewTypes.FORM" class="flex flex-row justify-between">
             <!-- use RTL orientation in form - todo: i18n -->
-            <div class="text-black">RTL Orientation</div>
+            <div class="text-black">{{ $t('activity.rtlOrientation') }}</div>
             <a-switch v-model:checked="withRTL" data-testid="nc-modal-share-view__RTL">
               <!-- todo i18n -->
             </a-switch>
@@ -320,9 +320,14 @@ const isPublicShareDisabled = computed(() => {
             class="flex flex-col justify-between gap-y-1 bg-gray-50 rounded-md">
             <!-- todo: i18n -->
             <div class="flex flex-row justify-between">
-              <div class="text-black">Use Theme</div>
-              <a-switch data-testid="share-theme-toggle" :checked="viewTheme" :loading="isUpdating.password"
-                class="share-theme-toggle !mt-0.25" @click="viewTheme = !viewTheme" />
+              <div class="text-black">{{ $t('activity.useTheme') }}</div>
+              <a-switch
+                data-testid="share-theme-toggle"
+                :checked="viewTheme"
+                :loading="isUpdating.password"
+                class="share-theme-toggle !mt-0.25"
+                @click="viewTheme = !viewTheme"
+              />
             </div>
 
             <Transition name="layout" mode="out-in">

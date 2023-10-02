@@ -15,12 +15,21 @@ const { onViewsTabChange } = useViewsStore()
       <GeneralLoader v-else class="tab-icon" />
       <div class="tab-title nc-tab">{{ $t('general.data') }}</div>
     </div>
-    <div class="tab" :class="{
-      active: openedViewsTab !== 'view',
-    }" @click="onViewsTabChange(isEeUI ? 'field' : 'relation')">
-      <GeneralIcon icon="erd" class="tab-icon" :class="{}" :style="{
-        fontWeight: 500,
-      }" />
+    <div
+      class="tab"
+      :class="{
+        active: openedViewsTab !== 'view',
+      }"
+      @click="onViewsTabChange('field')"
+    >
+      <GeneralIcon
+        icon="erd"
+        class="tab-icon"
+        :class="{}"
+        :style="{
+          fontWeight: 500,
+        }"
+      />
       <div class="tab-title nc-tab">{{ $t('general.details') }}</div>
     </div>
   </div>

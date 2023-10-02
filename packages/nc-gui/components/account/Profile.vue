@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 const { user } = useGlobal()
 
+const { t } = useI18n()
+
 const isErrored = ref(false)
 const isTitleUpdating = ref(false)
 const form = ref({
@@ -13,9 +15,9 @@ const formValidator = ref()
 
 const formRules = {
   title: [
-    { required: true, message: 'Name required' },
-    { min: 2, message: 'Name must be at least 2 characters long' },
-    { max: 60, message: 'Name must be at most 60 characters long' },
+    { required: true, message: t('msg.error.nameRequired') },
+    { min: 2, message: t('msg.error.nameMinLength') },
+    { max: 60, message: t('msg.error.nameMaxLength') },
   ],
 }
 
@@ -61,30 +63,51 @@ const onValidate = async (_: any, valid: boolean) => {
 <template>
   <div class="flex flex-col items-center">
     <div class="flex flex-col w-150">
-      <div class="flex font-medium text-xl">{{ $t('labels.profile') }}</div>
+      <div class="flex font-bold text-xl">{{ $t('labels.profile') }}</div>
       <div class="mt-5 flex flex-col border-1 rounded-2xl border-gray-200 p-6 gap-y-2">
-        <div class="flex font-medium text-base">{{ $t('labels.accountDetail') }}</div>
+        <div class="flex font-medium text-base">{{ $t('labels.accountDetails') }}</div>
         <div class="flex text-gray-500">{{ $t('labels.controlAppearance') }}</div>
         <div class="flex flex-row mt-4">
           <div class="flex h-20 mt-1.5">
             <GeneralUserIcon size="xlarge" />
           </div>
           <div class="flex w-10"></div>
-          <a-form ref="formValidator" layout="vertical" no-style :model="form" class="flex flex-col w-full"
-            @finish="onSubmit" @validate="onValidate">
-            <div class="text-gray-800 mb-1.5">{{ $t('labels.name') }}</div>
+          <a-form
+            ref="formValidator"
+            layout="vertical"
+            no-style
+            :model="form"
+            class="flex flex-col w-full"
+            @finish="onSubmit"
+            @validate="onValidate"
+          >
+            <div class="text-gray-800 mb-1.5">{{ $t('general.name') }}</div>
             <a-form-item name="title" :rules="formRules.title">
-              <a-input v-model:value="form.title" class="w-full !rounded-md !py-1.5" placeholder="Name"
-                data-testid="nc-account-settings-rename-input" />
+              <a-input
+                v-model:value="form.title"
+                class="w-full !rounded-md !py-1.5"
+                :placeholder="$t('general.name')"
+                data-testid="nc-account-settings-rename-input"
+              />
             </a-form-item>
-            <div class="text-gray-800 mb-1.5">{{ $t('labels.email') }} ID</div>
-            <a-input v-model:value="email" class="w-full !rounded-md !py-1.5" placeholder="Email" disabled
-              data-testid="nc-account-settings-email-input" />
+            <div class="text-gray-800 mb-1.5">{{ $t('labels.accountEmailID') }}</div>
+            <a-input
+              v-model:value="email"
+              class="w-full !rounded-md !py-1.5"
+              :placeholder="$t('general.email')"
+              disabled
+              data-testid="nc-account-settings-email-input"
+            />
             <div class="flex flex-row w-full justify-end mt-8">
-              <NcButton type="primary" html-type="submit"
-                :disabled="isErrored || (form.title && form.title === user?.display_name)" :loading="isTitleUpdating"
-                data-testid="nc-account-settings-save" @click="onSubmit">
-                <template #loading> Saving </template>
+              <NcButton
+                type="primary"
+                html-type="submit"
+                :disabled="isErrored || (form.title && form.title === user?.display_name)"
+                :loading="isTitleUpdating"
+                data-testid="nc-account-settings-save"
+                @click="onSubmit"
+              >
+                <template #loading> {{ $t('general.saving') }} </template>
                 {{ $t('general.save') }}
               </NcButton>
             </div>
