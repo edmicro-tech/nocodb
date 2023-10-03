@@ -26,7 +26,8 @@ const logout = async () => {
   try {
     await signOut(false)
 
-    await clearWorkspaces()
+    // No need as all stores are cleared on signout
+    // await clearWorkspaces()
 
     await navigateTo('/signin')
   } catch (e) {
@@ -79,7 +80,7 @@ onMounted(() => {
       </div>
       <template #overlay>
         <NcMenu data-testid="nc-sidebar-userinfo">
-          <NcMenuItem data-testid="nc-sidebar-user-logout" @click="logout">
+          <NcMenuItem v-e="['c:user:logout']" data-testid="nc-sidebar-user-logout" @click="logout">
             <GeneralLoader v-if="isLoggingOut" class="!ml-0.5 !mr-0.5 !max-h-4.5 !-mt-0.5" />
             <GeneralIcon v-else icon="signout" class="menu-icon" />
             {{ $t('general.logOut') }}
@@ -97,7 +98,7 @@ onMounted(() => {
               ><GeneralIcon class="social-icon" icon="discord" />Join our Discord</NcMenuItem
             >
           </a>
-          <a href="https://www.reddit.com/r/NocoDB" target="_blank" class="!underline-transparent">
+          <a v-e="['c:nocodb:reddit']" href="https://www.reddit.com/r/NocoDB" target="_blank" class="!underline-transparent">
             <NcMenuItem class="social-icon-wrapper">
               <GeneralIcon class="social-icon" icon="reddit" />
               <span class="menu-btn"> {{ $t('labels.community.joinReddit') }} </span>
@@ -111,7 +112,7 @@ onMounted(() => {
           <template v-if="!appInfo.ee">
             <!-- <NcDivider />
             <a-popover key="language" class="lang-menu !py-1.5" placement="rightBottom">
-              <NcMenuItem>
+              <NcMenuItem v-e="['c:translate:open']">
                 <GeneralIcon icon="translate" class="group-hover:text-black nc-language ml-0.25 menu-icon" />
                 {{ $t('labels.language') }}
                 <div class="flex items-center text-gray-400 text-xs">{{ $t('labels.community.communityTranslated') }}</div>
@@ -131,13 +132,13 @@ onMounted(() => {
 
           <template v-if="!isMobileMode">
             <NcDivider />
-            <NcMenuItem @click="onCopy">
+            <NcMenuItem v-e="['c:auth-token:copy']" @click="onCopy">
               <GeneralIcon v-if="isAuthTokenCopied" icon="check" class="group-hover:text-black menu-icon" />
               <GeneralIcon v-else icon="copy" class="menu-icon" />
               <template v-if="isAuthTokenCopied"> {{ $t('title.copiedAuthToken') }} </template>
               <template v-else> {{ $t('title.copyAuthToken') }} </template>
             </NcMenuItem>
-            <nuxt-link v-e="['c:navbar:user:email']" class="!no-underline" to="/account/profile">
+            <nuxt-link v-e="['c:user:settings']" class="!no-underline" to="/account/profile">
               <NcMenuItem> <GeneralIcon icon="settings" class="menu-icon" /> {{ $t('title.accountSettings') }} </NcMenuItem>
             </nuxt-link>
           </template>

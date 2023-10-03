@@ -1327,15 +1327,22 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                             <a-spin v-if="row.rowMeta.saving" class="!flex items-center"
                               :data-testid="`row-save-spinner-${rowIndex}`" />
                             <template v-else-if="!isLocked">
-                              <span v-if="row.rowMeta?.commentCount && expandForm"
+                              <span
+                                v-if="row.rowMeta?.commentCount && expandForm"
+                                v-e="['c:expanded-form:open']"
                                 class="py-1 px-3 rounded-full text-xs cursor-pointer select-none transform hover:(scale-110)"
                                 :style="{ backgroundColor: enumColor.light[row.rowMeta.commentCount % enumColor.light.length] }"
                                 @click="expandAndLooseFocus(row, state)">
                                 {{ row.rowMeta.commentCount }}
                               </span>
-                              <div v-else
-                                class="cursor-pointer flex items-center border-1 border-gray-100 active:ring rounded p-1 hover:(bg-gray-50)">
-                                <component :is="iconMap.expand" v-if="expandForm" v-e="['c:row-expand']"
+                              <div
+                                v-else
+                                class="cursor-pointer flex items-center border-1 border-gray-100 active:ring rounded p-1 hover:(bg-gray-50)"
+                              >
+                                <component
+                                  :is="iconMap.expand"
+                                  v-if="expandForm"
+                                  v-e="['c:row-expand:open']"
                                   class="select-none transform hover:(text-black scale-120) nc-row-expand"
                                   @click="expandAndLooseFocus(row, state)" />
                               </div>
@@ -1358,9 +1365,17 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                           'align-middle': !rowHeight || rowHeight === 1,
                           'align-top': rowHeight && rowHeight !== 1,
                           'filling': isCellInFillRange(rowIndex, colIndex),
-                        }" :data-testid="`cell-${columnObj.title}-${rowIndex}`"
-                        :data-key="`data-key-${rowIndex}-${columnObj.id}`" :data-col="columnObj.id"
-                        :data-title="columnObj.title" :data-row-index="rowIndex" :data-col-index="colIndex"
+                          'readonly':
+                            (isLookup(columnObj) || isRollup(columnObj) || isFormula(columnObj)) &&
+                            hasEditPermission &&
+                            isCellSelected(rowIndex, colIndex),
+                        }"
+                        :data-testid="`cell-${columnObj.title}-${rowIndex}`"
+                        :data-key="`data-key-${rowIndex}-${columnObj.id}`"
+                        :data-col="columnObj.id"
+                        :data-title="columnObj.title"
+                        :data-row-index="rowIndex"
+                        :data-col-index="colIndex"
                         @mousedown="handleMouseDown($event, rowIndex, colIndex)"
                         @mouseover="handleMouseOver($event, rowIndex, colIndex)"
                         @click="handleCellClick($event, rowIndex, colIndex)" @dblclick="makeEditable(row, columnObj)"
@@ -1437,7 +1452,7 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
             <!-- <NcMenuItem -->
             <!-- v-if="contextMenuTarget && selectedRange.isSingleCell()" -->
             <!-- v-e="['a:row:insert']" -->
-            <!-- class="nc-project-menu-item" -->
+            <!-- class="nc-base-menu-item" -->
             <!-- @click="addEmptyRow(contextMenuTarget.row + 1)" -->
             <!-- > -->
             <!-- <GeneralIcon icon="plus" /> -->
@@ -1445,41 +1460,56 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
             <!-- {{ $t('activity.insertRow') }} -->
             <!-- </NcMenuItem> -->
 
-            <NcMenuItem v-if="contextMenuTarget" v-e="['a:row:copy']" class="nc-project-menu-item"
-              data-testid="context-menu-item-copy" @click="copyValue(contextMenuTarget)">
+            <NcMenuItem
+              v-if="contextMenuTarget"
+              v-e="['a:row:copy']"
+              class="nc-base-menu-item"
+              data-testid="context-menu-item-copy"
+              @click="copyValue(contextMenuTarget)"
+            >
               <GeneralIcon icon="copy" />
               <!-- Copy -->
               {{ $t('general.copy') }}
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem v-if="contextMenuTarget &&
-              selectedRange.isSingleCell() &&
-              (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
-              " v-e="['a:row:clear']" class="nc-project-menu-item" @click="clearCell(contextMenuTarget)">
+            <NcMenuItem
+              v-if="
+                contextMenuTarget &&
+                selectedRange.isSingleCell() &&
+                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              "
+              v-e="['a:row:clear']"
+              class="nc-base-menu-item"
+              @click="clearCell(contextMenuTarget)"
+            >
               <GeneralIcon icon="close" />
               {{ $t('general.clear') }}
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem v-else-if="contextMenuTarget" v-e="['a:row:clear-range']" class="nc-project-menu-item"
-              @click="clearSelectedRangeOfCells()">
+            <NcMenuItem
+              v-else-if="contextMenuTarget"
+              v-e="['a:row:clear-range']"
+              class="nc-base-menu-item"
+              @click="clearSelectedRangeOfCells()"
+            >
               <GeneralIcon icon="closeBox" class="text-gray-500" />
 
               {{ $t('general.clear') }}
             </NcMenuItem>
             <NcDivider v-if="!(!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected))" />
-            <NcMenuItem v-if="contextMenuTarget && (selectedRange.isSingleCell() || selectedRange.isSingleRow())"
-              v-e="['a:row:delete']" class="nc-project-menu-item !text-red-600 !hover:bg-red-50"
-              @click="confirmDeleteRow(contextMenuTarget.row)">
+            >
               <GeneralIcon icon="delete" />
               <!-- Delete Row -->
               {{ $t('activity.deleteRow') }}
             </NcMenuItem>
-            <div v-else-if="contextMenuTarget && deleteRangeOfRows">
-              <NcMenuItem v-e="['a:row:delete']" class="nc-project-menu-item text-red-600"
-                @click="deleteSelectedRangeOfRows">
-                <GeneralIcon icon="delete" class="text-gray-500 text-error" />
+              <NcMenuItem
+                v-e="['a:row:delete']"
+                class="nc-base-menu-item !text-red-600 !hover:bg-red-50"
+                @click="deleteSelectedRangeOfRows"
+              >
+                <GeneralIcon icon="delete" class="text-gray-500 text-red-600" />
                 <!-- Delete Rows -->
                 {{ $t('activity.deleteRows') }}
               </NcMenuItem>
@@ -1495,11 +1525,22 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
       :extra-style="paginationStyleRef?.extraStyle">
       <template #add-record>
         <div v-if="isAddingEmptyRowAllowed" class="flex ml-1">
-          <NcButton v-if="isMobileMode" class="nc-grid-add-new-row" type="secondary" @click="onNewRecordToFormClick()">
+          <NcButton
+            v-if="isMobileMode"
+            v-e="[isAddNewRecordGridMode ? 'c:row:add:grid' : 'c:row:add:form']"
+            class="nc-grid-add-new-row"
+            type="secondary"
+            @click="onNewRecordToFormClick()"
+          >
             {{ $t('activity.newRecord') }}
           </NcButton>
-          <a-dropdown-button v-else class="nc-grid-add-new-row" placement="top"
-            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()">
+          <a-dropdown-button
+            v-else
+            v-e="[isAddNewRecordGridMode ? 'c:row:add:grid:toggle' : 'c:row:add:form:toggle']"
+            class="nc-grid-add-new-row"
+            placement="top"
+            @click="isAddNewRecordGridMode ? addEmptyRow() : onNewRecordToFormClick()"
+          >
             <div data-testid="nc-pagination-add-record" class="flex items-center px-2 text-gray-600 hover:text-black">
               <span>
                 <template v-if="isAddNewRecordGridMode"> {{ $t('activity.newRecord') }} </template>
@@ -1513,8 +1554,11 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                   style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)" :class="{
                     '-left-44': !isAddNewRecordGridMode,
                     '-left-32': isAddNewRecordGridMode,
-                  }">
-                  <div v-e="['c:row:add:grid-top']" :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
+                  }"
+                >
+                  <div
+                    v-e="['c:row:add:grid']"
+                    :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-grid"
                     @click="onNewRecordToGridClick">
                     <div class="flex flex-row items-center justify-between w-full">
@@ -1528,7 +1572,9 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                     </div>
                     <div class="flex flex-row text-xs text-gray-400 ml-7.25">{{ $t('labels.addRowGrid') }}</div>
                   </div>
-                  <div v-e="['c:row:add:expanded-form']" :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
+                  <div
+                    v-e="['c:row:add:form']"
+                    :class="{ 'group': !isLocked, 'disabled-ring': isLocked }"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-form"
                     @click="onNewRecordToFormClick">
                     <div class="flex flex-row items-center justify-between w-full">
@@ -1633,6 +1679,10 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
   // todo: replace with css variable
   td.active::after {
     @apply text-primary border-current bg-primary bg-opacity-5;
+  }
+
+  td.active.readonly::after {
+    @apply text-primary bg-grey-50 bg-opacity-5 !border-gray-200;
   }
 
   td.active-cell::after {

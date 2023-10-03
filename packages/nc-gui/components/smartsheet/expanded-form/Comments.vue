@@ -8,7 +8,9 @@ const { loadCommentsAndLogs, commentsAndLogs, saveComment, comment, updateCommen
 
 const commentsWrapperEl = ref<HTMLDivElement>()
 
-await loadCommentsAndLogs()
+onMounted(async () => {
+  await loadCommentsAndLogs()
+})
 
 const { user } = useGlobal()
 
@@ -115,6 +117,7 @@ const processedAudit = (log: string) => {
     <div class="h-16 bg-white rounded-t-lg border-gray-200 border-b-1">
       <div class="flex flex-row gap-2 m-2 p-1 bg-gray-100 rounded-lg">
         <div
+          v-e="['c:row-expand:comment']"
           class="tab flex-1 px-4 py-2 transition-all text-gray-600 cursor-pointer rounded-lg"
           :class="{
             'bg-white shadow !text-brand-500 !hover:text-brand-500': tab === 'comments',
@@ -127,6 +130,7 @@ const processedAudit = (log: string) => {
           </div>
         </div>
         <div
+          v-e="['c:row-expand:audit']"
           class="tab flex-1 px-4 py-2 transition-all text-gray-600 cursor-pointer rounded-lg"
           :class="{
             'bg-white shadow !text-brand-500 !hover:text-brand-500': tab === 'audits',
@@ -159,10 +163,11 @@ const processedAudit = (log: string) => {
               <div class="flex flex-col p-4 gap-3">
                 <div class="flex justify-between">
                   <div class="flex items-center gap-2">
-                    <GeneralUserIcon size="base" :name="log.display_name ?? log.user" />
+                    <GeneralUserIcon size="base" :name="log.display_name ?? log.user" :email="log.user" />
+
                     <div class="flex flex-col">
                       <span class="truncate font-bold max-w-42">
-                        {{ log.display_name ?? log.user.split('@')[0].slice(0, 2) ?? 'Shared base' }}
+                        {{ log.display_name ?? log.user.split('@')[0] ?? 'Shared source' }}
                       </span>
                       <div v-if="log.id !== editLog?.id" class="text-xs text-gray-500">
                         {{ log.created_at !== log.updated_at ? `Edited ${timeAgo(log.updated_at)}` : timeAgo(log.created_at) }}
@@ -171,6 +176,7 @@ const processedAudit = (log: string) => {
                   </div>
                   <NcButton
                     v-if="log.user === user!.email && !editLog && !appInfo.ee"
+                    v-e="['c:row-expand:comment:edit']"
                     type="secondary"
                     class="!px-2 opacity-0 group-hover:opacity-100 transition-all"
                     size="sm"
@@ -192,7 +198,7 @@ const processedAudit = (log: string) => {
                 </div>
                 <div v-if="log.id === editLog?.id" class="flex justify-end gap-1">
                   <NcButton type="secondary" size="sm" @click="onCancel"> Cancel </NcButton>
-                  <NcButton size="sm" @click="onEditComment"> Save </NcButton>
+                  <NcButton v-e="['a:row-expand:comment:save']" size="sm" @click="onEditComment"> Save </NcButton>
                 </div>
               </div>
             </div>
@@ -209,7 +215,13 @@ const processedAudit = (log: string) => {
               @keyup.enter.prevent="saveComment"
             >
             </a-input>
-            <NcButton size="medium" class="!w-8" :disabled="!comment.length" @click="saveComment">
+            <NcButton
+              v-e="['a:row-expand:comment:save']"
+              size="medium"
+              class="!w-8"
+              :disabled="!comment.length"
+              @click="saveComment"
+            >
               <GeneralIcon icon="send" />
             </NcButton>
           </div>
@@ -233,7 +245,7 @@ const processedAudit = (log: string) => {
 
                   <div class="flex flex-col">
                     <span class="truncate max-w-50">
-                      {{ log.display_name ?? log.user.split('@')[0].slice(0, 2) ?? 'Shared base' }}
+                      {{ log.display_name ?? log.user.split('@')[0].slice(0, 2) ?? 'Shared source' }}
                     </span>
                     <div v-if="log.id !== editLog?.id" class="text-xs text-gray-500">
                       {{ timeAgo(log.created_at) }}
