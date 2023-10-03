@@ -1498,22 +1498,21 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
 
               {{ $t('general.clear') }}
             </NcMenuItem>
-            <NcDivider v-if="!(!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected))" />
-            >
-              <GeneralIcon icon="delete" />
+            <!-- <NcDivider v-if="!(!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected))" /> -->
+            <!-- > -->
+              <!-- <GeneralIcon icon="delete" /> -->
               <!-- Delete Row -->
-              {{ $t('activity.deleteRow') }}
-            </NcMenuItem>
-              <NcMenuItem
+              <!-- {{ $t('activity.deleteRow') }} -->
+            <!-- </NcMenuItem> -->
+              <!-- <NcMenuItem
                 v-e="['a:row:delete']"
                 class="nc-base-menu-item !text-red-600 !hover:bg-red-50"
                 @click="deleteSelectedRangeOfRows"
-              >
-                <GeneralIcon icon="delete" class="text-gray-500 text-red-600" />
+              > -->
+                <!-- <GeneralIcon icon="delete" class="text-gray-500 text-red-600" /> -->
                 <!-- Delete Rows -->
-                {{ $t('activity.deleteRows') }}
-              </NcMenuItem>
-            </div>
+                <!-- {{ $t('activity.deleteRows') }}
+              </NcMenuItem> -->
           </NcMenu>
         </template>
       </NcDropdown>

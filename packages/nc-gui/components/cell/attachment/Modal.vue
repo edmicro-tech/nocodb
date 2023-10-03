@@ -4,8 +4,7 @@ import { useAttachmentCell } from './utils'
 import { useSortable } from './sort'
 import { iconMap, isImage, ref, useAttachment, useDropZone, useRoles, watch } from '#imports'
 
-const { isUIAllowed } = useUIPermission()
-const { t } = useI18n()
+const { isUIAllowed } = useRoles()
 
 const {
   open,
@@ -86,8 +85,14 @@ const handleFileDelete = (i: number) => {
 </script>
 
 <template>
-  <a-modal v-model:visible="modalVisible" class="nc-attachment-modal" :class="{ active: modalVisible }" width="80%"
-    :footer="null" wrap-class-name="nc-modal-attachment-expand-cell">
+  <a-modal
+    v-model:visible="modalVisible"
+    class="nc-attachment-modal"
+    :class="{ active: modalVisible }"
+    width="80%"
+    :footer="null"
+    wrap-class-name="nc-modal-attachment-expand-cell"
+  >
     <template #title>
       <div class="flex gap-4">
         <div
@@ -115,19 +120,24 @@ const handleFileDelete = (i: number) => {
     </template>
     <div ref="dropZoneRef" tabindex="0">
       <template v-if="isSharedForm || (!readOnly && !dragging)">
-        <general-overlay v-model="isOverDropZone" inline
-          class="text-white ring ring-accent ring-opacity-100 bg-gray-700/75 flex items-center justify-center gap-2 backdrop-blur-xl">
+        <general-overlay
+          v-model="isOverDropZone"
+          inline
+          class="text-white ring ring-accent ring-opacity-100 bg-gray-700/75 flex items-center justify-center gap-2 backdrop-blur-xl"
+        >
           <MaterialSymbolsFileCopyOutline class="text-accent" height="35" width="35" />
           <div class="text-white text-3xl">{{ $t('labels.dropHere') }}</div>
         </general-overlay>
       </template>
 
-      <div ref="sortableRef" :class="{ dragging }"
-        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 relative p-6">
+      <div ref="sortableRef" :class="{ dragging }" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 relative p-6">
         <div v-for="(item, i) of visibleItems" :key="`${item.title}-${i}`" class="flex flex-col gap-1">
           <a-card class="nc-attachment-item group">
-            <a-checkbox v-model:checked="selectedVisibleItems[i]" class="nc-attachment-checkbox group-hover:(opacity-100)"
-              :class="{ '!opacity-100': selectedVisibleItems[i] }" />
+            <a-checkbox
+              v-model:checked="selectedVisibleItems[i]"
+              class="nc-attachment-checkbox group-hover:(opacity-100)"
+              :class="{ '!opacity-100': selectedVisibleItems[i] }"
+            />
 
             <a-tooltip v-if="!readOnly">
               <template #title> {{ $t('title.removeFile') }} </template>
@@ -155,13 +165,24 @@ const handleFileDelete = (i: number) => {
               </div>
             </a-tooltip>
 
-            <div :class="[dragging ? 'cursor-move' : 'cursor-pointer']"
-              class="nc-attachment h-full w-full flex items-center justify-center overflow-hidden">
-              <LazyCellAttachmentImage v-if="isImage(item.title, item.mimetype)" :srcs="getPossibleAttachmentSrc(item)"
-                class="max-w-full max-h-full m-auto justify-center" @click.stop="onClick(item)" />
+            <div
+              :class="[dragging ? 'cursor-move' : 'cursor-pointer']"
+              class="nc-attachment h-full w-full flex items-center justify-center overflow-hidden"
+            >
+              <LazyCellAttachmentImage
+                v-if="isImage(item.title, item.mimetype)"
+                :srcs="getPossibleAttachmentSrc(item)"
+                class="max-w-full max-h-full m-auto justify-center"
+                @click.stop="onClick(item)"
+              />
 
-              <component :is="FileIcon(item.icon)" v-else-if="item.icon" height="150" width="150"
-                @click.stop="openAttachment(item)" />
+              <component
+                :is="FileIcon(item.icon)"
+                v-else-if="item.icon"
+                height="150"
+                width="150"
+                @click.stop="openAttachment(item)"
+              />
 
               <IcOutlineInsertDriveFile v-else height="150" width="150" @click.stop="openAttachment(item)" />
             </div>
@@ -202,15 +223,16 @@ const handleFileDelete = (i: number) => {
 <style lang="scss">
 .nc-attachment-modal {
   .nc-attach-file {
-    @apply select-none cursor-pointer color-transition flex items-center gap-1 border-1 p-2 rounded @apply hover: (bg-primary bg-opacity-10 text-primary ring);
-    @apply active: (ring-accent ring-opacity-100 bg-primary bg-opacity-20);
+    @apply select-none cursor-pointer color-transition flex items-center gap-1 border-1 p-2 rounded
+    @apply hover:(bg-primary bg-opacity-10 text-primary ring);
+    @apply active:(ring-accent ring-opacity-100 bg-primary bg-opacity-20);
   }
 
   .nc-attachment-item {
     @apply !h-2/3 !min-h-[200px] flex items-center justify-center relative;
 
     @supports (-moz-appearance: none) {
-      @apply hover: border-0;
+      @apply hover:border-0;
     }
 
     &::after {
@@ -231,9 +253,9 @@ const handleFileDelete = (i: number) => {
 
   .nc-attachment-download {
     @apply bg-white absolute bottom-2 right-2;
-    @apply transition-opacity duration-150 ease-in opacity-0 hover: ring;
+    @apply transition-opacity duration-150 ease-in opacity-0 hover:ring;
     @apply cursor-pointer rounded shadow flex items-center p-1 border-1;
-    @apply active: (ring border-0 ring-accent);
+    @apply active:(ring border-0 ring-accent);
   }
 
   .nc-attachment-checkbox {
@@ -243,9 +265,9 @@ const handleFileDelete = (i: number) => {
 
   .nc-attachment-remove {
     @apply absolute top-2 right-2 bg-white;
-    @apply hover: (ring ring-red-500);
+    @apply hover:(ring ring-red-500);
     @apply cursor-pointer rounded-full border-2;
-    @apply active: (ring border-0 ring-red-500);
+    @apply active:(ring border-0 ring-red-500);
   }
 
   .ant-card-body {
@@ -257,7 +279,7 @@ const handleFileDelete = (i: number) => {
   }
 
   .ghost,
-  .ghost>* {
+  .ghost > * {
     @apply !pointer-events-none;
   }
 

@@ -4,7 +4,7 @@ import NcLayout from '~icons/nc-icons/layout'
 const { openedProject } = storeToRefs(useBases())
 const { activeTables } = storeToRefs(useTablesStore())
 const { activeWorkspace } = storeToRefs(useWorkspace())
-
+const { orgRoles, baseRoles, isUIAllowed } = useRoles()
 const { navigateToProjectPage } = useBase()
 
 const router = useRouter()
@@ -15,9 +15,6 @@ const { $e } = useNuxtApp()
 /* const defaultBase = computed(() => {
   return openedProject.value?.sources?.[0]
 }) */
-
-const { isUIAllowed } = useRoles()
-
 const { base } = storeToRefs(useBase())
 
 const { projectPageTab } = storeToRefs(useConfigStore())
@@ -107,7 +104,7 @@ watch(
         <!-- <a-tab-pane v-if="defaultBase" key="erd" tab="Base ERD" force-render class="pt-4 pb-12">
           <ErdView :source-id="defaultBase!.id" class="!h-full" />
         </a-tab-pane> -->
-        <a-tab-pane v-if="isUIAllowed('projectShare')" key="collaborator">
+        <a-tab-pane v-if="isUIAllowed('baseShare')" key="collaborator">
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__access-settings">
               <GeneralIcon icon="users" class="!h-3.5 !w-3.5" />
@@ -116,7 +113,7 @@ watch(
           </template>
           <ProjectAccessSettings />
         </a-tab-pane>
-        <a-tab-pane v-if="isUIAllowed('baseCreate')" key="data-source">
+        <a-tab-pane v-if="isUIAllowed('baseCreate', { roles: baseRoles ?? orgRoles })" key="data-source">
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__data-sources">
               <GeneralIcon icon="database" />
