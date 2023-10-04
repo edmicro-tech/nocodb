@@ -171,8 +171,6 @@ const tableBodyEl = ref<HTMLElement>()
 
 const fillHandle = ref<HTMLElement>()
 
-const cellRefs = ref<{ el: HTMLElement }[]>([])
-
 const gridRect = useElementBounding(gridWrapper)
 
 // #Permissions
@@ -1350,8 +1348,11 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
                           </div>
                         </div>
                       </td>
-                      <SmartsheetTableDataCell v-for="(columnObj, colIndex) of fields" :key="columnObj.id" ref="cellRefs"
-                        class="cell relative nc-grid-cell" :class="{
+                      <SmartsheetTableDataCell
+                        v-for="(columnObj, colIndex) of fields"
+                        :key="columnObj.id"
+                        class="cell relative nc-grid-cell"
+                        :class="{
                           'cursor-pointer': hasEditPermission,
                           'active': hasEditPermission && isCellSelected(rowIndex, colIndex),
                           'active-cell':

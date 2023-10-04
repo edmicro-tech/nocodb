@@ -14,12 +14,12 @@ import {
   onMounted,
   ref,
   uiTypes,
+  useBase,
   useColumnCreateStoreOrThrow,
   useGlobal,
   useI18n,
   useMetas,
   useNuxtApp,
-  useBase,
   watchEffect,
 } from '#imports'
 import MdiMinusIcon from '~icons/mdi/minus-circle-outline'
@@ -282,9 +282,9 @@ if (props.fromTableExplorer) {
               </a-select-option>
             </a-select>
           </a-form-item>
-          <div v-if="isEeUI && !props.hideType" class="mt-2 cursor-pointer" @click="predictColumnType()">
+          <!-- <div v-if="isEeUI && !props.hideType" class="mt-2 cursor-pointer" @click="predictColumnType()">
             <GeneralIcon icon="magic" :class="{ 'nc-animation-pulse': loadMagic }" class="w-full flex mt-2 text-orange-400" />
-          </div>
+          </div> -->
         </div>
 
         <LazySmartsheetColumnFormulaOptions v-if="formState.uidt === UITypes.Formula" v-model:value="formState" />
@@ -305,7 +305,7 @@ if (props.fromTableExplorer) {
         />
         <LazySmartsheetColumnLinkOptions v-if="isEdit && formState.uidt === UITypes.Links" v-model:value="formState" />
         <LazySmartsheetColumnSpecificDBTypeOptions v-if="formState.uidt === UITypes.SpecificDBType" />
-        <LazySmartsheetColumnSelectOptions
+        <SmartsheetColumnSelectOptions
           v-if="formState.uidt === UITypes.SingleSelect || formState.uidt === UITypes.MultiSelect"
           v-model:value="formState"
         />
