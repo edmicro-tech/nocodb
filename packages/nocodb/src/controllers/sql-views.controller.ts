@@ -9,15 +9,16 @@ import {
 import { SqlViewsService } from '~/services/sql-views.service';
 import { GlobalGuard } from '~/guards/global/global.guard';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class SqlViewsController {
   constructor(private readonly sqlViewsService: SqlViewsService) {}
 
   @Post([
     '/api/v1/db/meta/projects/:baseId/bases/:sourceId/sqlView',
-    '/api/v1/meta/bases/:baseId/sources/:sourceId/sqlView',
+    '/api/v2/meta/bases/:baseId/sources/:sourceId/sqlView',
   ])
   @Acl('sqlViewCreate')
   async sqlViewCreate(

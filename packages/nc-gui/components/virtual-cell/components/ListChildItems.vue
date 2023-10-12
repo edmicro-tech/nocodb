@@ -18,7 +18,14 @@ import {
   useVModel,
 } from '#imports'
 
-const props = defineProps<{ modelValue?: boolean; cellValue: any; column: any }>()
+interface Prop {
+  modelValue?: boolean
+  cellValue: any
+  column: any
+  items: number
+}
+
+const props = defineProps<Prop>()
 
 const emit = defineEmits(['update:modelValue', 'attachRecord'])
 
@@ -33,6 +40,8 @@ const isPublic = inject(IsPublicInj, ref(false))
 const injectedColumn = inject(ColumnInj, ref())
 
 const readonly = inject(ReadonlyInj, ref(false))
+
+const { isSharedBase } = storeToRefs(useBase())
 
 const {
   childrenList,
@@ -126,24 +135,31 @@ onKeyStroke('Escape', () => {
   vModel.value = false
 })
 
-const skeltonAmountToShow = ref(childrenListCount.value === 0 ? 10 : childrenListCount.value)
-
-/* 
+/*
    to render same number of skelton as the number of cards
    displayed
  */
-watch(childrenListPagination, () => {
+const skeltonCount = computed(() => {
+  if (props.items < 10 && childrenListPagination.page === 1) {
+    return props.items
+  }
+
   if (childrenListCount.value < 10 && childrenListPagination.page === 1) {
-    skeltonAmountToShow.value = childrenListCount.value === 0 ? 10 : childrenListCount.value
+    return childrenListCount.value || 10
   }
+  const totalRows = Math.ceil(childrenListCount.value / 10)
 
-  const totlaRows = Math.ceil(childrenListCount.value / 10)
-
-  if (totlaRows === childrenListPagination.page) {
-    skeltonAmountToShow.value = childrenListCount.value % 10
-  } else {
-    skeltonAmountToShow.value = 10
+  if (totalRows === childrenListPagination.page) {
+    return childrenListCount.value % 10
   }
+  return 10
+})
+
+const totalItemsToShow = computed(() => {
+  if (isChildrenLoading.value) {
+    return props.items
+  }
+  return childrenListCount.value
 })
 
 const isDataExist = computed<boolean>(() => {
@@ -151,12 +167,14 @@ const isDataExist = computed<boolean>(() => {
 })
 
 const linkOrUnLink = (rowRef: Record<string, string>, id: string) => {
+  if (isSharedBase.value) return
+
   if (isPublic.value && !isForm.value) return
-  isNew.value
-    ? unlinkRow(rowRef, parseInt(id))
-    : isChildrenListLinked.value[parseInt(id)]
-    ? unlinkRow(rowRef, parseInt(id))
-    : linkRow(rowRef, parseInt(id))
+  if (isNew.value || isChildrenListLinked.value[parseInt(id)]) {
+    unlinkRow(rowRef, parseInt(id))
+  } else {
+    linkRow(rowRef, parseInt(id))
+  }
 }
 </script>
 
@@ -201,13 +219,12 @@ const linkOrUnLink = (rowRef: Record<string, string>, id: string) => {
         </a-input>
       </div>
     </div>
-
-    <div class="flex flex-col flex-grow nc-scrollbar-md">
-      <template v-if="(isNew && state?.[colTitle]?.length) || childrenList?.pageInfo?.totalRows">
+    <div class="flex flex-col flex-grow nc-scrollbar-md cursor-pointer pr-1">
+      <div v-if="isDataExist || isChildrenLoading" class="mt-2 mb-2">
         <div class="cursor-pointer pr-1">
           <template v-if="isChildrenLoading">
             <div
-              v-for="(x, i) in Array.from({ length: 10 })"
+              v-for="(x, i) in Array.from({ length: skeltonCount })"
               :key="i"
               class="!border-2 flex flex-row gap-2 mb-2 transition-all !rounded-xl relative !border-gray-200 hover:bg-gray-50"
             >
@@ -247,20 +264,11 @@ const linkOrUnLink = (rowRef: Record<string, string>, id: string) => {
               :is-linked="childrenList?.list ? isChildrenListLinked[Number.parseInt(id)] : true"
               :is-loading="isChildrenListLoading[Number.parseInt(id)]"
               @expand="onClick(refRow)"
-              @click="
-                () => {
-                  if (isPublic && !isForm) return
-                  isNew
-                    ? unlinkRow(refRow, Number.parseInt(id))
-                    : isChildrenListLinked[Number.parseInt(id)]
-                    ? unlinkRow(refRow, Number.parseInt(id))
-                    : linkRow(refRow, Number.parseInt(id))
-                }
-              "
+              @click="linkOrUnLink(refRow, id)"
             />
           </template>
         </div>
-      </template>
+      </div>
       <div v-else class="pt-1 flex flex-col gap-3 my-auto items-center justify-center text-gray-500">
         <InboxIcon class="w-16 h-16 mx-auto" />
         <p>
@@ -291,8 +299,8 @@ const linkOrUnLink = (rowRef: Record<string, string>, id: string) => {
 
     <div class="flex flex-row justify-between bg-white relative pt-1">
       <div v-if="!isForm" class="flex items-center justify-center px-2 rounded-md text-gray-500 bg-brand-50">
-        {{ childrenListCount || 0 }} {{ !isMobileMode ? $t('objects.records') : '' }}
-        {{ !isMobileMode && childrenListCount !== 0 ? $t('general.are') : '' }}
+        {{ totalItemsToShow || 0 }} {{ !isMobileMode ? $t('objects.records') : '' }}
+        {{ !isMobileMode && totalItemsToShow !== 0 ? $t('general.are') : '' }}
         {{ $t('general.linked') }}
       </div>
       <div v-else class="flex items-center justify-center px-2 rounded-md text-gray-500 bg-brand-50">
@@ -341,6 +349,7 @@ const linkOrUnLink = (rowRef: Record<string, string>, id: string) => {
                   new: true,
                 },
         }"
+        :row-id="extractPkFromRow(expandedFormRow, relatedTableMeta.columns as ColumnType[])"
         use-meta-fields
       />
     </Suspense>

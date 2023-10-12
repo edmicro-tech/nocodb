@@ -13,15 +13,16 @@ import {
 import { GlobalGuard } from '~/guards/global/global.guard';
 import { SharedBasesService } from '~/services/shared-bases.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class SharedBasesController {
   constructor(private readonly sharedBasesService: SharedBasesService) {}
 
   @Post([
     '/api/v1/db/meta/projects/:baseId/shared',
-    '/api/v1/meta/bases/:baseId/shared',
+    '/api/v2/meta/bases/:baseId/shared',
   ])
   @HttpCode(200)
   @Acl('createSharedBaseLink')
@@ -42,7 +43,7 @@ export class SharedBasesController {
 
   @Patch([
     '/api/v1/db/meta/projects/:baseId/shared',
-    '/api/v1/meta/bases/:baseId/shared',
+    '/api/v2/meta/bases/:baseId/shared',
   ])
   @Acl('updateSharedBaseLink')
   async updateSharedBaseLink(
@@ -62,7 +63,7 @@ export class SharedBasesController {
 
   @Delete([
     '/api/v1/db/meta/projects/:baseId/shared',
-    '/api/v1/meta/bases/:baseId/shared',
+    '/api/v2/meta/bases/:baseId/shared',
   ])
   @Acl('disableSharedBaseLink')
   async disableSharedBaseLink(@Param('baseId') baseId: string): Promise<any> {
@@ -75,7 +76,7 @@ export class SharedBasesController {
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/shared',
-    '/api/v1/meta/bases/:baseId/shared',
+    '/api/v2/meta/bases/:baseId/shared',
   ])
   @Acl('getSharedBaseLink')
   async getSharedBaseLink(

@@ -73,6 +73,7 @@ const rolePermissions = {
       multipleDelete: true,
       baseRename: true,
       baseDuplicate: true,
+      sourceCreate: true,
     },
   },
   [ProjectRoles.EDITOR]: {

@@ -3,8 +3,9 @@ import { useTitle } from '@vueuse/core'
 import NcLayout from '~icons/nc-icons/layout'
 const { openedProject } = storeToRefs(useBases())
 const { activeTables } = storeToRefs(useTablesStore())
-const { activeWorkspace } = storeToRefs(useWorkspace())
 const { orgRoles, baseRoles, isUIAllowed } = useRoles()
+const { activeWorkspace, workspaceUserCount } = storeToRefs(useWorkspace())
+
 const { navigateToProjectPage } = useBase()
 
 const router = useRouter()
@@ -26,6 +27,7 @@ const baseSettingsState = ref('')
 watch(
   () => route.value.query?.page,
   (newVal, oldVal) => {
+    if (route.value.name !== 'index-typeOrId-baseId-index-index') return
     if (newVal && newVal !== oldVal) {
       if (newVal === 'collaborator') {
         projectPageTab.value = 'collaborator'
@@ -67,10 +69,10 @@ watch(
       class="flex flex-row pl-2 pr-2 border-b-1 border-gray-200 justify-between w-full"
       :class="{ 'nc-table-toolbar-mobile': isMobileMode, 'h-[var(--topbar-height)]': !isMobileMode }"
     >
-      <div class="flex flex-row items-center gap-x-4">
+      <div class="flex flex-row items-center gap-x-3">
         <GeneralOpenLeftSidebarBtn />
         <GeneralProjectIcon :type="openedProject?.type" />
-        <div class="flex font-medium text-base capitalize">
+        <div class="flex font-medium text-sm capitalize">
           {{ openedProject?.title }}
         </div>
       </div>
@@ -108,7 +110,17 @@ watch(
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__access-settings">
               <GeneralIcon icon="users" class="!h-3.5 !w-3.5" />
-              <div>Members</div>
+              <div>{{ $t('labels.members') }}</div>
+              <div
+                v-if="workspaceUserCount"
+                class="tab-info"
+                :class="{
+                  'bg-primary-selected': projectPageTab === 'data-source',
+                  'bg-gray-50': projectPageTab !== 'data-source',
+                }"
+              >
+                {{ workspaceUserCount }}
+              </div>
             </div>
           </template>
           <ProjectAccessSettings />
@@ -126,7 +138,7 @@ watch(
                   'bg-gray-50': projectPageTab !== 'data-source',
                 }"
               >
-                {{ base.sources.length - 1 }}
+                {{ base.sources.length }}
               </div>
             </div>
           </template>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { TableType, ViewType } from 'nocodb-sdk'
-import { isLinksOrLTAR, isSystemColumn, isVirtualCol } from 'nocodb-sdk'
+import { ViewTypes, isLinksOrLTAR, isSystemColumn, isVirtualCol } from 'nocodb-sdk'
 import type { Ref } from 'vue'
 import MdiChevronDown from '~icons/mdi/chevron-down'
-import TableIcon from '~icons/nc-icons/table'
 
 import {
   CellClickHookInj,
@@ -48,9 +47,15 @@ const props = defineProps<Props>()
 
 const emits = defineEmits(['update:modelValue', 'cancel', 'next', 'prev'])
 
+const { activeView } = storeToRefs(useViewsStore())
+
 const key = ref(0)
 
 const wrapper = ref()
+
+const { dashboardUrl } = useDashboard()
+
+const { copy } = useClipboard()
 
 const { isMobileMode } = useGlobal()
 
@@ -64,6 +69,12 @@ const state = toRef(props, 'state')
 
 const meta = toRef(props, 'meta')
 
+const islastRow = toRef(props, 'lastRow')
+
+const isFirstRow = toRef(props, 'firstRow')
+
+const route = useRoute()
+
 const router = useRouter()
 
 const isPublic = inject(IsPublicInj, ref(false))
@@ -71,9 +82,13 @@ const isPublic = inject(IsPublicInj, ref(false))
 // to check if a expanded form which is not yet saved exist or not
 const isUnsavedFormExist = ref(false)
 
+const isRecordLinkCopied = ref(false)
+
 const { isUIAllowed } = useRoles()
 
 const reloadTrigger = inject(ReloadRowDataHookInj, createEventHook())
+
+const { addOrEditStackRow } = useKanbanViewStoreOrThrow()
 
 // override cell click hook to avoid unexpected behavior at form fields
 provide(CellClickHookInj, undefined)
@@ -99,6 +114,8 @@ const isKanban = inject(IsKanbanInj, ref(false))
 
 provide(MetaInj, meta)
 
+const isLoading = ref(true)
+
 const {
   commentsDrawer,
   changedColumns,
@@ -113,25 +130,10 @@ const {
   syncLTARRefs,
   save: _save,
   loadCommentsAndLogs,
+  clearColumns,
 } = useProvideExpandedFormStore(meta, row)
 
 const duplicatingRowInProgress = ref(false)
-
-if (props.loadRow) {
-  await _loadRow(rowId.value)
-}
-
-if (rowId.value) {
-  try {
-    await _loadRow(rowId.value)
-  } catch (e: any) {
-    if (e.response?.status === 404) {
-      // todo: i18n
-      message.error('Record not found')
-      router.replace({ query: {} })
-    } else throw e
-  }
-}
 
 useProvideSmartsheetStore(ref({}) as Ref<ViewType>, meta)
 
@@ -152,8 +154,12 @@ const isExpanded = useVModel(props, 'modelValue', emits, {
 })
 
 const onClose = () => {
-  if (_row.value?.rowMeta?.new) emits('cancel')
-  isExpanded.value = false
+  if (changedColumns.value.size > 0) {
+    isCloseModalOpen.value = true
+  } else {
+    if (_row.value?.rowMeta?.new) emits('cancel')
+    isExpanded.value = false
+  }
 }
 
 const onDuplicateRow = () => {
@@ -182,31 +188,73 @@ const save = async () => {
     await syncLTARRefs(data)
     reloadTrigger?.trigger()
   } else {
-    await _save()
+    let kanbanClbk
+    if (activeView.value?.type === ViewTypes.KANBAN) {
+      kanbanClbk = (row: any, isNewRow: boolean) => {
+        addOrEditStackRow(row, isNewRow)
+      }
+    }
+
+    await _save(undefined, undefined, {
+      kanbanClbk,
+    })
     reloadTrigger?.trigger()
   }
   isUnsavedFormExist.value = false
 }
 
 const isPreventChangeModalOpen = ref(false)
+const isCloseModalOpen = ref(false)
 
 const discardPreventModal = () => {
-  emits('next')
-  isPreventChangeModalOpen.value = false
+  // when user click on next or previous button
+  if (isPreventChangeModalOpen.value) {
+    emits('next')
+    if (_row.value?.rowMeta?.new) emits('cancel')
+    isPreventChangeModalOpen.value = false
+  }
+  // when user click on close button
+  if (isCloseModalOpen.value) {
+    isCloseModalOpen.value = false
+    if (_row.value?.rowMeta?.new) emits('cancel')
+    isExpanded.value = false
+  }
+  // clearing all new modifed change on close
+  clearColumns()
 }
 
 const onNext = async () => {
   if (changedColumns.value.size > 0) {
     isPreventChangeModalOpen.value = true
-  } else {
-    emits('next')
+    return
   }
+  emits('next')
+}
+
+const copyRecordUrl = async () => {
+  await copy(
+    encodeURI(
+      `${dashboardUrl?.value}#/${route.params.typeOrId}/${route.params.baseId}/${meta.value?.id}${
+        props.view ? `/${props.view.title}` : ''
+      }?rowId=${primaryKey.value}`,
+    ),
+  )
+
+  isRecordLinkCopied.value = true
 }
 
 const saveChanges = async () => {
-  isUnsavedFormExist.value = false
-  await save()
-  emits('next')
+  if (isPreventChangeModalOpen.value) {
+    isUnsavedFormExist.value = false
+    await save()
+    emits('next')
+    isPreventChangeModalOpen.value = false
+  }
+  if (isCloseModalOpen.value) {
+    isCloseModalOpen.value = false
+    await save()
+    isExpanded.value = false
+  }
 }
 const reloadParentRowHook = inject(ReloadRowDataHookInj, createEventHook())
 
@@ -232,7 +280,29 @@ provide(IsExpandedFormOpenInj, isExpanded)
 
 const cellWrapperEl = ref()
 
-onMounted(() => {
+onMounted(async () => {
+  isRecordLinkCopied.value = false
+  isLoading.value = true
+  if (props.loadRow) {
+    await _loadRow()
+    await loadCommentsAndLogs()
+  }
+
+  if (props.rowId) {
+    try {
+      await _loadRow(props.rowId)
+      await loadCommentsAndLogs()
+    } catch (e: any) {
+      if (e.response?.status === 404) {
+        // todo: i18n
+        message.error('Record not found')
+        router.replace({ query: {} })
+      } else throw e
+    }
+  }
+
+  isLoading.value = false
+
   setTimeout(() => {
     cellWrapperEl.value?.$el?.querySelector('input,select,textarea')?.focus()
   }, 300)
@@ -332,7 +402,7 @@ const onDeleteRowClick = () => {
 const onConfirmDeleteRowClick = async () => {
   showDeleteRowModal.value = false
   await deleteRowById(primaryKey.value)
-  message.success('Row deleted')
+  message.success('Record deleted')
   reloadTrigger.trigger()
   onClose()
   showDeleteRowModal.value = false
@@ -346,6 +416,8 @@ watch(rowId, async (nRow) => {
 const showRightSections = computed(() => {
   return !isNew.value && commentsDrawer.value && isUIAllowed('commentList')
 })
+
+const preventModalStatus = computed(() => isCloseModalOpen.value || isPreventChangeModalOpen.value)
 </script>
 
 <script lang="ts">
@@ -372,7 +444,7 @@ export default {
             <div class="flex gap-2">
               <NcButton
                 v-if="props.showNextPrevIcons"
-                :disabled="props.firstRow"
+                :disabled="isFirstRow"
                 type="secondary"
                 class="nc-prev-arrow !w-10"
                 @click="$emit('prev')"
@@ -381,7 +453,7 @@ export default {
               </NcButton>
               <NcButton
                 v-if="props.showNextPrevIcons"
-                :disabled="props.lastRow"
+                :disabled="islastRow"
                 type="secondary"
                 class="nc-next-arrow !w-10"
                 @click="onNext"
@@ -389,10 +461,10 @@ export default {
                 <MdiChevronDown class="text-md" />
               </NcButton>
             </div>
-            <div
-              v-if="displayValue && !row.rowMeta?.new"
-              class="flex items-center truncate w-32 hover:w-64 transition-all font-bold text-gray-800 text-xl"
-            >
+            <div v-if="isLoading">
+              <a-skeleton-input class="!h-8 !sm:mr-14 !w-52 mt-1 !rounded-md !overflow-hidden" active size="small" />
+            </div>
+            <div v-else-if="displayValue && !row.rowMeta?.new" class="flex items-center font-bold text-gray-800 text-xl w-64">
               <span class="truncate">
                 {{ displayValue }}
               </span>
@@ -400,6 +472,18 @@ export default {
             <div v-if="row.rowMeta?.new" class="flex items-center truncate font-bold text-gray-800 text-xl">New Record</div>
           </div>
           <div class="flex gap-2">
+            <NcButton
+              v-if="!isNew"
+              type="secondary"
+              class="!xs:hidden text-gray-700"
+              @click="!isNew ? copyRecordUrl() : () => {}"
+            >
+              <div v-e="['c:row-expand:copy-url']" data-testid="nc-expanded-form-copy-url" class="flex gap-2 items-center">
+                <component :is="iconMap.check" v-if="isRecordLinkCopied" class="cursor-pointer nc-duplicate-row" />
+                <component :is="iconMap.link" v-else class="cursor-pointer nc-duplicate-row" />
+                {{ isRecordLinkCopied ? $t('labels.copiedRecordURL') : $t('labels.copyRecordURL') }}
+              </div>
+            </NcButton>
             <NcDropdown v-if="!isNew">
               <NcButton type="secondary" class="nc-expand-form-more-actions w-10">
                 <GeneralIcon icon="threeDotVertical" class="text-md text-gray-700" />
@@ -410,6 +494,12 @@ export default {
                     <div v-e="['c:row-expand:reload']" class="flex gap-2 items-center" data-testid="nc-expanded-form-reload">
                       <component :is="iconMap.reload" class="cursor-pointer" />
                       {{ $t('general.reload') }}
+                    </div>
+                  </NcMenuItem>
+                  <NcMenuItem v-if="!isNew && isMobileMode" class="text-gray-700" @click="!isNew ? copyRecordUrl() : () => {}">
+                    <div v-e="['c:row-expand:copy-url']" data-testid="nc-expanded-form-copy-url" class="flex gap-2 items-center">
+                      <component :is="iconMap.link" class="cursor-pointer nc-duplicate-row" />
+                      {{ $t('labels.copyRecordURL') }}
                     </div>
                   </NcMenuItem>
                   <NcMenuItem
@@ -423,7 +513,9 @@ export default {
                       class="flex gap-2 items-center"
                     >
                       <component :is="iconMap.copy" class="cursor-pointer nc-duplicate-row" />
-                      Duplicate record
+                      <span class="-ml-0.25">
+                        {{ $t('labels.duplicateRecord') }}
+                      </span>
                     </div>
                   </NcMenuItem>
                   <NcDivider v-if="isUIAllowed('dataEdit') && !isNew" />
@@ -434,7 +526,9 @@ export default {
                     @click="!isNew && onDeleteRowClick()"
                   >
                     <component :is="iconMap.delete" data-testid="nc-expanded-form-delete" class="cursor-pointer nc-delete-row" />
-                    Delete record
+                    <span class="-ml-0.5">
+                      {{ $t('activity.deleteRecord') }}
+                    </span>
                   </NcMenuItem>
                 </NcMenu>
               </template>
@@ -495,34 +589,48 @@ export default {
               :col-id="col.id"
               :data-testid="`nc-expand-col-${col.title}`"
             >
-              <div class="flex items-start flex-row xs:(flex-col w-full) nc-expanded-cell">
-                <div class="w-[12rem] xs:(w-full) mt-1.5 !h-[35px]">
+              <div class="flex items-start flex-row sm:(gap-x-6) xs:(flex-col w-full) nc-expanded-cell min-h-10">
+                <div class="w-[12rem] xs:(w-full) mt-0.25 !h-[35px]">
                   <LazySmartsheetHeaderVirtualCell
                     v-if="isVirtualCol(col)"
-                    class="nc-expanded-cell-header !text-gray-600"
+                    class="nc-expanded-cell-header h-full !text-gray-500"
                     :column="col"
                   />
 
-                  <LazySmartsheetHeaderCell v-else class="nc-expanded-cell-header !text-gray-600" :column="col" />
+                  <LazySmartsheetHeaderCell v-else class="nc-expanded-cell-header !text-gray-500" :column="col" />
                 </div>
 
-                <LazySmartsheetDivDataCell
-                  v-if="col.title"
-                  :ref="i ? null : (el: any) => (cellWrapperEl = el)"
-                  class="!bg-white rounded-lg !w-[20rem] !xs:w-full border-1 overflow-hidden border-gray-200 px-1 min-h-[35px] flex items-center relative"
-                >
-                  <LazySmartsheetVirtualCell v-if="isVirtualCol(col)" v-model="_row.row[col.title]" :row="_row" :column="col" />
-
-                  <LazySmartsheetCell
+                <template v-if="isLoading">
+                  <div
+                    v-if="isMobileMode"
+                    class="!h-8.5 !xs:h-12 !xs:bg-white !sm:mr-21 !w-60 mt-0.75 !rounded-lg !overflow-hidden"
+                  ></div>
+                  <a-skeleton-input
                     v-else
-                    v-model="_row.row[col.title]"
-                    :column="col"
-                    :edit-enabled="true"
-                    :active="true"
-                    :read-only="isPublic"
-                    @update:model-value="changedColumns.add(col.title)"
+                    class="!h-8.5 !xs:h-9.5 !xs:bg-white !sm:mr-21 !w-60 mt-0.75 !rounded-lg !overflow-hidden"
+                    active
+                    size="small"
                   />
-                </LazySmartsheetDivDataCell>
+                </template>
+                <template v-else>
+                  <SmartsheetDivDataCell
+                    v-if="col.title"
+                    :ref="i ? null : (el: any) => (cellWrapperEl = el)"
+                    class="!bg-white rounded-lg !w-[20rem] !xs:w-full border-1 border-gray-200 overflow-hidden px-1 min-h-[35px] flex items-center relative"
+                  >
+                    <LazySmartsheetVirtualCell v-if="isVirtualCol(col)" v-model="_row.row[col.title]" :row="_row" :column="col" />
+
+                    <LazySmartsheetCell
+                      v-else
+                      v-model="_row.row[col.title]"
+                      :column="col"
+                      :edit-enabled="true"
+                      :active="true"
+                      :read-only="isPublic"
+                      @update:model-value="changedColumns.add(col.title)"
+                    />
+                  </SmartsheetDivDataCell>
+                </template>
               </div>
             </div>
             <div v-if="hiddenFields.length > 0" class="flex w-full px-12 items-center py-3">
@@ -543,34 +651,54 @@ export default {
                 :class="`nc-expand-col-${col.title}`"
                 :data-testid="`nc-expand-col-${col.title}`"
               >
-                <div class="flex flex-row items-start">
+                <div class="flex flex-row items-start min-h-10">
                   <div class="w-[12rem] scale-110 !h-[35px] mt-2.5">
-                    <LazySmartsheetHeaderVirtualCell v-if="isVirtualCol(col)" class="!text-gray-600" :column="col" />
+                    <LazySmartsheetHeaderVirtualCell v-if="isVirtualCol(col)" :column="col" class="!text-gray-600" />
 
                     <LazySmartsheetHeaderCell v-else class="!text-gray-600" :column="col" />
                   </div>
 
-                  <LazySmartsheetDivDataCell
-                    v-if="col.title"
-                    :ref="i ? null : (el: any) => (cellWrapperEl = el)"
-                    class="!bg-white rounded-lg !w-[20rem] border-1 overflow-hidden border-gray-200 px-1 min-h-[35px] flex items-center relative"
-                  >
-                    <LazySmartsheetVirtualCell v-if="isVirtualCol(col)" v-model="_row.row[col.title]" :row="_row" :column="col" />
-
-                    <LazySmartsheetCell
+                  <template v-if="isLoading">
+                    <div
+                      v-if="isMobileMode"
+                      class="!h-8.5 !xs:h-9.5 !xs:bg-white !sm:mr-21 !w-60 mt-0.75 !rounded-lg !overflow-hidden"
+                    ></div>
+                    <a-skeleton-input
                       v-else
-                      v-model="_row.row[col.title]"
-                      :column="col"
-                      :edit-enabled="true"
-                      :active="true"
-                      :read-only="isPublic"
-                      @update:model-value="changedColumns.add(col.title)"
+                      class="!h-8.5 !xs:h-12 !xs:bg-white !sm:mr-21 !w-60 mt-0.75 !rounded-lg !overflow-hidden"
+                      active
+                      size="small"
                     />
-                  </LazySmartsheetDivDataCell>
+                  </template>
+                  <template v-else>
+                    <LazySmartsheetDivDataCell
+                      v-if="col.title"
+                      :ref="i ? null : (el: any) => (cellWrapperEl = el)"
+                      class="!bg-white rounded-lg !w-[20rem] border-1 overflow-hidden border-gray-200 px-1 min-h-[35px] flex items-center relative"
+                    >
+                      <LazySmartsheetVirtualCell
+                        v-if="isVirtualCol(col)"
+                        v-model="_row.row[col.title]"
+                        :row="_row"
+                        :column="col"
+                      />
+
+                      <LazySmartsheetCell
+                        v-else
+                        v-model="_row.row[col.title]"
+                        :column="col"
+                        :edit-enabled="true"
+                        :active="true"
+                        :read-only="isPublic"
+                        @update:model-value="changedColumns.add(col.title)"
+                      />
+                    </LazySmartsheetDivDataCell>
+                  </template>
                 </div>
               </div>
             </div>
           </div>
+
           <div
             v-if="isUIAllowed('dataEdit')"
             class="w-full h-16 border-t-1 border-gray-200 bg-white flex items-center justify-end p-3 xs:(p-0 mt-4 border-t-0 gap-x-4 justify-between)"
@@ -633,7 +761,7 @@ export default {
           class="nc-comments-drawer border-1 relative border-gray-200 w-1/3 max-w-125 bg-gray-50 rounded-xl min-w-0 overflow-hidden h-full xs:hidden"
           :class="{ active: commentsDrawer && isUIAllowed('commentList') }"
         >
-          <LazySmartsheetExpandedFormComments />
+          <SmartsheetExpandedFormComments />
         </div>
       </div>
     </div>
@@ -643,9 +771,8 @@ export default {
     <template #entity-preview>
       <span>
         <div class="flex flex-row items-center py-2.25 px-2.5 bg-gray-50 rounded-lg text-gray-700 mb-4">
-          <component :is="iconMap.table" class="nc-view-icon" />
           <div class="capitalize text-ellipsis overflow-hidden select-none w-full pl-1.75 break-keep whitespace-nowrap">
-            {{ meta.title }}
+            {{ displayValue }}
           </div>
         </div>
       </span>
@@ -653,16 +780,19 @@ export default {
   </GeneralDeleteModal>
 
   <!-- Prevent unsaved change modal -->
-  <NcModal v-model:visible="isPreventChangeModalOpen" size="small">
-    <template #header>
-      <div class="flex flex-row items-center gap-x-2">Do you want to save the changes ?</div>
-    </template>
-    <div class="mt-2">
-      <div class="flex flex-row justify-end gap-x-2 mt-6">
-        <NcButton type="secondary" @click="discardPreventModal">{{ $t('general.quit') }}</NcButton>
+  <NcModal v-model:visible="preventModalStatus" size="small">
+    <div class="">
+      <div class="flex flex-row items-center gap-x-2 text-base font-bold">
+        {{ $t('tooltip.saveChanges') }}
+      </div>
+      <div class="flex font-medium mt-2">
+        {{ $t('activity.doYouWantToSaveTheChanges') }}
+      </div>
+      <div class="flex flex-row justify-end gap-x-2 mt-5">
+        <NcButton type="secondary" @click="discardPreventModal">{{ $t('labels.discard') }}</NcButton>
 
         <NcButton key="submit" type="primary" label="Rename Table" loading-label="Renaming Table" @click="saveChanges">
-          {{ $t('activity.saveAndQuit') }}
+          {{ $t('tooltip.saveChanges') }}
         </NcButton>
       </div>
     </div>

@@ -21,8 +21,9 @@ import { packageVersion } from '~/utils/packageVersion';
 import { BasesService } from '~/services/bases.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { Filter } from '~/models';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 @Controller()
 export class BasesController {
   constructor(protected readonly projectsService: BasesService) {}
@@ -30,7 +31,7 @@ export class BasesController {
   @Acl('baseList', {
     scope: 'org',
   })
-  @Get(['/api/v1/db/meta/projects/', '/api/v1/meta/bases/'])
+  @Get(['/api/v1/db/meta/projects/', '/api/v2/meta/bases/'])
   async list(@Query() queryParams: Record<string, any>, @Request() req) {
     const bases = await this.projectsService.baseList({
       user: req.user,
@@ -45,7 +46,7 @@ export class BasesController {
   @Acl('baseInfoGet')
   @Get([
     '/api/v1/db/meta/projects/:baseId/info',
-    '/api/v1/meta/bases/:baseId/info',
+    '/api/v2/meta/bases/:baseId/info',
   ])
   async baseInfoGet() {
     return {
@@ -59,7 +60,7 @@ export class BasesController {
   }
 
   @Acl('baseGet')
-  @Get(['/api/v1/db/meta/projects/:baseId', '/api/v1/meta/bases/:baseId'])
+  @Get(['/api/v1/db/meta/projects/:baseId', '/api/v2/meta/bases/:baseId'])
   async baseGet(@Param('baseId') baseId: string) {
     const base = await this.projectsService.getProjectWithInfo({
       baseId: baseId,
@@ -71,7 +72,7 @@ export class BasesController {
   }
 
   @Acl('baseUpdate')
-  @Patch(['/api/v1/db/meta/projects/:baseId', '/api/v1/meta/bases/:baseId'])
+  @Patch(['/api/v1/db/meta/projects/:baseId', '/api/v2/meta/bases/:baseId'])
   async baseUpdate(
     @Param('baseId') baseId: string,
     @Body() body: Record<string, any>,
@@ -87,7 +88,7 @@ export class BasesController {
   }
 
   @Acl('baseDelete')
-  @Delete(['/api/v1/db/meta/projects/:baseId', '/api/v1/meta/bases/:baseId'])
+  @Delete(['/api/v1/db/meta/projects/:baseId', '/api/v2/meta/bases/:baseId'])
   async baseDelete(@Param('baseId') baseId: string, @Request() req) {
     const deleted = await this.projectsService.baseSoftDelete({
       baseId,
@@ -100,7 +101,7 @@ export class BasesController {
   @Acl('baseCreate', {
     scope: 'org',
   })
-  @Post(['/api/v1/db/meta/projects', '/api/v1/meta/bases'])
+  @Post(['/api/v1/db/meta/projects', '/api/v2/meta/bases'])
   @HttpCode(200)
   async baseCreate(@Body() baseBody: ProjectReqType, @Request() req) {
     const base = await this.projectsService.baseCreate({
@@ -114,7 +115,7 @@ export class BasesController {
   @Acl('hasEmptyOrNullFilters')
   @Get([
     '/api/v1/db/meta/projects/:baseId/has-empty-or-null-filters',
-    '/api/v1/meta/bases/:baseId/has-empty-or-null-filters',
+    '/api/v2/meta/bases/:baseId/has-empty-or-null-filters',
   ])
   async hasEmptyOrNullFilters(@Param('baseId') baseId: string) {
     return await Filter.hasEmptyOrNullFilters(baseId);

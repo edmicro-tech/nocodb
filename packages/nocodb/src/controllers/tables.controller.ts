@@ -16,17 +16,18 @@ import { GlobalGuard } from '~/guards/global/global.guard';
 import { TablesService } from '~/services/tables.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { PagedResponseImpl } from '~/helpers/PagedResponse';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/tables',
     '/api/v1/db/meta/projects/:baseId/:sourceId/tables',
-    '/api/v1/meta/bases/:baseId/tables',
-    '/api/v1/meta/bases/:baseId/:sourceId/tables',
+    '/api/v2/meta/bases/:baseId/tables',
+    '/api/v2/meta/bases/:baseId/:sourceId/tables',
   ])
   @Acl('tableList')
   async tableList(
@@ -48,8 +49,8 @@ export class TablesController {
   @Post([
     '/api/v1/db/meta/projects/:baseId/tables',
     '/api/v1/db/meta/projects/:baseId/:sourceId/tables',
-    '/api/v1/meta/bases/:baseId/tables',
-    '/api/v1/meta/bases/:baseId/:sourceId/tables',
+    '/api/v2/meta/bases/:baseId/tables',
+    '/api/v2/meta/bases/:baseId/:sourceId/tables',
   ])
   @HttpCode(200)
   @Acl('tableCreate')
@@ -69,7 +70,7 @@ export class TablesController {
     return result;
   }
 
-  @Get(['/api/v1/db/meta/tables/:tableId', '/api/v1/meta/tables/:tableId'])
+  @Get(['/api/v1/db/meta/tables/:tableId', '/api/v2/meta/tables/:tableId'])
   @Acl('tableGet')
   async tableGet(@Param('tableId') tableId: string, @Request() req) {
     const table = await this.tablesService.getTableWithAccessibleViews({
@@ -80,7 +81,7 @@ export class TablesController {
     return table;
   }
 
-  @Patch(['/api/v1/db/meta/tables/:tableId', '/api/v1/meta/tables/:tableId'])
+  @Patch(['/api/v1/db/meta/tables/:tableId', '/api/v2/meta/tables/:tableId'])
   @Acl('tableUpdate')
   async tableUpdate(
     @Param('tableId') tableId: string,
@@ -96,7 +97,7 @@ export class TablesController {
     return { msg: 'The table has been updated successfully' };
   }
 
-  @Delete(['/api/v1/db/meta/tables/:tableId', '/api/v1/meta/tables/:tableId'])
+  @Delete(['/api/v1/db/meta/tables/:tableId', '/api/v2/meta/tables/:tableId'])
   @Acl('tableDelete')
   async tableDelete(@Param('tableId') tableId: string, @Request() req) {
     const result = await this.tablesService.tableDelete({
@@ -110,7 +111,7 @@ export class TablesController {
 
   @Post([
     '/api/v1/db/meta/tables/:tableId/reorder',
-    '/api/v1/meta/tables/:tableId/reorder',
+    '/api/v2/meta/tables/:tableId/reorder',
   ])
   @Acl('tableReorder')
   @HttpCode(200)

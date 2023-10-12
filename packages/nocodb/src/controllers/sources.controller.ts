@@ -4,15 +4,16 @@ import { GlobalGuard } from '~/guards/global/global.guard';
 import { PagedResponseImpl } from '~/helpers/PagedResponse';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { SourcesService } from '~/services/sources.service';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class SourcesController {
   constructor(private readonly sourcesService: SourcesService) {}
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/bases/:sourceId',
-    '/api/v1/meta/bases/:baseId/sources/:sourceId',
+    '/api/v2/meta/bases/:baseId/sources/:sourceId',
   ])
   @Acl('baseGet')
   async baseGet(@Param('sourceId') sourceId: string) {
@@ -29,7 +30,7 @@ export class SourcesController {
 
   @Patch([
     '/api/v1/db/meta/projects/:baseId/bases/:sourceId',
-    '/api/v1/meta/bases/:baseId/sources/:sourceId',
+    '/api/v2/meta/bases/:baseId/sources/:sourceId',
   ])
   @Acl('baseUpdate')
   async baseUpdate(
@@ -48,7 +49,7 @@ export class SourcesController {
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/bases',
-    '/api/v1/meta/bases/:baseId/sources',
+    '/api/v2/meta/bases/:baseId/sources',
   ])
   @Acl('baseList')
   async baseList(@Param('baseId') baseId: string) {

@@ -143,6 +143,8 @@ const [useProvideExpandedFormStore, useExpandedFormStore] = useInjectionState((m
 
       comment.value = ''
 
+      reloadTrigger?.trigger()
+
       await loadCommentsAndLogs()
     } catch (e: any) {
       message.error(e.message)
@@ -151,7 +153,16 @@ const [useProvideExpandedFormStore, useExpandedFormStore] = useInjectionState((m
     $e('a:row-expand:comment')
   }
 
-  const save = async (ltarState: Record<string, any> = {}, undo = false) => {
+  const save = async (
+    ltarState: Record<string, any> = {},
+    undo = false,
+    // TODO: Hack. Remove this when kanban injection store issue is resolved
+    {
+      kanbanClbk,
+    }: {
+      kanbanClbk?: (row: Row, isNewRow: boolean) => void
+    } = {},
+  ) => {
     let data
     try {
       const isNewRow = row.value.rowMeta?.new ?? false
@@ -264,23 +275,21 @@ const [useProvideExpandedFormStore, useExpandedFormStore] = useInjectionState((m
         }
       }
 
-      if (activeView.value?.type === ViewTypes.KANBAN) {
-        const { addOrEditStackRow } = useKanbanViewStoreOrThrow()
-        addOrEditStackRow(row.value, isNewRow)
+      if (activeView.value?.type === ViewTypes.KANBAN && kanbanClbk) {
+        kanbanClbk(row.value, isNewRow)
       }
-
-      // trim the display value if greater than 20chars
-      const trimmedDisplayValue =
-        displayValue.value && displayValue.value?.length > 20 ? `${displayValue.value?.substring(0, 20)}...` : displayValue.value
-
-      message.success(`${trimmedDisplayValue || 'Row'} updated successfully.`)
 
       changedColumns.value = new Set()
     } catch (e: any) {
+      console.error(e)
       message.error(`${t('msg.error.rowUpdateFailed')}: ${await extractSdkResponseErrorMsg(e)}`)
     }
     $e('a:row-expand:add')
     return data
+  }
+
+  const clearColumns = () => {
+    changedColumns.value = new Set()
   }
 
   const loadRow = async (rowId?: string) => {
@@ -313,7 +322,7 @@ const [useProvideExpandedFormStore, useExpandedFormStore] = useInjectionState((m
 
       if (res.message) {
         message.info(
-          `Row delete failed: ${`Unable to delete row with ID ${rowId} because of the following:
+          `Record delete failed: ${`Unable to delete record with ID ${rowId} because of the following:
               \n${res.message.join('\n')}.\n
               Clear the data first & try again`})}`,
         )
@@ -348,6 +357,7 @@ const [useProvideExpandedFormStore, useExpandedFormStore] = useInjectionState((m
     primaryKey,
     saveRowAndStay,
     updateComment,
+    clearColumns,
   }
 }, 'expanded-form-store')
 

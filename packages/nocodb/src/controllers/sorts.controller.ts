@@ -15,15 +15,16 @@ import { GlobalGuard } from '~/guards/global/global.guard';
 import { PagedResponseImpl } from '~/helpers/PagedResponse';
 import { SortsService } from '~/services/sorts.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class SortsController {
   constructor(private readonly sortsService: SortsService) {}
 
   @Get([
     '/api/v1/db/meta/views/:viewId/sorts/',
-    '/api/v1/meta/views/:viewId/sorts/',
+    '/api/v2/meta/views/:viewId/sorts/',
   ])
   @Acl('sortList')
   async sortList(@Param('viewId') viewId: string) {
@@ -36,7 +37,7 @@ export class SortsController {
 
   @Post([
     '/api/v1/db/meta/views/:viewId/sorts/',
-    '/api/v1/meta/views/:viewId/sorts/',
+    '/api/v2/meta/views/:viewId/sorts/',
   ])
   @HttpCode(200)
   @Acl('sortCreate')
@@ -52,7 +53,7 @@ export class SortsController {
     return sort;
   }
 
-  @Get(['/api/v1/db/meta/sorts/:sortId', '/api/v1/meta/sorts/:sortId'])
+  @Get(['/api/v1/db/meta/sorts/:sortId', '/api/v2/meta/sorts/:sortId'])
   @Acl('sortGet')
   async sortGet(@Param('sortId') sortId: string) {
     const sort = await this.sortsService.sortGet({
@@ -61,7 +62,7 @@ export class SortsController {
     return sort;
   }
 
-  @Patch(['/api/v1/db/meta/sorts/:sortId', '/api/v1/meta/sorts/:sortId'])
+  @Patch(['/api/v1/db/meta/sorts/:sortId', '/api/v2/meta/sorts/:sortId'])
   @Acl('sortUpdate')
   async sortUpdate(
     @Param('sortId') sortId: string,
@@ -75,7 +76,7 @@ export class SortsController {
     return sort;
   }
 
-  @Delete(['/api/v1/db/meta/sorts/:sortId', '/api/v1/meta/sorts/:sortId'])
+  @Delete(['/api/v1/db/meta/sorts/:sortId', '/api/v2/meta/sorts/:sortId'])
   @Acl('sortDelete')
   async sortDelete(@Param('sortId') sortId: string, @Req() _req) {
     const sort = await this.sortsService.sortDelete({

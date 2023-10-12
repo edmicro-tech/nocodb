@@ -8,15 +8,7 @@ const { loadCommentsAndLogs, commentsAndLogs, saveComment: _saveComment, comment
 
 const commentsWrapperEl = ref<HTMLDivElement>()
 
-const auditTabDomRef = (e: HTMLElement) => {
-  e.scrollTop = e.scrollHeight
-}
-
-onMounted(async () => {
-  await loadCommentsAndLogs()
-})
-
-const { user } = useGlobal()
+const { user, appInfo } = useGlobal()
 
 const tab = ref<'comments' | 'audits'>('comments')
 
@@ -107,13 +99,10 @@ watch(commentsWrapperEl, () => {
   scrollComments()
 })
 
-// Ignore first line if its the only one
-const processedAudit = (log: string) => {
-  const dotSplit = log.split('.')
+const onClickAudit = () => {
+  if (appInfo.value.ee) return
 
-  if (dotSplit.length === 1) return log
-
-  return log.substring(log.indexOf('.') + 1)
+  tab.value = 'audits'
 }
 </script>
 
@@ -125,7 +114,7 @@ const processedAudit = (log: string) => {
           v-e="['c:row-expand:comment']"
           class="tab flex-1 px-4 py-2 transition-all text-gray-600 cursor-pointer rounded-lg"
           :class="{
-            'bg-white shadow !text-brand-500 !hover:text-brand-500': tab === 'comments',
+            'bg-white shadow !text-brand-500 !hover:text-brand-500': tab === 'comments' || appInfo.ee,
           }"
           @click="tab = 'comments'"
         >
@@ -134,13 +123,29 @@ const processedAudit = (log: string) => {
             Comments
           </div>
         </div>
+        <NcTooltip v-if="appInfo.ee" class="tab flex-1">
+          <template #title>
+            <span class="!text-base"> Coming soon </span>
+          </template>
+          <div
+            v-e="['c:row-expand:audit']"
+            class="flex-1 px-4 py-2 transition-all text-gray-400 cursor-not-allowed bg-gray-50 rounded-lg"
+            @click="onClickAudit"
+          >
+            <div class="tab-title nc-tab select-none">
+              <MdiFileDocumentOutline class="h-4 w-4" />
+              Audits
+            </div>
+          </div>
+        </NcTooltip>
         <div
+          v-else
           v-e="['c:row-expand:audit']"
           class="tab flex-1 px-4 py-2 transition-all text-gray-600 cursor-pointer rounded-lg"
           :class="{
             'bg-white shadow !text-brand-500 !hover:text-brand-500': tab === 'audits',
           }"
-          @click="tab = 'audits'"
+          @click="onClickAudit"
         >
           <div class="tab-title nc-tab">
             <MdiFileDocumentOutline class="h-4 w-4" />
@@ -152,7 +157,7 @@ const processedAudit = (log: string) => {
     <div
       class="h-[calc(100%-4rem)]"
       :class="{
-        'pb-2': tab !== 'comments',
+        'pb-2': tab !== 'comments' && !appInfo.ee,
       }"
     >
       <div v-if="tab === 'comments'" class="flex flex-col h-full">
@@ -211,7 +216,7 @@ const processedAudit = (log: string) => {
         </div>
         <div v-if="hasEditPermission" class="p-2 bg-gray-50 gap-2 flex">
           <div class="h-14 flex flex-row w-full bg-white py-2.75 px-1.5 items-center rounded-xl border-1 border-gray-200">
-            <GeneralUserIcon size="base" class="!w-10" />
+            <GeneralUserIcon size="base" class="!w-10" :email="user?.email" />
             <a-input
               v-model:value="comment"
               class="!rounded-lg border-1 bg-white !px-2.5 !py-2 !border-gray-200 nc-comment-box !outline-none"
@@ -232,7 +237,7 @@ const processedAudit = (log: string) => {
           </div>
         </div>
       </div>
-      <div v-if="tab === 'audits'" :ref="auditTabDomRef" class="flex flex-col h-full pl-2 pr-1 pt-2 nc-scrollbar-md space-y-2">
+      <div v-if="tab === 'audits'" ref="commentsWrapperEl" class="flex flex-col h-full pl-2 pr-1 pt-2 nc-scrollbar-md space-y-2">
         <template v-if="audits.length === 0">
           <div class="flex flex-col text-center justify-center h-full">
             <div class="text-center text-3xl text-gray-600">
@@ -242,11 +247,11 @@ const processedAudit = (log: string) => {
           </div>
         </template>
         <div v-for="log of audits" :key="log.id">
-          <div class="bg-white rounded-xl border-1 gap-3 border-gray-200">
+          <div v-if="log.details" class="bg-white rounded-xl border-1 gap-3 border-gray-200">
             <div class="flex flex-col p-4 gap-3">
               <div class="flex justify-between">
                 <div class="flex items-center gap-2">
-                  <GeneralUserIcon size="base" :name="log.display_name ?? log.user" />
+                  <GeneralUserIcon size="base" :email="log.user" />
 
                   <div class="flex flex-col">
                     <span class="truncate font-bold max-w-50">
@@ -258,9 +263,7 @@ const processedAudit = (log: string) => {
                   </div>
                 </div>
               </div>
-              <div class="text-sm font-medium text-gray-700">
-                {{ processedAudit(log.description) }}
-              </div>
+              <div v-dompurify-html="log.details" class="text-sm font-medium"></div>
             </div>
           </div>
         </div>
@@ -270,10 +273,25 @@ const processedAudit = (log: string) => {
 </template>
 
 <style scoped>
+.tab {
+  @apply max-w-1/2;
+}
 .tab .tab-title {
   @apply min-w-0 flex justify-center gap-2 font-semibold items-center;
   word-break: 'keep-all';
   white-space: 'nowrap';
   display: 'inline';
+}
+
+.text-decoration-line-through {
+  text-decoration: line-through;
+}
+
+:deep(.red.lighten-4) {
+  @apply bg-red-100 rounded-md line-through;
+}
+
+:deep(.green.lighten-4) {
+  @apply bg-green-100 rounded-md !mr-3 !leading-6;
 }
 </style>

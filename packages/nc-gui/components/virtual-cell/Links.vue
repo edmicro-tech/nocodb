@@ -64,12 +64,21 @@ const textVal = computed(() => {
   }
 })
 
+const toatlRecordsLinked = computed(() => {
+  if (isForm?.value) {
+    return state.value?.[colTitle.value]?.length
+  }
+  return +value?.value || 0
+})
+
 const onAttachRecord = () => {
   childListDlg.value = false
   listItemsDlg.value = true
 }
 
 const openChildList = () => {
+  if (isUnderLookup.value) return
+
   if (!isLocked.value) {
     childListDlg.value = true
   }
@@ -91,6 +100,12 @@ const localCellValue = computed<any[]>(() => {
   }
   return []
 })
+
+const openListDlg = () => {
+  if (isUnderLookup.value) return
+
+  listItemsDlg.value = true
+}
 </script>
 
 <template>
@@ -109,18 +124,24 @@ const localCellValue = computed<any[]>(() => {
     </div>
     <div class="flex-grow" />
 
-    <div v-if="!isLocked && !isUnderLookup" class="flex justify-end hidden group-hover:flex items-center">
+    <div v-if="!isLocked && !isUnderLookup" class="!xs:hidden flex justify-end hidden group-hover:flex items-center">
       <MdiPlus
         v-if="(!readOnly && isUIAllowed('dataEdit')) || isForm"
         class="select-none !text-md text-gray-700 nc-action-icon nc-plus"
-        @click.stop="listItemsDlg = true"
+        @click.stop="openListDlg"
       />
     </div>
 
-    <LazyVirtualCellComponentsListItems v-model="listItemsDlg" :column="relatedTableDisplayColumn" />
+    <LazyVirtualCellComponentsListItems
+      v-if="listItemsDlg || childListDlg"
+      v-model="listItemsDlg"
+      :column="relatedTableDisplayColumn"
+    />
 
     <LazyVirtualCellComponentsListChildItems
+      v-if="listItemsDlg || childListDlg"
       v-model="childListDlg"
+      :items="toatlRecordsLinked"
       :column="relatedTableDisplayColumn"
       :cell-value="localCellValue"
       @attach-record="onAttachRecord"

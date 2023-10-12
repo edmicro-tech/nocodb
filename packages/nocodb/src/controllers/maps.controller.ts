@@ -13,13 +13,14 @@ import { MapUpdateReqType, ViewCreateReqType } from 'nocodb-sdk';
 import { GlobalGuard } from '~/guards/global/global.guard';
 import { MapsService } from '~/services/maps.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class MapsController {
   constructor(private readonly mapsService: MapsService) {}
 
-  @Get(['/api/v1/db/meta/maps/:mapViewId', '/api/v1/meta/maps/:mapViewId'])
+  @Get(['/api/v1/db/meta/maps/:mapViewId', '/api/v2/meta/maps/:mapViewId'])
   @Acl('mapViewGet')
   async mapViewGet(@Param('mapViewId') mapViewId: string) {
     return await this.mapsService.mapViewGet({ mapViewId });
@@ -27,7 +28,7 @@ export class MapsController {
 
   @Post([
     '/api/v1/db/meta/tables/:tableId/maps',
-    '/api/v1/meta/tables/:tableId/maps',
+    '/api/v2/meta/tables/:tableId/maps',
   ])
   @HttpCode(200)
   @Acl('mapViewCreate')
@@ -44,7 +45,7 @@ export class MapsController {
     return view;
   }
 
-  @Patch(['/api/v1/db/meta/maps/:mapViewId', '/api/v1/meta/maps/:mapViewId'])
+  @Patch(['/api/v1/db/meta/maps/:mapViewId', '/api/v2/meta/maps/:mapViewId'])
   @Acl('mapViewUpdate')
   async mapViewUpdate(
     @Param('mapViewId') mapViewId: string,

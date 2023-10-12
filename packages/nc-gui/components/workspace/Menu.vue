@@ -5,7 +5,7 @@
     <div class="flex-grow min-w-20">
       <div
         data-testid="nc-workspace-menu"
-        class="flex items-center nc-workspace-menu overflow-hidden py-1.25 pr-0.25 justify-center w-full"
+        class="flex items-center nc-workspace-menu overflow-hidden py-1.25 pr-0.25 justify-center w-full ml-2"
       >
         <a
           class="w-10 min-w-10 transition-all duration-200 p-1 transform"

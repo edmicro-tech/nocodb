@@ -8,6 +8,7 @@ import {
   DropZoneRef,
   IsExpandedFormOpenInj,
   IsGalleryInj,
+  IsKanbanInj,
   RowHeightInj,
   iconMap,
   inject,
@@ -46,11 +47,15 @@ const isLockedMode = inject(IsLockedInj, ref(false))
 
 const isGallery = inject(IsGalleryInj, ref(false))
 
+const isKanban = inject(IsKanbanInj, ref(false))
+
 const isExpandedForm = inject(IsExpandedFormOpenInj, ref(false))
 
 const { isSharedForm } = useSmartsheetStoreOrThrow()!
 
-const { getPossibleAttachmentSrc, openAttachment } = useAttachment()
+const { isMobileMode } = useGlobal()
+
+const { getPossibleAttachmentSrc, openAttachment: _openAttachment } = useAttachment()
 
 const {
   isPublic,
@@ -61,7 +66,7 @@ const {
   visibleItems,
   onDrop,
   isLoading,
-  open,
+  open: _open,
   FileIcon,
   selectedImage,
   isReadonly: _isReadonly,
@@ -136,7 +141,7 @@ watch(
 useSelectedCellKeyupListener(inject(ActiveCellInj, ref(false)), (e) => {
   if (e.key === 'Enter' && !isReadonly.value) {
     e.stopPropagation()
-    if (!modalVisible.value) {
+    if (!modalVisible.value && !isMobileMode.value) {
       modalVisible.value = true
     } else {
       // click Attach File button
@@ -146,6 +151,24 @@ useSelectedCellKeyupListener(inject(ActiveCellInj, ref(false)), (e) => {
 })
 
 const rowHeight = inject(RowHeightInj, ref())
+
+const open = () => {
+  if (isMobileMode.value) return (isExpandedForm.value = true)
+
+  _open()
+}
+
+const openAttachment = (item: any) => {
+  if (isMobileMode.value) return
+
+  _openAttachment(item)
+}
+
+const onExpand = () => {
+  if (isMobileMode.value) return
+
+  modalVisible.value = true
+}
 </script>
 
 <template>
@@ -153,7 +176,7 @@ const rowHeight = inject(RowHeightInj, ref())
     ref="attachmentCellRef"
     tabindex="0"
     :style="{
-      height: isForm ? undefined : `max(${(rowHeight || 1) * 1.8}rem, 41px)`,
+      height: isForm || isExpandedForm ? undefined : `max(${(rowHeight || 1) * 1.8}rem, 41px)`,
     }"
     class="nc-attachment-cell relative flex color-transition flex items-center w-full"
     :class="{ 'justify-center': !active, 'justify-between': active }"
@@ -165,6 +188,7 @@ const rowHeight = inject(RowHeightInj, ref())
         v-model="isOverDropZone"
         inline
         :target="currentCellRef"
+        data-rec="true"
         class="nc-attachment-cell-dropzone text-white text-lg ring ring-accent ring-opacity-100 bg-gray-700/75 flex items-center justify-center gap-2 backdrop-blur-xl"
       >
         <MaterialSymbolsFileCopyOutline class="text-accent" />
@@ -182,7 +206,9 @@ const rowHeight = inject(RowHeightInj, ref())
       <component :is="iconMap.reload" v-if="isLoading" :class="{ 'animate-infinite animate-spin': isLoading }" />
 
       <NcTooltip placement="bottom">
-        <template #title>{{ $t('activity.attachmentDrop') }} </template>
+        <template #title
+          ><span data-rec="true">{{ $t('activity.attachmentDrop') }} </span></template
+        >
 
         <div v-if="active || !visibleItems.length || (isForm && visibleItems.length)" class="flex items-center gap-1">
           <MaterialSymbolsAttachFile
@@ -190,6 +216,7 @@ const rowHeight = inject(RowHeightInj, ref())
           />
           <div
             v-if="!visibleItems.length"
+            data-rec="true"
             class="group-hover:text-primary text-gray-500 dark:text-gray-200 dark:group-hover:!text-white text-xs"
           >
             {{ $t('activity.addFiles') }}
@@ -203,10 +230,10 @@ const rowHeight = inject(RowHeightInj, ref())
     <template v-if="visibleItems.length">
       <div
         ref="sortableRef"
-        :class="{ 'justify-center': !isExpandedForm && !isGallery }"
+        :class="{ 'justify-center': !isExpandedForm && !isGallery && !isKanban }"
         class="flex cursor-pointer w-full items-center flex-wrap gap-2 py-1.5 scrollbar-thin-dull overflow-hidden mt-0 items-start"
         :style="{
-          maxHeight: isForm ? undefined : `max(${(rowHeight || 1) * 1.8}rem, 41px)`,
+          maxHeight: isForm || isExpandedForm ? undefined : `max(${(rowHeight || 1) * 1.8}rem, 41px)`,
         }"
       >
         <template v-for="(item, i) of visibleItems" :key="item.url || item.title">
@@ -220,7 +247,7 @@ const rowHeight = inject(RowHeightInj, ref())
                 :class="{ 'ml-2': active }"
                 @click="
                   () => {
-                    if (isGallery) return
+                    if (isGallery || isMobileMode || (isKanban && !isExpandedForm)) return
                     selectedImage = item
                   }
                 "
@@ -264,7 +291,7 @@ const rowHeight = inject(RowHeightInj, ref())
           <component
             :is="iconMap.expand"
             class="transform dark:(!text-white) group-hover:(!text-grey-800 scale-120) text-gray-500 text-[0.75rem]"
-            @click.stop="modalVisible = true"
+            @click.stop="onExpand"
           />
         </NcTooltip>
       </div>

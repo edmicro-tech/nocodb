@@ -1,4 +1,5 @@
 import { ViewTypes } from 'nocodb-sdk'
+import axios from 'axios'
 import type { Api, ColumnType, FormColumnType, FormType, GalleryType, PaginatedType, TableType, ViewType } from 'nocodb-sdk'
 import type { ComputedRef, Ref } from 'vue'
 import {
@@ -98,6 +99,16 @@ export function useViewData(
     },
   })
 
+  const islastRow = computed(() => {
+    const currentIndex = getExpandedRowIndex()
+    return paginationData.value?.isLastPage && currentIndex === formattedData.value.length - 1
+  })
+
+  const isFirstRow = computed(() => {
+    const currentIndex = getExpandedRowIndex()
+    return paginationData.value?.isFirstPage && currentIndex === 0
+  })
+
   const queryParams = computed(() => ({
     offset: ((paginationData.value.page ?? 0) - 1) * (paginationData.value.pageSize ?? appInfoDefaultLimit),
     limit: paginationData.value.pageSize ?? appInfoDefaultLimit,
@@ -166,16 +177,34 @@ export function useViewData(
     }
   }
 
+  const controller = ref()
+
   async function loadData(params: Parameters<Api<any>['dbViewRow']['list']>[4] = {}) {
     if ((!base?.value?.id || !metaId.value || !viewMeta.value?.id) && !isPublic.value) return
+
+    if (controller.value) {
+      controller.value.cancel()
+    }
+
+    const CancelToken = axios.CancelToken
+
+    controller.value = CancelToken.source()
+
     const response = !isPublic.value
-      ? await api.dbViewRow.list('noco', base.value.id!, metaId.value!, viewMeta.value!.id!, {
-          ...queryParams.value,
-          ...params,
-          ...(isUIAllowed('sortSync') ? {} : { sortArrJson: JSON.stringify(sorts.value) }),
-          ...(isUIAllowed('filterSync') ? {} : { filterArrJson: JSON.stringify(nestedFilters.value) }),
-          where: where?.value,
-        } as any)
+      ? await api.dbViewRow.list(
+          'noco',
+          base.value.id!,
+          metaId.value!,
+          viewMeta.value!.id!,
+          {
+            ...queryParams.value,
+            ...params,
+            ...(isUIAllowed('sortSync') ? {} : { sortArrJson: JSON.stringify(sorts.value) }),
+            ...(isUIAllowed('filterSync') ? {} : { filterArrJson: JSON.stringify(nestedFilters.value) }),
+            where: where?.value,
+          } as any,
+          { cancelToken: controller.value.token },
+        )
       : await fetchSharedViewData({ sortsArr: sorts.value, filtersArr: nestedFilters.value })
 
     formattedData.value = formatData(response.list)
@@ -284,6 +313,8 @@ export function useViewData(
   }
 
   const navigateToSiblingRow = async (dir: NavigateDir) => {
+    console.log('test')
+
     const expandedRowIndex = getExpandedRowIndex()
 
     // calculate next row index based on direction
@@ -359,5 +390,7 @@ export function useViewData(
     navigateToSiblingRow,
     getExpandedRowIndex,
     optimisedQuery,
+    islastRow,
+    isFirstRow,
   }
 }

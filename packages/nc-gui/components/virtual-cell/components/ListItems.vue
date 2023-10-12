@@ -25,6 +25,8 @@ const { isMobileMode } = useGlobal()
 
 const injectedColumn = inject(ColumnInj)
 
+const { isSharedBase } = storeToRefs(useBase())
+
 const filterQueryRef = ref()
 
 const { $e } = useNuxtApp()
@@ -83,17 +85,23 @@ const unlinkRow = async (row: Record<string, any>, id: number) => {
 }
 
 /** reload list on modal open */
-watch(vModel, (nextVal, prevVal) => {
-  if (nextVal && !prevVal) {
-    /** reset query and limit */
-    childrenExcludedListPagination.query = ''
-    childrenExcludedListPagination.page = 1
-    if (!isForm.value) {
-      loadChildrenList()
+watch(
+  vModel,
+  (nextVal, prevVal) => {
+    if (nextVal && !prevVal) {
+      /** reset query and limit */
+      childrenExcludedListPagination.query = ''
+      childrenExcludedListPagination.page = 1
+      if (!isForm.value) {
+        loadChildrenList()
+      }
+      loadChildrenExcludedList(rowState.value)
     }
-    loadChildrenExcludedList(rowState.value)
-  }
-})
+  },
+  {
+    immediate: true,
+  },
+)
 
 const expandedFormDlg = ref(false)
 
@@ -156,6 +164,15 @@ watch(expandedFormDlg, () => {
 onKeyStroke('Escape', () => {
   vModel.value = false
 })
+
+const onClick = (refRow: any, id: string) => {
+  if (isSharedBase.value) return
+  if (isChildrenExcludedListLinked.value[Number.parseInt(id)]) {
+    unlinkRow(refRow, Number.parseInt(id))
+  } else {
+    linkRow(refRow, Number.parseInt(id))
+  }
+}
 </script>
 
 <template>
@@ -266,12 +283,7 @@ onKeyStroke('Escape', () => {
                 expandedFormDlg = true
               }
             "
-            @click="
-              () => {
-                if (isChildrenExcludedListLinked[Number.parseInt(id)]) unlinkRow(refRow, Number.parseInt(id))
-                else linkRow(refRow, Number.parseInt(id))
-              }
-            "
+            @click="() => onClick(refRow, id)"
           />
         </template>
       </div>
@@ -329,6 +341,7 @@ onKeyStroke('Escape', () => {
                   new: true,
                 },
         }"
+        :row-id="extractPkFromRow(expandedFormRow, relatedTableMeta.columns as ColumnType[])"
         :state="newRowState"
         use-meta-fields
       />

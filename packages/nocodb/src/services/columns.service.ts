@@ -28,6 +28,7 @@ import {
   createHmAndBtColumn,
   generateFkName,
   randomID,
+  sanitizeColumnName,
   validateLookupPayload,
   validatePayload,
   validateRequiredField,
@@ -83,8 +84,8 @@ async function reuseOrSave(
 @Injectable()
 export class ColumnsService {
   constructor(
-    private readonly metaService: MetaService,
-    private readonly appHooksService: AppHooksService,
+    protected readonly metaService: MetaService,
+    protected readonly appHooksService: AppHooksService,
   ) {}
 
   async columnUpdate(param: {
@@ -118,12 +119,42 @@ export class ColumnsService {
 
     const mxColumnLength = Column.getMaxColumnNameLength(sqlClientType);
 
+    if (!isVirtualCol(param.column)) {
+      param.column.column_name = sanitizeColumnName(param.column.column_name);
+    }
+
+    if (
+      param.column.column_name &&
+      param.column.column_name.length > mxColumnLength
+    ) {
+      // - 5 is a buffer for suffix
+      let colName = param.column.column_name.slice(0, mxColumnLength - 5);
+      let suffix = 1;
+      while (
+        !(await Column.checkTitleAvailable({
+          column_name: colName,
+          fk_model_id: column.fk_model_id,
+          exclude_id: param.columnId,
+        }))
+      ) {
+        colName = param.column.column_name.slice(0, mxColumnLength - 5);
+        colName += `_${suffix++}`;
+      }
+      param.column.column_name = colName;
+    }
+
     if (
       !isVirtualCol(param.column) &&
       param.column.column_name.length > mxColumnLength
     ) {
       NcError.badRequest(
         `Column name ${param.column.column_name} exceeds ${mxColumnLength} characters`,
+      );
+    }
+
+    if (param.column.title && param.column.title.length > 255) {
+      NcError.badRequest(
+        `Column title ${param.column.title} exceeds 255 characters`,
       );
     }
 
@@ -258,11 +289,11 @@ export class ColumnsService {
         );
         const driverType = dbDriver.clientType();
 
-        // MultiSelect to SingleSelect
         if (
           column.uidt === UITypes.MultiSelect &&
           colBody.uidt === UITypes.SingleSelect
         ) {
+          // MultiSelect to SingleSelect
           if (driverType === 'mysql' || driverType === 'mysql2') {
             await dbDriver.raw(
               `UPDATE ?? SET ?? = SUBSTRING_INDEX(??, ',', 1) WHERE ?? LIKE '%,%';`,
@@ -302,6 +333,63 @@ export class ColumnsService {
               ],
             );
           }
+        } else if (
+          [
+            UITypes.SingleLineText,
+            UITypes.Email,
+            UITypes.PhoneNumber,
+            UITypes.URL,
+          ].includes(column.uidt)
+        ) {
+          // Text to SingleSelect/MultiSelect
+          const dbDriver = await reuseOrSave('dbDriver', reuse, async () =>
+            NcConnectionMgrv2.get(source),
+          );
+
+          const baseModel = await reuseOrSave('baseModel', reuse, async () =>
+            Model.getBaseModelSQL({
+              id: table.id,
+              dbDriver: dbDriver,
+            }),
+          );
+
+          const data = await baseModel.execAndParse(
+            dbDriver.raw('SELECT DISTINCT ?? FROM ??', [
+              column.column_name,
+              table.table_name,
+            ]),
+          );
+
+          if (data.length) {
+            const existingOptions = colBody.colOptions.options.map(
+              (el) => el.title,
+            );
+            const options = data.reduce((acc, el) => {
+              if (el[column.column_name]) {
+                const values = el[column.column_name].split(',');
+                if (values.length > 1) {
+                  if (colBody.uidt === UITypes.SingleSelect) {
+                    NcError.badRequest(
+                      'SingleSelect cannot have comma separated values, please use MultiSelect instead.',
+                    );
+                  }
+                }
+                for (const v of values) {
+                  if (!existingOptions.includes(v.trim())) {
+                    acc.push({
+                      title: v.trim(),
+                    });
+                    existingOptions.push(v.trim());
+                  }
+                }
+              }
+              return acc;
+            }, []);
+            colBody.colOptions.options = [
+              ...colBody.colOptions.options,
+              ...options,
+            ];
+          }
         }
 
         // Handle migrations
@@ -319,23 +407,48 @@ export class ColumnsService {
         );
         if (colBody.cdf) {
           if (colBody.uidt === UITypes.SingleSelect) {
-            if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
-              NcError.badRequest(
-                `Default value '${colBody.cdf}' is not a select option.`,
-              );
+            try {
+              if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
+                NcError.badRequest(
+                  `Default value '${colBody.cdf}' is not a select option.`,
+                );
+              }
+            } catch (e) {
+              colBody.cdf = colBody.cdf.replace(/^'/, '').replace(/'$/, '');
+              if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
+                NcError.badRequest(
+                  `Default value '${colBody.cdf}' is not a select option.`,
+                );
+              }
             }
           } else {
-            for (const cdf of colBody.cdf.split(',')) {
-              if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
-                NcError.badRequest(
-                  `Default value '${cdf}' is not a select option.`,
-                );
+            try {
+              for (const cdf of colBody.cdf.split(',')) {
+                if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
+                  NcError.badRequest(
+                    `Default value '${cdf}' is not a select option.`,
+                  );
+                }
+              }
+            } catch (e) {
+              colBody.cdf = colBody.cdf.replace(/^'/, '').replace(/'$/, '');
+              for (const cdf of colBody.cdf.split(',')) {
+                if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
+                  NcError.badRequest(
+                    `Default value '${cdf}' is not a select option.`,
+                  );
+                }
               }
             }
           }
 
           // handle single quote for default value
-          if (driverType === 'mysql' || driverType === 'mysql2') {
+          if (
+            driverType === 'mysql' ||
+            driverType === 'mysql2' ||
+            driverType === 'pg' ||
+            driverType === 'sqlite3'
+          ) {
             colBody.cdf = colBody.cdf.replace(/'/g, "'");
           } else {
             colBody.cdf = colBody.cdf.replace(/'/g, "''");
@@ -952,13 +1065,41 @@ export class ColumnsService {
 
       const mxColumnLength = Column.getMaxColumnNameLength(sqlClientType);
 
+      if (!isVirtualCol(param.column)) {
+        param.column.column_name = sanitizeColumnName(param.column.column_name);
+      }
+
       if (
-        (param.column.title || param.column.column_name).length > mxColumnLength
+        param.column.column_name &&
+        param.column.column_name.length > mxColumnLength
+      ) {
+        // - 5 is a buffer for suffix
+        let colName = param.column.column_name.slice(0, mxColumnLength - 5);
+        let suffix = 1;
+        while (
+          !(await Column.checkTitleAvailable({
+            column_name: colName,
+            fk_model_id: param.tableId,
+          }))
+        ) {
+          colName = param.column.column_name.slice(0, mxColumnLength - 5);
+          colName += `_${suffix++}`;
+        }
+        param.column.column_name = colName;
+      }
+
+      if (
+        param.column.column_name &&
+        param.column.column_name.length > mxColumnLength
       ) {
         NcError.badRequest(
-          `Column name ${
-            param.column.title || param.column.column_name
-          } exceeds ${mxColumnLength} characters`,
+          `Column name ${param.column.column_name} exceeds ${mxColumnLength} characters`,
+        );
+      }
+
+      if (param.column.title && param.column.title.length > 255) {
+        NcError.badRequest(
+          `Column title ${param.column.title} exceeds 255 characters`,
         );
       }
     }
@@ -1090,23 +1231,48 @@ export class ColumnsService {
             // Handle default values
             if (colBody.cdf) {
               if (colBody.uidt === UITypes.SingleSelect) {
-                if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
-                  NcError.badRequest(
-                    `Default value '${colBody.cdf}' is not a select option.`,
-                  );
+                try {
+                  if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
+                    NcError.badRequest(
+                      `Default value '${colBody.cdf}' is not a select option.`,
+                    );
+                  }
+                } catch (e) {
+                  colBody.cdf = colBody.cdf.replace(/^'/, '').replace(/'$/, '');
+                  if (!optionTitles.includes(colBody.cdf.replace(/'/g, "''"))) {
+                    NcError.badRequest(
+                      `Default value '${colBody.cdf}' is not a select option.`,
+                    );
+                  }
                 }
               } else {
-                for (const cdf of colBody.cdf.split(',')) {
-                  if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
-                    NcError.badRequest(
-                      `Default value '${cdf}' is not a select option.`,
-                    );
+                try {
+                  for (const cdf of colBody.cdf.split(',')) {
+                    if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
+                      NcError.badRequest(
+                        `Default value '${cdf}' is not a select option.`,
+                      );
+                    }
+                  }
+                } catch (e) {
+                  colBody.cdf = colBody.cdf.replace(/^'/, '').replace(/'$/, '');
+                  for (const cdf of colBody.cdf.split(',')) {
+                    if (!optionTitles.includes(cdf.replace(/'/g, "''"))) {
+                      NcError.badRequest(
+                        `Default value '${cdf}' is not a select option.`,
+                      );
+                    }
                   }
                 }
               }
 
               // handle single quote for default value
-              if (driverType === 'mysql' || driverType === 'mysql2') {
+              if (
+                driverType === 'mysql' ||
+                driverType === 'mysql2' ||
+                driverType === 'pg' ||
+                driverType === 'sqlite3'
+              ) {
                 colBody.cdf = colBody.cdf.replace(/'/g, "'");
               } else {
                 colBody.cdf = colBody.cdf.replace(/'/g, "''");

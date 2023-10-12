@@ -11,15 +11,16 @@ import { GlobalGuard } from '~/guards/global/global.guard';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { NcError } from '~/helpers/catchError';
 import { JobTypes } from '~/interface/Jobs';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class MetaSyncController {
   constructor(@Inject('JobsService') private readonly jobsService) {}
 
   @Post([
     '/api/v1/db/meta/projects/:baseId/meta-diff',
-    '/api/v1/meta/bases/:baseId/meta-diff',
+    '/api/v2/meta/bases/:baseId/meta-diff',
   ])
   @HttpCode(200)
   @Acl('metaDiffSync')
@@ -44,7 +45,7 @@ export class MetaSyncController {
 
   @Post([
     '/api/v1/db/meta/projects/:baseId/meta-diff/:sourceId',
-    '/api/v1/meta/bases/:baseId/meta-diff/:sourceId',
+    '/api/v2/meta/bases/:baseId/meta-diff/:sourceId',
   ])
   @HttpCode(200)
   @Acl('baseMetaDiffSync')

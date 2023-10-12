@@ -13,7 +13,6 @@ import MdiThumbUp from '~icons/mdi/thumb-up'
 import MdiThumbUpOutline from '~icons/mdi/thumb-up-outline'
 import MdiFlag from '~icons/mdi/flag'
 import MdiFlagOutline from '~icons/mdi/flag-outline'
-import MdiTable from '~icons/mdi/table'
 import MsMove from '~icons/material-symbols/drive-file-move-outline'
 import MSCloseRounded from '~icons/material-symbols/close-rounded'
 import MdiTableLarge from '~icons/mdi/table-large'
@@ -41,7 +40,6 @@ import PlusSquare from '~icons/nc-icons/plus-square'
 import MobileShare from '~icons/nc-icons/share'
 import PhLayout from '~icons/ph/layout'
 import Delete from '~icons/material-symbols/delete-outline-rounded'
-import CiFilter from '~icons/mdi/filter-outline'
 import Minus from '~icons/material-symbols/remove-rounded'
 import Code from '~icons/material-symbols/code-rounded'
 import Palette from '~icons/material-symbols/palette-outline'
@@ -90,13 +88,22 @@ import ManytoManySolidIcon from '~icons/nc-icons/mm-solid'
 import BelongsToSolidIcon from '~icons/nc-icons/bt-solid'
 import Record from '~icons/nc-icons/record'
 import Project from '~icons/nc-icons/project'
+import LookupIcon from '~icons/nc-icons/lookup'
 
 // Roles
-import MaterialSymbolsManageAccountsOutline from '~icons/material-symbols/manage-accounts-outline'
-// account
-import MdiCommentAccountOutline from '~icons/mdi/comment-account-outline'
-import MaterialSymbolsPersonSearchOutline from '~icons/material-symbols/person-search-outline'
-import MaterialSymbolsBlock from '~icons/material-symbols/block'
+import SuperAdmin from '~icons/nc-icons/super-admin'
+import Owner from '~icons/nc-icons/owner'
+import Creator from '~icons/nc-icons/creator'
+import Editor from '~icons/nc-icons/editor'
+import Commentor from '~icons/nc-icons/commentor'
+import Viewer from '~icons/nc-icons/viewer'
+import NoAccess from '~icons/nc-icons/no-access'
+
+// toolbar
+import Fields from '~icons/nc-icons/fields'
+import Filter from '~icons/nc-icons/filter'
+import Group from '~icons/nc-icons/group'
+import Sort from '~icons/nc-icons/sort'
 
 // keep it for reference
 // todo: remove it after all icons are migrated
@@ -246,6 +253,10 @@ import MaterialSymbolsBlock from '~icons/material-symbols/block'
 } as const */
 
 export const iconMap = {
+  sort: Sort,
+  group: Group,
+  filter: Filter,
+  fields: Fields,
   mm: ManytoManyIcon,
   hm: HasManyIcon,
   bt: BelongsToIcon,
@@ -288,7 +299,6 @@ export const iconMap = {
   viewList: h('span', { class: 'material-symbols' }, 'view_list'),
   cloud: h('span', { class: 'material-symbols' }, 'cloud'),
   apiAndSupport: h('span', { class: 'material-symbols' }, 'api'),
-  sort: h('span', { class: 'material-symbols', style: { transform: 'scaleY(-1)' } }, 'sort'),
   translate: h('span', { class: 'material-symbols' }, 'translate'),
   preview: h('span', { class: 'material-symbols' }, 'visibility'),
   link: h('span', { class: 'material-symbols' }, 'link'),
@@ -347,7 +357,7 @@ export const iconMap = {
   deleteListItem: h('span', { class: 'material-symbols' }, 'delete'),
   import: h('span', { class: 'material-symbols' }, 'system_update_alt'),
   edit: MaterialSymbolsEdit,
-  lookup: h('span', { class: 'material-symbols' }, 'search'),
+  lookup: LookupIcon,
   text: h('span', { class: 'material-symbols' }, 'text_fields'),
   longText: h('span', { class: 'material-symbols' }, 'view_headline'),
   clock: h('span', { class: 'material-symbols' }, 'access_time'),
@@ -404,7 +414,6 @@ export const iconMap = {
   view: h('span', { class: 'material-symbols' }, 'visibility'),
   // rowHeight: h('span', { class: 'material-symbols' }, 'height'),
   rowHeight: h(PhSplitVerticalThin, { style: { fontSize: '14px' } }),
-  filter: CiFilter,
   closeCircle: h('span', { class: 'material-symbols' }, 'cancel'),
   closeBox: h('span', { class: 'material-symbols' }, 'close'),
   close: MSCloseRounded,
@@ -433,12 +442,13 @@ export const iconMap = {
   magic1: MdiMagicStaff,
   workspace: h('span', { class: 'material-symbols' }, 'dataset'),
   notification: NcNotification,
-  role_owner: MaterialSymbolsManageAccountsOutline,
-  role_creator: MaterialSymbolsManageAccountsOutline,
-  role_editor: h('span', { class: 'material-symbols' }, 'person'),
-  role_commenter: MdiCommentAccountOutline,
-  role_viewer: MaterialSymbolsPersonSearchOutline,
-  role_no_access: MaterialSymbolsBlock,
+  role_owner: Owner,
+  role_creator: Creator,
+  role_editor: Editor,
+  role_commenter: Commentor,
+  role_viewer: Viewer,
+  role_super: SuperAdmin,
+  role_no_access: NoAccess,
   commentHere: NcCommentHere,
 }
 

@@ -11,15 +11,16 @@ import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { SyncSource } from '~/models';
 import { NcError } from '~/helpers/catchError';
 import { JobTypes } from '~/interface/Jobs';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class AtImportController {
   constructor(@Inject('JobsService') private readonly jobsService) {}
 
   @Post([
     '/api/v1/db/meta/syncs/:syncId/trigger',
-    '/api/v1/meta/syncs/:syncId/trigger',
+    '/api/v2/meta/syncs/:syncId/trigger',
   ])
   @Acl('airtableImport')
   @HttpCode(200)
@@ -59,7 +60,7 @@ export class AtImportController {
 
   @Post([
     '/api/v1/db/meta/syncs/:syncId/abort',
-    '/api/v1/meta/syncs/:syncId/abort',
+    '/api/v2/meta/syncs/:syncId/abort',
   ])
   @Acl('airtableImport')
   @HttpCode(200)

@@ -11,9 +11,10 @@ import {
 import { GlobalGuard } from '~/guards/global/global.guard';
 import { ModelVisibilitiesService } from '~/services/model-visibilities.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class ModelVisibilitiesController {
   constructor(
     private readonly modelVisibilitiesService: ModelVisibilitiesService,
@@ -21,7 +22,7 @@ export class ModelVisibilitiesController {
 
   @Post([
     '/api/v1/db/meta/projects/:baseId/visibility-rules',
-    '/api/v1/meta/bases/:baseId/visibility-rules',
+    '/api/v2/meta/bases/:baseId/visibility-rules',
   ])
   @HttpCode(200)
   @Acl('modelVisibilitySet')
@@ -39,7 +40,7 @@ export class ModelVisibilitiesController {
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/visibility-rules',
-    '/api/v1/meta/bases/:baseId/visibility-rules',
+    '/api/v2/meta/bases/:baseId/visibility-rules',
   ])
   @Acl('modelVisibilityList')
   async modelVisibilityList(

@@ -11,14 +11,13 @@ import {
   nextTick,
   onMounted,
   ref,
-  storeToRefs,
-  useBase,
   useNuxtApp,
   watch,
 } from '#imports'
 
-const { modelValue, sourceId } = defineProps<{
+const { modelValue, baseId, sourceId } = defineProps<{
   modelValue: boolean
+  baseId: string
   sourceId: string
 }>()
 
@@ -35,8 +34,6 @@ const baseStore = useBase()
 const { refreshCommandPalette } = useCommandPalette()
 
 const { loadTables } = baseStore
-
-const { base } = storeToRefs(baseStore)
 
 const showGoToDashboardButton = ref(false)
 
@@ -128,14 +125,14 @@ async function createOrUpdate() {
     const { id, ...payload } = syncSource.value
 
     if (id !== '') {
-      await $fetch(`/api/v1/meta/syncs/${id}`, {
+      await $fetch(`/api/v1/db/meta/syncs/${id}`, {
         baseURL,
         method: 'PATCH',
         headers: { 'xc-auth': $state.token.value as string },
         body: payload,
       })
     } else {
-      syncSource.value = await $fetch(`/api/v1/meta/bases/${base.value.id}/syncs/${sourceId}`, {
+      syncSource.value = await $fetch(`/api/v1/db/meta/projects/${baseId}/syncs/${sourceId}`, {
         baseURL,
         method: 'POST',
         headers: { 'xc-auth': $state.token.value as string },
@@ -187,7 +184,7 @@ async function listenForUpdates() {
 }
 
 async function loadSyncSrc() {
-  const data: any = await $fetch(`/api/v1/meta/bases/${base.value.id}/syncs/${sourceId}`, {
+  const data: any = await $fetch(`/api/v1/db/meta/projects/${baseId}/syncs/${sourceId}`, {
     baseURL,
     method: 'GET',
     headers: { 'xc-auth': $state.token.value as string },
@@ -229,7 +226,7 @@ async function loadSyncSrc() {
 
 async function sync() {
   try {
-    await $fetch(`/api/v1/meta/syncs/${syncSource.value.id}/trigger`, {
+    await $fetch(`/api/v1/db/meta/syncs/${syncSource.value.id}/trigger`, {
       baseURL,
       method: 'POST',
       headers: { 'xc-auth': $state.token.value as string },
@@ -248,7 +245,7 @@ async function abort() {
       "This is a highly experimental feature and only marks job as not started, please don't abort the job unless you are sure job is stuck.",
     onOk: async () => {
       try {
-        await $fetch(`/api/v1/meta/syncs/${syncSource.value.id}/abort`, {
+        await $fetch(`/api/v1/db/meta/syncs/${syncSource.value.id}/abort`, {
           baseURL,
           method: 'POST',
           headers: { 'xc-auth': $state.token.value as string },

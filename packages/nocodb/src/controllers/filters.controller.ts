@@ -15,15 +15,16 @@ import { GlobalGuard } from '~/guards/global/global.guard';
 import { PagedResponseImpl } from '~/helpers/PagedResponse';
 import { FiltersService } from '~/services/filters.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class FiltersController {
   constructor(private readonly filtersService: FiltersService) {}
 
   @Get([
     '/api/v1/db/meta/views/:viewId/filters',
-    '/api/v1/meta/views/:viewId/filters',
+    '/api/v2/meta/views/:viewId/filters',
   ])
   @Acl('filterList')
   async filterList(@Param('viewId') viewId: string) {
@@ -36,7 +37,7 @@ export class FiltersController {
 
   @Post([
     '/api/v1/db/meta/views/:viewId/filters',
-    '/api/v1/meta/views/:viewId/filters',
+    '/api/v2/meta/views/:viewId/filters',
   ])
   @HttpCode(200)
   @Acl('filterCreate')
@@ -55,7 +56,7 @@ export class FiltersController {
 
   @Post([
     '/api/v1/db/meta/hooks/:hookId/filters',
-    '/api/v1/meta/hooks/:hookId/filters',
+    '/api/v2/meta/hooks/:hookId/filters',
   ])
   @HttpCode(200)
   @Acl('hookFilterCreate')
@@ -72,7 +73,7 @@ export class FiltersController {
     return filter;
   }
 
-  @Get(['/api/v1/db/meta/filters/:filterId', '/api/v1/meta/filters/:filterId'])
+  @Get(['/api/v1/db/meta/filters/:filterId', '/api/v2/meta/filters/:filterId'])
   @Acl('filterGet')
   async filterGet(@Param('filterId') filterId: string) {
     return await this.filtersService.filterGet({ filterId });
@@ -80,7 +81,7 @@ export class FiltersController {
 
   @Get([
     '/api/v1/db/meta/filters/:filterParentId/children',
-    '/api/v1/meta/filters/:filterParentId/children',
+    '/api/v2/meta/filters/:filterParentId/children',
   ])
   @Acl('filterChildrenList')
   async filterChildrenRead(@Param('filterParentId') filterParentId: string) {
@@ -93,7 +94,7 @@ export class FiltersController {
 
   @Patch([
     '/api/v1/db/meta/filters/:filterId',
-    '/api/v1/meta/filters/:filterId',
+    '/api/v2/meta/filters/:filterId',
   ])
   @Acl('filterUpdate')
   async filterUpdate(
@@ -111,7 +112,7 @@ export class FiltersController {
 
   @Delete([
     '/api/v1/db/meta/filters/:filterId',
-    '/api/v1/meta/filters/:filterId',
+    '/api/v2/meta/filters/:filterId',
   ])
   @Acl('filterDelete')
   async filterDelete(@Param('filterId') filterId: string, @Req() _req) {
@@ -123,7 +124,7 @@ export class FiltersController {
 
   @Get([
     '/api/v1/db/meta/hooks/:hookId/filters',
-    '/api/v1/meta/hooks/:hookId/filters',
+    '/api/v2/meta/hooks/:hookId/filters',
   ])
   @Acl('hookFilterList')
   async hookFilterList(@Param('hookId') hookId: string) {

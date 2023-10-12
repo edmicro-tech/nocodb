@@ -16,6 +16,8 @@ const meta = inject(MetaInj, ref())
 
 const { t } = useI18n()
 
+const { appInfo } = useGlobal()
+
 const { setAdditionalValidations, validateInfos, onDataTypeChange, isEdit } = useColumnCreateStoreOrThrow()
 
 const baseStore = useBase()
@@ -37,7 +39,13 @@ const refTables = computed(() => {
   }
 
   const _refTables = meta.value.columns
-    .filter((column) => isLinksOrLTAR(column) && !column.system && column.source_id === meta.value?.source_id)
+    .filter(
+      (column) =>
+        isLinksOrLTAR(column) &&
+        !column.system &&
+        column.source_id === meta.value?.source_id &&
+        (!appInfo.value.ee || vModel.value.fk_relation_column_id === column.id || (column?.colOptions as any)?.type === 'bt'),
+    )
     .map((column) => ({
       col: column.colOptions,
       column,
@@ -53,7 +61,8 @@ const columns = computed<ColumnType[]>(() => {
     return []
   }
   return metas.value[selectedTable.id].columns.filter(
-    (c: ColumnType) => !isSystemColumn(c) && c.id !== vModel.value.id && c.uidt !== UITypes.Links,
+    (c: ColumnType) =>
+      vModel.value.fk_lookup_column_id === c.id || (!isSystemColumn(c) && c.id !== vModel.value.id && c.uidt !== UITypes.Links),
   )
 })
 
@@ -77,7 +86,7 @@ const cellIcon = (column: ColumnType) =>
 
 <template>
   <div class="p-6 w-full flex flex-col border-2 mb-2 mt-4">
-    <div class="w-full flex flex-row space-x-2">
+    <div v-if="refTables.length" class="w-full flex flex-row space-x-2">
       <a-form-item class="flex w-1/2 pb-2" :label="$t('labels.links')" v-bind="validateInfos.fk_relation_column_id">
         <a-select
           v-model:value="vModel.fk_relation_column_id"
@@ -96,7 +105,7 @@ const cellIcon = (column: ColumnType) =>
         </a-select>
       </a-form-item>
 
-      <a-form-item class="flex w-1/2" :label="$t('labels.childColumn')" v-bind="validateInfos.fk_lookup_column_id">
+      <a-form-item class="flex w-1/2" :label="$t('labels.childField')" v-bind="validateInfos.fk_lookup_column_id">
         <a-select
           v-model:value="vModel.fk_lookup_column_id"
           name="fk_lookup_column_id"
@@ -112,6 +121,7 @@ const cellIcon = (column: ColumnType) =>
         </a-select>
       </a-form-item>
     </div>
+    <div v-else>{{ $t('msg.linkColumnClearNotSupportedYet') }}</div>
   </div>
 </template>
 

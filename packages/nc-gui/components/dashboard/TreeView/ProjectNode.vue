@@ -57,7 +57,7 @@ const basesStore = useBases()
 
 const { isMobileMode } = useGlobal()
 
-const { loadProject, loadProjects, createProject: _createProject, updateProject, getProjectMetaInfo } = basesStore
+const { createProject: _createProject, updateProject, getProjectMetaInfo } = basesStore
 
 const { bases } = storeToRefs(basesStore)
 
@@ -65,7 +65,7 @@ const { loadProjectTables } = useTablesStore()
 
 const { activeTable } = storeToRefs(useTablesStore())
 
-const { appInfo, navigateToProject } = useGlobal()
+const { appInfo } = useGlobal()
 
 const { orgRoles, isUIAllowed } = useRoles()
 
@@ -289,28 +289,22 @@ const onProjectClick = async (base: NcProject, ignoreNavigation?: boolean, toggl
 }
 
 function openErdView(source: SourceType) {
-  activeBaseId.value = source.id
-  isErdModalOpen.value = !isErdModalOpen.value
-}
+  $e('c:project:relation')
 
-async function openProjectErdView(_project: BaseType) {
-  if (!_project.id) return
+  const isOpen = ref(true)
 
-  if (!basesStore.isProjectPopulated(_project.id)) {
-    await loadProject(_project.id)
+  const { close } = useDialog(resolveComponent('DlgProjectErd'), {
+    'modelValue': isOpen,
+    'sourceId': source!.id,
+    'onUpdate:modelValue': () => closeDialog(),
+    'baseId': base.value.id,
+  })
+
+  function closeDialog() {
+    isOpen.value = false
+
+    close(1000)
   }
-
-  const base = bases.value.get(_project.id)
-
-  const source = base?.sources?.[0]
-  if (!source) return
-  openErdView(source)
-}
-
-const reloadTables = async () => {
-  $e('a:table:refresh:navdraw')
-
-  // await loadTables()
 }
 
 const contextMenuBase = computed(() => {
@@ -356,46 +350,6 @@ const selectedProjectToDuplicate = ref()
 const duplicateProject = (base: BaseType) => {
   selectedProjectToDuplicate.value = base
   isDuplicateDlgOpen.value = true
-}
-const { $poller } = useNuxtApp()
-
-const DlgProjectDuplicateOnOk = async (jobData: { id: string; base_id: string }) => {
-  await loadProjects('workspace')
-
-  $poller.subscribe(
-    { id: jobData.id },
-    async (data: {
-      id: string
-      status?: string
-      data?: {
-        error?: {
-          message: string
-        }
-        message?: string
-        result?: any
-      }
-    }) => {
-      if (data.status !== 'close') {
-        if (data.status === JobStatus.COMPLETED) {
-          await loadProjects('workspace')
-
-          const base = bases.value.get(jobData.base_id)
-
-          // open base after duplication
-          if (base) {
-            await navigateToProject({
-              baseId: base.id,
-              type: base.type,
-            })
-          }
-        } else if (data.status === JobStatus.FAILED) {
-          message.error('Failed to duplicate base')
-          await loadProjects('workspace')
-        }
-      }
-    },
-  )
-  $e('a:base:duplicate')
 }
 
 const tableDelete = () => {
@@ -483,7 +437,7 @@ const projectDelete = () => {
           </span>
           <div :class="{ 'flex flex-grow h-full': !editMode }" @click="onProjectClick(base)"></div>
 
-          <NcDropdown v-model:visible="isOptionsOpen" :trigger="['click']">
+          <NcDropdown v-if="!isSharedBase" v-model:visible="isOptionsOpen" :trigger="['click']">
             <NcButton
               v-e="['c:base:options']"
               class="nc-sidebar-node-btn"
@@ -545,7 +499,7 @@ const projectDelete = () => {
                     key="erd"
                     v-e="['c:base:erd']"
                     data-testid="nc-sidebar-base-relations"
-                    @click="openProjectErdView(base)"
+                    @click="openErdView(base?.sources?.[0]!)"
                   >
                     <GeneralIcon icon="erd" />
                     {{ $t('title.relations') }}
@@ -560,7 +514,7 @@ const projectDelete = () => {
                     @click.stop="
                       () => {
                         $e('c:base:api-docs')
-                        openLink(`/api/v1/meta/bases/${base.id}/swagger`, appInfo.ncSiteUrl)
+                        openLink(`/api/v1/db/meta/projects/${base.id}/swagger`, appInfo.ncSiteUrl)
                       }
                     "
                   >
@@ -663,7 +617,7 @@ const projectDelete = () => {
                             class="source-context flex items-center gap-2 text-gray-800 nc-sidebar-node-title"
                             @contextmenu="setMenuContext('source', source)"
                           >
-                            <GeneralBaseLogo :source-type="source.type" class="min-w-4 !xs:(min-w-4.25 w-4.25 text-sm)" />
+                            <GeneralBaseLogo class="min-w-4 !xs:(min-w-4.25 w-4.25 text-sm)" />
                             {{ $t('general.default') }}
                           </div>
                           <div
@@ -671,7 +625,7 @@ const projectDelete = () => {
                             class="source-context flex flex-grow items-center gap-1.75 text-gray-800 min-w-1/20 max-w-full"
                             @contextmenu="setMenuContext('source', source)"
                           >
-                            <GeneralBaseLogo :source-type="source.type" class="min-w-4 !xs:(min-w-4.25 w-4.25 text-sm)" />
+                            <GeneralBaseLogo class="min-w-4 !xs:(min-w-4.25 w-4.25 text-sm)" />
                             <div
                               :data-testid="`nc-sidebar-base-${source.alias}`"
                               class="nc-sidebar-node-title flex capitalize text-ellipsis overflow-hidden select-none"
@@ -787,14 +741,6 @@ const projectDelete = () => {
             </div>
           </NcMenuItem>
         </template>
-
-        <template v-else>
-          <NcMenuItem @click="reloadTables">
-            <div class="nc-base-option-item">
-              {{ $t('general.reload') }}
-            </div>
-          </NcMenuItem>
-        </template>
       </NcMenu>
     </template>
   </NcDropdown>
@@ -805,12 +751,7 @@ const projectDelete = () => {
     :base-id="base?.id"
   />
   <DlgProjectDelete v-model:visible="isProjectDeleteDialogVisible" :base-id="base?.id" />
-  <DlgProjectDuplicate
-    v-if="selectedProjectToDuplicate"
-    v-model="isDuplicateDlgOpen"
-    :base="selectedProjectToDuplicate"
-    :on-ok="DlgProjectDuplicateOnOk"
-  />
+  <DlgProjectDuplicate v-if="selectedProjectToDuplicate" v-model="isDuplicateDlgOpen" :base="selectedProjectToDuplicate" />
   <GeneralModal v-model:visible="isErdModalOpen" size="large">
     <div class="h-[80vh]">
       <LazyDashboardSettingsErd :source-id="activeBaseId" />

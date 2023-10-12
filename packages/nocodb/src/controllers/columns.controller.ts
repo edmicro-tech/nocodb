@@ -15,15 +15,16 @@ import type { Column } from '~/models';
 import { GlobalGuard } from '~/guards/global/global.guard';
 import { ColumnsService } from '~/services/columns.service';
 import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
+import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 
 @Controller()
-@UseGuards(GlobalGuard)
+@UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class ColumnsController {
   constructor(private readonly columnsService: ColumnsService) {}
 
   @Post([
     '/api/v1/db/meta/tables/:tableId/columns/',
-    '/api/v1/meta/tables/:tableId/columns/',
+    '/api/v2/meta/tables/:tableId/columns/',
   ])
   @HttpCode(200)
   @Acl('columnAdd')
@@ -42,7 +43,7 @@ export class ColumnsController {
 
   @Patch([
     '/api/v1/db/meta/columns/:columnId',
-    '/api/v1/meta/columns/:columnId',
+    '/api/v2/meta/columns/:columnId',
   ])
   @Acl('columnUpdate')
   async columnUpdate(
@@ -60,7 +61,7 @@ export class ColumnsController {
 
   @Delete([
     '/api/v1/db/meta/columns/:columnId',
-    '/api/v1/meta/columns/:columnId',
+    '/api/v2/meta/columns/:columnId',
   ])
   @Acl('columnDelete')
   async columnDelete(@Param('columnId') columnId: string, @Request() req: any) {
@@ -71,7 +72,7 @@ export class ColumnsController {
     });
   }
 
-  @Get(['/api/v1/db/meta/columns/:columnId', '/api/v1/meta/columns/:columnId'])
+  @Get(['/api/v1/db/meta/columns/:columnId', '/api/v2/meta/columns/:columnId'])
   @Acl('columnGet')
   async columnGet(@Param('columnId') columnId: string) {
     return await this.columnsService.columnGet({ columnId });
@@ -79,7 +80,7 @@ export class ColumnsController {
 
   @Post([
     '/api/v1/db/meta/columns/:columnId/primary',
-    '/api/v1/meta/columns/:columnId/primary',
+    '/api/v2/meta/columns/:columnId/primary',
   ])
   @HttpCode(200)
   @Acl('columnSetAsPrimary')
@@ -89,7 +90,7 @@ export class ColumnsController {
 
   @Get([
     '/api/v1/db/meta/tables/:tableId/columns/hash',
-    '/api/v1/meta/tables/:tableId/columns/hash',
+    '/api/v2/meta/tables/:tableId/columns/hash',
   ])
   @Acl('columnsHash')
   async columnsHash(@Param('tableId') tableId: string) {
@@ -98,7 +99,7 @@ export class ColumnsController {
 
   @Post([
     '/api/v1/db/meta/tables/:tableId/columns/bulk',
-    '/api/v1/meta/tables/:tableId/columns/bulk',
+    '/api/v2/meta/tables/:tableId/columns/bulk',
   ])
   @HttpCode(200)
   @Acl('columnBulk')
