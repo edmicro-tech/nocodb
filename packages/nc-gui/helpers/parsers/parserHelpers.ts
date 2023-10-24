@@ -28,7 +28,9 @@ const getColVal = (row: any, col?: number) => {
 export const isCheckboxType: any = (values: [], col?: number) => {
   let options = booleanOptions
   for (let i = 0; i < values.length; i++) {
-    const val = getColVal(values[i], col)
+    // const val = getColVal(values[i], col)
+    // console.log(val, col);
+    const val = values[i] as any;
     if (val === null || val === undefined || val.toString().trim() === '') {
       continue
     }

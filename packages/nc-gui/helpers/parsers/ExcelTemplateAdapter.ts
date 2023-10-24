@@ -139,7 +139,6 @@ export default class ExcelTemplateAdapter extends TemplateGenerator {
                 })
                 const cellProps = ws[cellId] || {}
                 column.uidt = excelTypeToUidt[cellProps.t] || UITypes.SingleLineText
-
                 if (column.uidt === UITypes.SingleLineText) {
                   // check for long text
                   if (isMultiLineTextType(rows, col)) {
@@ -153,7 +152,6 @@ export default class ExcelTemplateAdapter extends TemplateGenerator {
                       .slice(+this.config.firstRowAsHeaders)
                       .map((r: any) => r[col])
                       .filter((v: any) => v !== null && v !== undefined && v.toString().trim() !== '')
-
                     if (isCheckboxType(vals, col)) {
                       column.uidt = UITypes.Checkbox
                     } else {
