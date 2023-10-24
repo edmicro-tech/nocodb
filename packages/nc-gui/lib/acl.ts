@@ -21,7 +21,7 @@ const rolePermissions = {
   [OrgUserRoles.CREATOR]: {
     include: {
       workspaceSettings: true,
-      superAdminUserManagement: true,
+      // superAdminUserManagement: true,
       baseCreate: true,
       baseMove: true,
       baseDelete: true,
