@@ -26,7 +26,7 @@ export class DataAliasExportController {
     }
     const { offset, elapsed, data } = await extractXlsxData(targetView, req);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, data, targetView.title);
+    XLSX.utils.book_append_sheet(wb, data, "Data");
     const buf = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
     res.set({
       'Access-Control-Expose-Headers': 'nc-export-offset',

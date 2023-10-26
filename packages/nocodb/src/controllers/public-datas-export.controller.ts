@@ -65,7 +65,7 @@ export class PublicDatasExportController {
 
     const wb = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(wb, data, view.title);
+    XLSX.utils.book_append_sheet(wb, data, "Data");
 
     const buf = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
 

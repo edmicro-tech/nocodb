@@ -78,8 +78,7 @@ const exportFile = async (exportType: ExportTypes) => {
 
         XLSX.writeFile(workbook, `${meta.value?.title}_exported_${c++}.xlsx`)
       } else if (exportType === ExportTypes.CSV) {
-        const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-
+        const blob = new Blob(["\uFEFF" + data], { type: 'text/plain;charset=utf-8' })
         FileSaver.saveAs(blob, `${meta.value?.title}_exported_${c++}.csv`)
       }
 
