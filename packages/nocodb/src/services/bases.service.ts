@@ -180,8 +180,8 @@ export class BasesService {
       baseBody.is_meta = false;
     }
 
-    if (baseBody?.title.length > 50) {
-      NcError.badRequest('Base title exceeds 50 characters');
+    if (baseBody?.title.length > 100) {
+      NcError.badRequest('Base title exceeds 100 characters');
     }
 
     baseBody.title = DOMPurify.sanitize(baseBody.title);
