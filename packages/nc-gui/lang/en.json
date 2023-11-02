@@ -1256,7 +1256,7 @@
       "duplicateColumnName": "Duplicate field name",
       "uiDataTypeRequired": "UI data type is required",
       "columnNameExceedsCharacters": "The length of field name exceeds the max {value} characters",
-      "projectNameExceeds50Characters": "Base name exceeds 50 characters",
+      "projectNameExceeds50Characters": "Base name exceeds 100 characters",
       "projectNameCannotStartWithSpace": "Base name cannot start with space",
       "requiredField": "Required field",
       "ipNotAllowed": "IP not allowed",

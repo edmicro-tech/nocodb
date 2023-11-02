@@ -76,7 +76,7 @@ export const baseTitleValidator = {
     const { t } = getI18n().global
 
     return new Promise((resolve, reject) => {
-      if (value?.length > 50) {
+      if (value?.length > 100) {
         reject(new Error(t('msg.error.projectNameExceeds50Characters')))
       }
 
