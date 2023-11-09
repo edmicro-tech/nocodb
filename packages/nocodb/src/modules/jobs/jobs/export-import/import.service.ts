@@ -7,6 +7,7 @@ import { elapsedTime, initTime } from '../../helpers';
 import type { Readable } from 'stream';
 import type { UserType, ViewCreateReqType } from 'nocodb-sdk';
 import type { LinkToAnotherRecordColumn, User, View } from '~/models';
+import type { NcRequest } from '~/interface/config';
 import {
   findWithIdentifier,
   generateUniqueName,
@@ -64,7 +65,7 @@ export class ImportService {
     data:
       | { models: { model: any; views: any[]; hooks?: any[] }[] }
       | { model: any; views: any[]; hooks?: any[] }[];
-    req: any;
+    req: NcRequest;
     externalModels?: Model[];
   }) {
     const hrTime = initTime();
@@ -391,7 +392,7 @@ export class ImportService {
                       ur: colOptions.ur,
                       dr: colOptions.dr,
                     },
-                  }),
+                  }) as any,
                   req: param.req,
                   user: param.user,
                 });
@@ -508,7 +509,7 @@ export class ImportService {
                       ur: colOptions.ur,
                       dr: colOptions.dr,
                     },
-                  }),
+                  }) as any,
                   req: param.req,
                   user: param.user,
                 });
@@ -630,7 +631,7 @@ export class ImportService {
                       ur: colOptions.ur,
                       dr: colOptions.dr,
                     },
-                  }),
+                  }) as any,
                   req: param.req,
                   user: param.user,
                 });
@@ -801,7 +802,7 @@ export class ImportService {
                 colOptions.fk_relation_column_id,
               ),
             },
-          }),
+          }) as any,
           req: param.req,
           user: param.user,
         });
@@ -827,7 +828,7 @@ export class ImportService {
               ),
               rollup_function: colOptions.rollup_function,
             },
-          }),
+          }) as any,
           req: param.req,
           user: param.user,
         });
@@ -846,7 +847,7 @@ export class ImportService {
             ...{
               formula_raw: colOptions.formula_raw,
             },
-          }),
+          }) as any,
           req: param.req,
           user: param.user,
         });
@@ -883,6 +884,7 @@ export class ImportService {
           viewData,
           table.views,
           param.user,
+          param.req,
         );
 
         if (!vw) continue;
@@ -901,6 +903,7 @@ export class ImportService {
               fk_parent_id: getIdOrExternalId(fl.fk_parent_id),
             }),
             user: param.user,
+            req: param.req,
           });
 
           idMap.set(fl.id, fg.id);
@@ -914,6 +917,7 @@ export class ImportService {
               ...sr,
               fk_column_id: getIdOrExternalId(sr.fk_column_id),
             }),
+            req: param.req,
           });
         }
 
@@ -934,6 +938,7 @@ export class ImportService {
               show: fcl.show,
               order: fcl.order,
             },
+            req: param.req,
           });
         }
 
@@ -950,6 +955,7 @@ export class ImportService {
                 grid: {
                   ...withoutNull(rest),
                 },
+                req: param.req,
               });
             }
             break;
@@ -965,6 +971,7 @@ export class ImportService {
                 formViewColumn: {
                   ...withoutNull(rest),
                 },
+                req: param.req,
               });
             }
             break;
@@ -981,6 +988,7 @@ export class ImportService {
               order: view.order,
             },
             user: param.user,
+            req: param.req,
           });
         }
       }
@@ -1007,7 +1015,8 @@ export class ImportService {
           tableId: table.id,
           hook: {
             ...hookData,
-          },
+          } as any,
+          req: param.req,
         });
 
         if (!hk) continue;
@@ -1024,6 +1033,7 @@ export class ImportService {
               fk_parent_id: getIdOrExternalId(fl.fk_parent_id),
             }),
             user: param.user,
+            req: param.req,
           });
 
           idMap.set(fl.id, fg.id);
@@ -1042,6 +1052,7 @@ export class ImportService {
     vw: Partial<View>,
     views: View[],
     user: UserType,
+    req: NcRequest,
   ): Promise<View> {
     if (vw.is_default) {
       const view = views.find((a) => a.is_default);
@@ -1051,6 +1062,7 @@ export class ImportService {
           await this.gridsService.gridViewUpdate({
             viewId: view.id,
             grid: gridData,
+            req,
           });
         }
       }
@@ -1062,12 +1074,14 @@ export class ImportService {
         const gview = await this.gridsService.gridViewCreate({
           tableId: md.id,
           grid: vw as ViewCreateReqType,
+          req,
         });
         const gridData = withoutNull(vw.view);
         if (gridData) {
           await this.gridsService.gridViewUpdate({
             viewId: gview.id,
             grid: gridData,
+            req,
           });
         }
         return gview;
@@ -1077,12 +1091,14 @@ export class ImportService {
           tableId: md.id,
           body: vw as ViewCreateReqType,
           user,
+          req,
         });
         const formData = withoutNull(vw.view);
         if (formData) {
           await this.formsService.formViewUpdate({
             formViewId: fview.id,
             form: formData,
+            req,
           });
         }
         return fview;
@@ -1092,6 +1108,7 @@ export class ImportService {
           tableId: md.id,
           gallery: vw as ViewCreateReqType,
           user,
+          req,
         });
         const galleryData = withoutNull(vw.view);
         if (galleryData) {
@@ -1105,6 +1122,7 @@ export class ImportService {
           await this.galleriesService.galleryViewUpdate({
             galleryViewId: glview.id,
             gallery: galleryData,
+            req,
           });
         }
         return glview;
@@ -1114,6 +1132,7 @@ export class ImportService {
           tableId: md.id,
           kanban: vw as ViewCreateReqType,
           user,
+          req,
         });
         const kanbanData = withoutNull(vw.view);
         if (kanbanData) {
@@ -1159,6 +1178,7 @@ export class ImportService {
           await this.kanbansService.kanbanViewUpdate({
             kanbanViewId: kview.id,
             kanban: kanbanData,
+            req,
           });
         }
         return kview;
@@ -1178,7 +1198,7 @@ export class ImportService {
       url?: string;
       file?: any;
     };
-    req: any;
+    req: NcRequest;
   }) {
     const hrTime = initTime();
 

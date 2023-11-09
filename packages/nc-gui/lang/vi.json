@@ -96,7 +96,7 @@
   },
   "objects": {
     "project": "Dự định",
-    "projects": "Dự án.",
+    "projects": "Cơ sở dữ liệu",
     "table": "Bảng",
     "tables": "Danh sách bảng",
     "field": "Trường",
@@ -202,8 +202,9 @@
   "title": {
     "erdView": "ERD View",
     "newProj": "Tạo cơ sở dữ liệu mới",
-    "teamAndSettings": "Thành viên và cài đặt",
+    "teamAndSettings": "Cài đặt hệ thống",
     "myProject": "Danh sách cơ sở dữ liệu của tôi",
+    "createBase": "Tạo Database",
     "formTitle": "Tiêu đề mẫu",
     "collabView": "Chia sẻ view",
     "lockedView": "Khóa view",
@@ -254,6 +255,10 @@
   "labels": {
     "profile": "Thông tin tài khoản",
     "accountDetail": "Thông tin tài khoản",
+    "allTables": "Tất cả bảng",
+    "members": "Thành viên",
+    "dataSources": "Nguồn dữ liệu",
+    "connectDataSource": "Kết nối nguồn dữ liệu mới",
     "controlAppearance": "Thay đổi thông tin của bạn",
     "name": "Tên",
     "backWorkspace": "Trở lại",

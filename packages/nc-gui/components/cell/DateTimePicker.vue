@@ -25,7 +25,6 @@ interface Props {
 }
 
 const { modelValue, isPk, isUpdatedFromCopyNPaste } = defineProps<Props>()
-
 const emit = defineEmits(['update:modelValue'])
 
 const { isMssql, isXcdbBase } = useBase()

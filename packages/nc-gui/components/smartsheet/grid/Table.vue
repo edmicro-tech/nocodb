@@ -144,6 +144,8 @@ const { addUndo, clone, defineViewScope } = useUndoRedo()
 
 const { isViewColumnsLoading, updateGridViewColumn, gridViewCols, resizingColOldWith } = useViewColumnsOrThrow()
 
+const { isExpandedFormCommentMode } = storeToRefs(useConfigStore())
+
 const {
   predictingNextColumn,
   predictedNextColumn,
@@ -716,6 +718,23 @@ const confirmDeleteRow = (row: number) => {
   }
 }
 
+const commentRow = (rowId: number) => {
+  try {
+    isExpandedFormCommentMode.value = true
+
+    const row = dataRef.value[rowId]
+    if (expandForm) {
+      expandForm(row)
+    }
+
+    activeCell.row = null
+    activeCell.col = null
+    selectedRange.clear()
+  } catch (e: any) {
+    message.error(e.message)
+  }
+}
+
 const deleteSelectedRangeOfRows = () => {
   deleteRangeOfRows?.(selectedRange).then(() => {
     clearSelectedRange()
@@ -1247,11 +1266,11 @@ onKeyStroke('ArrowDown', onDown)
       <NcDropdown v-model:visible="contextMenu" :trigger="isSqlView ? [] : ['contextmenu']"
         overlay-class-name="nc-dropdown-grid-context-menu">
         <div class="table-overlay" :class="{ 'nc-grid-skelton-loader': showSkeleton }">
-          <table ref="smartTable"
-            class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative pr-60 pb-12" :class="{
-              mobile: isMobileMode,
-              desktop: !isMobileMode,
-            }" @contextmenu="showContextMenu">
+          <table ref="smartTable" class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative" :class="{
+            'mobile': isMobileMode,
+            'desktop': !isMobileMode,
+            'pr-60 pb-12': !headerOnly,
+          }" @contextmenu="showContextMenu">
             <thead v-show="hideHeader !== true" ref="tableHeadEl">
               <tr v-if="isViewColumnsLoading">
                 <td v-for="(col, colIndex) of dummyColumnDataForLoading" :key="colIndex"
@@ -1567,6 +1586,15 @@ onKeyStroke('ArrowDown', onDown)
 
               {{ $t('general.clear') }}
             </NcMenuItem>
+            <template
+              v-if="contextMenuTarget && selectedRange.isSingleCell() && isUIAllowed('commentEdit') && !isMobileMode">
+              <NcDivider />
+              <NcMenuItem v-e="['a:row:comment']" class="nc-base-menu-item" @click="commentRow(contextMenuTarget.row)">
+                <MdiMessageOutline class="h-4 w-4" />
+
+                {{ $t('general.comment') }}
+              </NcMenuItem>
+            </template>
             <!-- <NcDivider v-if="!(!contextMenuClosing && !contextMenuTarget && data.some((r) => r.rowMeta.selected))" /> -->
             <!-- > -->
             <!-- <GeneralIcon icon="delete" /> -->

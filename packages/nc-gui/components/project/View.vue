@@ -91,7 +91,7 @@ watch(
           <template #tab>
             <div class="tab-title" data-testid="proj-view-tab__all-tables">
               <NcLayout />
-              <div>All tables</div>
+              <div>{{ $t('labels.allTables') }}</div>
               <div
                 class="tab-info"
                 :class="{
