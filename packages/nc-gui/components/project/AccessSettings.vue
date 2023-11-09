@@ -179,8 +179,8 @@ onMounted(async () => {
         <div class="flex flex-col rounded-lg overflow-hidden border-1 max-w-350 max-h-[calc(100%-8rem)]">
           <div class="flex flex-row bg-gray-50 min-h-12 items-center">
             <div class="text-gray-700 users-email-grid">{{ $t('objects.users') }}</div>
-            <div class="text-gray-700 date-joined-grid">{{ $t('title.dateJoined') }}</div>
-            <div class="text-gray-700 user-access-grid">{{ $t('general.access') }}</div>
+            <div class="text-gray-700 date-joined-grid">{{ $t('objects.dateJoined') }}</div>
+            <div class="text-gray-700 user-access-grid">{{ $t('objects.access') }}</div>
           </div>
 
           <div class="flex flex-col nc-scrollbar-md">

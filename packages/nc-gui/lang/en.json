@@ -173,6 +173,7 @@
     "logOut": "Log Out",
     "copyAuthToken": "Copy Auth Token",
     "accountSettings": "Account Settings",
+    "productManual": "Download software manual",
     "enablePublic": "Enable public viewing",
     "restrictAccess": "Restrict access with password",
     "allowDownload": "Allow Download",

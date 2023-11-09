@@ -13,7 +13,7 @@ import {
   useUsers,
   watch,
 } from '#imports'
-
+import { saveAs } from 'file-saver';
 const { user, signOut, token, appInfo } = useGlobal()
 // So watcher in users store is triggered
 useUsers()
@@ -57,6 +57,17 @@ const onCopy = async () => {
     message.error(e.message)
   }
 }
+const downloadLocalDocx = () => {
+  const fileUrl = '/manual.docx'; // Adjust the file path accordingly
+  console.log(fileUrl);
+
+  fetch(fileUrl)
+    .then(response => response.blob())
+    .then(blob => {
+      console.log(blob);
+      saveAs(blob, 'Hướng dẫn sử dụng MICDB.docx');
+    });
+}
 
 watch(isMenuOpen, () => {
   if (isAuthTokenCopied.value) {
@@ -81,10 +92,8 @@ onMounted(() => {
 <template>
   <div class="flex w-full flex-col p-1 border-t-1 border-gray-200 gap-y-2">
     <NcDropdown v-model:visible="isMenuOpen" placement="topLeft" overlay-class-name="!min-w-64">
-      <div
-        class="flex flex-row py-2 px-3 gap-x-2 items-center hover:bg-gray-200 rounded-lg cursor-pointer h-10"
-        data-testid="nc-sidebar-userinfo"
-      >
+      <div class="flex flex-row py-2 px-3 gap-x-2 items-center hover:bg-gray-200 rounded-lg cursor-pointer h-10"
+        data-testid="nc-sidebar-userinfo">
         <GeneralUserIcon :email="user?.email" size="base" :name="user?.display_name" />
         <div class="flex truncate">
           {{ name ? name : user?.email }}
@@ -128,7 +137,8 @@ onMounted(() => {
               <NcMenuItem v-e="['c:translate:open']">
                 <GeneralIcon icon="translate" class="group-hover:text-black nc-language ml-0.25 menu-icon" />
                 {{ $t('labels.language') }}
-                <div class="flex items-center text-gray-400 text-xs">{{ $t('labels.community.communityTranslated') }}</div>
+                <div class="flex items-center text-gray-400 text-xs">{{ $t('labels.community.communityTranslated') }}
+                </div>
                 <div class="flex-1" />
 
                 <MaterialSymbolsChevronRightRounded
@@ -161,9 +171,15 @@ onMounted(() => {
             </a> -->
 
             <NcDivider />
-
+            <NcMenuItem data-testid="nc-sidebar-user-logout" @click="downloadLocalDocx">
+              <!-- <GeneralLoader v-if="isLoggingOut" class="!ml-0.5 !mr-0.5 !max-h-4.5 !-mt-0.5" /> -->
+              <GeneralIcon icon="download" class="menu-icon" />
+              {{ $t('general.productManual') }}
+            </NcMenuItem>
             <nuxt-link v-e="['c:user:settings']" class="!no-underline" to="/account/profile">
-              <NcMenuItem> <GeneralIcon icon="settings" class="menu-icon" /> {{ $t('title.accountSettings') }} </NcMenuItem>
+              <NcMenuItem>
+                <GeneralIcon icon="settings" class="menu-icon" /> {{ $t('title.accountSettings') }}
+              </NcMenuItem>
             </nuxt-link>
           </template>
         </NcMenu>
