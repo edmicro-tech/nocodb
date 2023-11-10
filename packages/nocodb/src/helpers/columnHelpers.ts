@@ -273,7 +273,7 @@ export async function populateRollupForLTAR({
 // };
 export const sanitizeColumnName = (name: string) => {
   const columnName = name
-    .replace(/[^\p{L}\p{N}\s]+/gu, '_')
+    .replace(/[^\p{L}\p{N}\sáàảãạâấầẩẫậăắằẳẵặéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ]+/gu, '_')
     .replace(/\s+/g, '_')
     .trim();
 
