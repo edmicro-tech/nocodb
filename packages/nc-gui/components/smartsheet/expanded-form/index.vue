@@ -129,7 +129,6 @@ const {
   primaryKey,
   saveRowAndStay,
   row: _row,
-  syncLTARRefs,
   save: _save,
   loadCommentsAndLogs,
   clearColumns,
@@ -187,7 +186,6 @@ const onDuplicateRow = () => {
 const save = async () => {
   if (isNew.value) {
     const data = await _save(rowState.value)
-    await syncLTARRefs(data)
     reloadTrigger?.trigger()
   } else {
     let kanbanClbk
@@ -347,8 +345,7 @@ useActiveKeyupListener(
       e.stopPropagation()
 
       if (isNew.value) {
-        const data = await _save(rowState.value)
-        await syncLTARRefs(data)
+        await _save(rowState.value)
         reloadHook?.trigger(null)
       } else {
         await save()
@@ -382,8 +379,7 @@ useActiveKeyupListener(
           okText: t('general.save'),
           cancelText: t('labels.discard'),
           onOk: async () => {
-            const data = await _save(rowState.value)
-            await syncLTARRefs(data)
+            await _save(rowState.value)
             reloadHook?.trigger(null)
             addNewRow()
           },
