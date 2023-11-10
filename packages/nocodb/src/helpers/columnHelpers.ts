@@ -214,8 +214,8 @@ export const generateFkName = (parent: TableType, child: TableType) => {
   const constraintName = `fk_${parent.table_name
     .replace(/\W+/g, '_')
     .slice(0, 10)}_${child.table_name
-    .replace(/\W+/g, '_')
-    .slice(0, 10)}_${randomID()}`;
+      .replace(/\W+/g, '_')
+      .slice(0, 10)}_${randomID()}`;
   return constraintName;
 };
 
@@ -272,7 +272,10 @@ export async function populateRollupForLTAR({
 //   return columnName;
 // };
 export const sanitizeColumnName = (name: string) => {
-  const columnName = name.replace(/[^\p{L}\p{N}]+/gu, '_').trim();
+  const columnName = name
+    .replace(/[^\p{L}\p{N}\s]+/gu, '_')
+    .replace(/\s+/g, '_')
+    .trim();
 
   // if column name only contains _ then return as 'field'
   if (/^_+$/.test(columnName)) return 'field';
