@@ -133,11 +133,13 @@ async function tryGoogleAuth(api: Api<any>, signIn: Actions['signIn']) {
         authProvider = 'oidc'
       }
 
+      // `extra` prop is used in our cloud implementation, so we are keeping it
       const {
         data: { token, extra },
       } = await api.instance.post(`/auth/${authProvider}/genTokenByCode${window.location.search}`)
 
-      extraProps = extra
+      // if extra prop is null/undefined set it as an empty object as fallback
+      extraProps = extra || {}
 
       signIn(token)
     } catch (e: any) {
@@ -145,21 +147,11 @@ async function tryGoogleAuth(api: Api<any>, signIn: Actions['signIn']) {
     }
 
     const newURL = window.location.href.split('?')[0]
-    const continueAfterSignIn = extraProps && extraProps.continueAfterSignIn; // check if extraProps is defined
-    const updatedURL = continueAfterSignIn ? `${newURL}#/?continueAfterSignIn=${continueAfterSignIn}` : newURL;
-    window.history.pushState('object', document.title, updatedURL);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    window.history.pushState(
+      'object',
+      document.title,
+      `${extraProps?.continueAfterSignIn ? `${newURL}#/?continueAfterSignIn=${extraProps.continueAfterSignIn}` : newURL}`,
+    )
+    window.location.reload()
   }
 }
-//     window.history.pushState(
-//       'object',
-//       document.title,
-//       `${extraProps.continueAfterSignIn ? `${newURL}#/?continueAfterSignIn=${extraProps.continueAfterSignIn}` : newURL}`,
-//     )
-//     setTimeout(() => {
-//       window.location.reload()
-//     }, 1000);
-//   }
-// }
