@@ -166,7 +166,7 @@ useMenuCloseOnEsc(open)
               class="scrollbar-thin-dull max-h-90vh overflow-auto !py-0"
             >
               <template #title>
-                <div v-e="['c:navdraw:preview-as']" class="nc-base-menu-item group px-0 !py-0">
+                <div v-e="['c:navdraw:preview-as']" class="nc-base-menu-item group px-0">
                   <LazySmartsheetToolbarLockType hide-tick :type="lockType" />
 
                   <component :is="iconMap.arrowRight" />
