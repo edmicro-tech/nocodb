@@ -1261,14 +1261,22 @@ onKeyStroke('ArrowDown', onDown)
           <span class="text-center" v-html="loaderText"></span>
         </div>
       </div>
-      <NcDropdown v-model:visible="contextMenu" :trigger="isSqlView ? [] : ['contextmenu']"
-        overlay-class-name="nc-dropdown-grid-context-menu">
-        <div class="table-overlay" :class="{ 'nc-grid-skelton-loader': showSkeleton }">
-          <table ref="smartTable" class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative" :class="{
-            'mobile': isMobileMode,
-            'desktop': !isMobileMode,
-            'pr-60 pb-12': !headerOnly,
-          }" @contextmenu="showContextMenu">
+      <NcDropdown
+        v-model:visible="contextMenu"
+        :trigger="isSqlView ? [] : ['contextmenu']"
+        overlay-class-name="nc-dropdown-grid-context-menu"
+      >
+        <div class="table-overlay" :class="{ 'nc-grid-skeleton-loader': showSkeleton }">
+          <table
+            ref="smartTable"
+            class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative"
+            :class="{
+              'mobile': isMobileMode,
+              'desktop': !isMobileMode,
+              'pr-60 pb-12': !headerOnly,
+            }"
+            @contextmenu="showContextMenu"
+          >
             <thead v-show="hideHeader !== true" ref="tableHeadEl">
               <tr v-if="isViewColumnsLoading">
                 <td v-for="(col, colIndex) of dummyColumnDataForLoading" :key="colIndex"
@@ -1868,7 +1876,7 @@ onKeyStroke('ArrowDown', onDown)
     }
   }
 
-  .nc-grid-skelton-loader {
+  .nc-grid-skeleton-loader {
     thead th:nth-child(2) {
       @apply border-r-1 !border-r-gray-50;
     }
