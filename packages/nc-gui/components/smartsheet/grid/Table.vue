@@ -1261,22 +1261,14 @@ onKeyStroke('ArrowDown', onDown)
           <span class="text-center" v-html="loaderText"></span>
         </div>
       </div>
-      <NcDropdown
-        v-model:visible="contextMenu"
-        :trigger="isSqlView ? [] : ['contextmenu']"
-        overlay-class-name="nc-dropdown-grid-context-menu"
-      >
+      <NcDropdown v-model:visible="contextMenu" :trigger="isSqlView ? [] : ['contextmenu']"
+        overlay-class-name="nc-dropdown-grid-context-menu">
         <div class="table-overlay" :class="{ 'nc-grid-skeleton-loader': showSkeleton }">
-          <table
-            ref="smartTable"
-            class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative"
-            :class="{
-              'mobile': isMobileMode,
-              'desktop': !isMobileMode,
-              'pr-60 pb-12': !headerOnly,
-            }"
-            @contextmenu="showContextMenu"
-          >
+          <table ref="smartTable" class="xc-row-table nc-grid backgroundColorDefault !h-auto bg-white relative" :class="{
+            'mobile': isMobileMode,
+            'desktop': !isMobileMode,
+            'pr-60 pb-12': !headerOnly,
+          }" @contextmenu="showContextMenu">
             <thead v-show="hideHeader !== true" ref="tableHeadEl">
               <tr v-if="isViewColumnsLoading">
                 <td v-for="(col, colIndex) of dummyColumnDataForLoading" :key="colIndex"
@@ -1421,10 +1413,10 @@ onKeyStroke('ArrowDown', onDown)
                     :class="{ 'min-w-50': colIndex !== 0, 'min-w-21.25': colIndex === 0 }"></td>
                 </tr>
               </template>
-              <LazySmartsheetRow v-for="(row, rowIndex) of dataRef" v-show="!showSkeleton" ref="rowRefs" :key="rowIndex"
-                :row="row">
+              <LazySmartsheetRow v-for="(row, rowIndex) of dataRef" ref="rowRefs" :key="rowIndex" :row="row">
                 <template #default="{ state }">
-                  <tr class="nc-grid-row !xs:h-14" :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
+                  <tr v-show="!showSkeleton" class="nc-grid-row !xs:h-14"
+                    :style="{ height: rowHeight ? `${rowHeight * 1.8}rem` : `1.8rem` }"
                     :data-testid="`grid-row-${rowIndex}`">
                     <td key="row-index" class="caption nc-grid-cell pl-5 pr-1" :data-testid="`cell-Id-${rowIndex}`"
                       @contextmenu="contextMenuTarget = null">
@@ -1461,11 +1453,8 @@ onKeyStroke('ArrowDown', onDown)
                         </div>
                       </div>
                     </td>
-                    <SmartsheetTableDataCell
-                      v-for="(columnObj, colIndex) of fields"
-                      :key="columnObj.id"
-                      class="cell relative nc-grid-cell cursor-pointer"
-                      :class="{
+                    <SmartsheetTableDataCell v-for="(columnObj, colIndex) of fields" :key="columnObj.id"
+                      class="cell relative nc-grid-cell cursor-pointer" :class="{
                         'active': isCellSelected(rowIndex, colIndex),
                         'active-cell':
                           (activeCell.row === rowIndex && activeCell.col === colIndex) ||
@@ -1493,28 +1482,16 @@ onKeyStroke('ArrowDown', onDown)
                       @click="handleCellClick($event, rowIndex, colIndex)" @dblclick="makeEditable(row, columnObj)"
                       @contextmenu="showContextMenu($event, { row: rowIndex, col: colIndex })">
                       <div v-if="!switchingTab" class="w-full h-full">
-                        <LazySmartsheetVirtualCell
-                          v-if="isVirtualCol(columnObj) && columnObj.title"
-                          v-model="row.row[columnObj.title]"
-                          :column="columnObj"
-                          :active="activeCell.col === colIndex && activeCell.row === rowIndex"
-                          :row="row"
-                          :read-only="!hasEditPermission"
-                          @navigate="onNavigate"
-                          @save="updateOrSaveRow?.(row, '', state)"
-                        />
+                        <LazySmartsheetVirtualCell v-if="isVirtualCol(columnObj) && columnObj.title"
+                          v-model="row.row[columnObj.title]" :column="columnObj"
+                          :active="activeCell.col === colIndex && activeCell.row === rowIndex" :row="row"
+                          :read-only="!hasEditPermission" @navigate="onNavigate"
+                          @save="updateOrSaveRow?.(row, '', state)" />
 
-                        <LazySmartsheetCell
-                          v-else-if="columnObj.title"
-                          v-model="row.row[columnObj.title]"
-                          :column="columnObj"
-                          :edit-enabled="
-                            !!hasEditPermission && !!editEnabled && activeCell.col === colIndex && activeCell.row === rowIndex
-                          "
-                          :row-index="rowIndex"
-                          :active="activeCell.col === colIndex && activeCell.row === rowIndex"
-                          :read-only="!hasEditPermission"
-                          @update:edit-enabled="editEnabled = $event"
+                        <LazySmartsheetCell v-else-if="columnObj.title" v-model="row.row[columnObj.title]"
+                          :column="columnObj" :edit-enabled="!!hasEditPermission && !!editEnabled && activeCell.col === colIndex && activeCell.row === rowIndex
+                            " :row-index="rowIndex" :active="activeCell.col === colIndex && activeCell.row === rowIndex"
+                          :read-only="!hasEditPermission" @update:edit-enabled="editEnabled = $event"
                           @save="updateOrSaveRow?.(row, columnObj.title, state)" @navigate="onNavigate"
                           @cancel="editEnabled = false" />
                       </div>
@@ -1590,35 +1567,24 @@ onKeyStroke('ArrowDown', onDown)
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem
-              v-if="
-                contextMenuTarget &&
-                hasEditPermission &&
-                selectedRange.isSingleCell() &&
-                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
-              "
-              v-e="['a:row:clear']"
-              class="nc-base-menu-item"
-              @click="clearCell(contextMenuTarget)"
-            >
+            <NcMenuItem v-if="contextMenuTarget &&
+              hasEditPermission &&
+              selectedRange.isSingleCell() &&
+              (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              " v-e="['a:row:clear']" class="nc-base-menu-item" @click="clearCell(contextMenuTarget)">
               <GeneralIcon icon="close" />
               {{ $t('general.clear') }}
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem
-              v-else-if="contextMenuTarget && hasEditPermission"
-              v-e="['a:row:clear-range']"
-              class="nc-base-menu-item"
-              @click="clearSelectedRangeOfCells()"
-            >
+            <NcMenuItem v-else-if="contextMenuTarget && hasEditPermission" v-e="['a:row:clear-range']"
+              class="nc-base-menu-item" @click="clearSelectedRangeOfCells()">
               <GeneralIcon icon="closeBox" class="text-gray-500" />
 
               {{ $t('general.clear') }}
             </NcMenuItem>
             <template
-              v-if="contextMenuTarget && !isLocked && selectedRange.isSingleCell() && isUIAllowed('commentEdit') && !isMobileMode"
-            >
+              v-if="contextMenuTarget && !isLocked && selectedRange.isSingleCell() && isUIAllowed('commentEdit') && !isMobileMode">
               <NcDivider />
               <NcMenuItem v-e="['a:row:comment']" class="nc-base-menu-item" @click="commentRow(contextMenuTarget.row)">
                 <MdiMessageOutline class="h-4 w-4" />
