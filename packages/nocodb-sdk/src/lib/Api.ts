@@ -153,46 +153,46 @@ export interface AuditType {
    * @example AUTHENTICATION
    */
   op_type?:
-    | 'COMMENT'
-    | 'DATA'
-    | 'PROJECT'
-    | 'VIRTUAL_RELATION'
-    | 'RELATION'
-    | 'TABLE_VIEW'
-    | 'TABLE'
-    | 'VIEW'
-    | 'META'
-    | 'WEBHOOKS'
-    | 'AUTHENTICATION'
-    | 'TABLE_COLUMN'
-    | 'ORG_USER';
+  | 'COMMENT'
+  | 'DATA'
+  | 'PROJECT'
+  | 'VIRTUAL_RELATION'
+  | 'RELATION'
+  | 'TABLE_VIEW'
+  | 'TABLE'
+  | 'VIEW'
+  | 'META'
+  | 'WEBHOOKS'
+  | 'AUTHENTICATION'
+  | 'TABLE_COLUMN'
+  | 'ORG_USER';
   /**
    * Operation Sub Type
    * @example UPDATE
    */
   op_sub_type?:
-    | 'UPDATE'
-    | 'INSERT'
-    | 'BULK_INSERT'
-    | 'BULK_UPDATE'
-    | 'BULK_DELETE'
-    | 'LINK_RECORD'
-    | 'UNLINK_RECORD'
-    | 'DELETE'
-    | 'CREATE'
-    | 'RENAME'
-    | 'IMPORT_FROM_ZIP'
-    | 'EXPORT_TO_FS'
-    | 'EXPORT_TO_ZIP'
-    | 'SIGNIN'
-    | 'SIGNUP'
-    | 'PASSWORD_RESET'
-    | 'PASSWORD_FORGOT'
-    | 'PASSWORD_CHANGE'
-    | 'EMAIL_VERIFICATION'
-    | 'ROLES_MANAGEMENT'
-    | 'INVITE'
-    | 'RESEND_INVITE';
+  | 'UPDATE'
+  | 'INSERT'
+  | 'BULK_INSERT'
+  | 'BULK_UPDATE'
+  | 'BULK_DELETE'
+  | 'LINK_RECORD'
+  | 'UNLINK_RECORD'
+  | 'DELETE'
+  | 'CREATE'
+  | 'RENAME'
+  | 'IMPORT_FROM_ZIP'
+  | 'EXPORT_TO_FS'
+  | 'EXPORT_TO_ZIP'
+  | 'SIGNIN'
+  | 'SIGNUP'
+  | 'PASSWORD_RESET'
+  | 'PASSWORD_FORGOT'
+  | 'PASSWORD_CHANGE'
+  | 'EMAIL_VERIFICATION'
+  | 'ROLES_MANAGEMENT'
+  | 'INVITE'
+  | 'RESEND_INVITE';
   /** Audit Status */
   status?: string;
   /**
@@ -270,13 +270,13 @@ export interface SourceType {
    * @example mysql2
    */
   type?:
-    | 'mssql'
-    | 'mysql'
-    | 'mysql2'
-    | 'oracledb'
-    | 'pg'
-    | 'snowflake'
-    | 'sqlite3';
+  | 'mssql'
+  | 'mysql'
+  | 'mysql2'
+  | 'oracledb'
+  | 'pg'
+  | 'snowflake'
+  | 'sqlite3';
 }
 
 /**
@@ -316,13 +316,13 @@ export interface BaseReqType {
   is_local?: boolean;
   /** DB Type */
   type?:
-    | 'mssql'
-    | 'mysql'
-    | 'mysql2'
-    | 'oracledb'
-    | 'pg'
-    | 'snowflake'
-    | 'sqlite3';
+  | 'mssql'
+  | 'mysql'
+  | 'mysql2'
+  | 'oracledb'
+  | 'pg'
+  | 'snowflake'
+  | 'sqlite3';
 }
 
 /**
@@ -351,18 +351,18 @@ export interface ColumnType {
   clen?: number | null | string;
   /** Column Options */
   colOptions?:
-    | FormulaType
-    | LinkToAnotherRecordType
-    | LookupType
-    | RollupType
-    | SelectOptionsType
-    | object
-    | (FormulaType &
-        LinkToAnotherRecordType &
-        LookupType &
-        RollupType &
-        SelectOptionsType &
-        object);
+  | FormulaType
+  | LinkToAnotherRecordType
+  | LookupType
+  | RollupType
+  | SelectOptionsType
+  | object
+  | (FormulaType &
+    LinkToAnotherRecordType &
+    LookupType &
+    RollupType &
+    SelectOptionsType &
+    object);
   /**
    * Column Name
    * @example title
@@ -426,44 +426,44 @@ export interface ColumnType {
    * @example SingleLineText
    */
   uidt?:
-    | 'Attachment'
-    | 'AutoNumber'
-    | 'Barcode'
-    | 'Button'
-    | 'Checkbox'
-    | 'Collaborator'
-    | 'Count'
-    | 'CreateTime'
-    | 'Currency'
-    | 'Date'
-    | 'DateTime'
-    | 'Decimal'
-    | 'Duration'
-    | 'Email'
-    | 'Formula'
-    | 'ForeignKey'
-    | 'GeoData'
-    | 'Geometry'
-    | 'ID'
-    | 'JSON'
-    | 'LastModifiedTime'
-    | 'LongText'
-    | 'LinkToAnotherRecord'
-    | 'Lookup'
-    | 'MultiSelect'
-    | 'Number'
-    | 'Percent'
-    | 'PhoneNumber'
-    | 'Rating'
-    | 'Rollup'
-    | 'SingleLineText'
-    | 'SingleSelect'
-    | 'SpecificDBType'
-    | 'Time'
-    | 'URL'
-    | 'Year'
-    | 'QrCode'
-    | 'Links';
+  | 'Attachment'
+  | 'AutoNumber'
+  | 'Barcode'
+  | 'Button'
+  | 'Checkbox'
+  | 'Collaborator'
+  | 'Count'
+  | 'CreateTime'
+  | 'Currency'
+  | 'Date'
+  | 'DateTime'
+  | 'Decimal'
+  | 'Duration'
+  | 'Email'
+  | 'Formula'
+  | 'ForeignKey'
+  | 'GeoData'
+  | 'Geometry'
+  | 'ID'
+  | 'JSON'
+  | 'LastModifiedTime'
+  | 'LongText'
+  | 'LinkToAnotherRecord'
+  | 'Lookup'
+  | 'MultiSelect'
+  | 'Number'
+  | 'Percent'
+  | 'PhoneNumber'
+  | 'Rating'
+  | 'Rollup'
+  | 'SingleLineText'
+  | 'SingleSelect'
+  | 'SpecificDBType'
+  | 'Time'
+  | 'URL'
+  | 'Year'
+  | 'QrCode'
+  | 'Links';
   /** Is Unsigned? */
   un?: BoolType;
   /** Is unique? */
@@ -492,10 +492,10 @@ export type ColumnReqType = (
   | NormalColumnRequestType
   | RollupColumnReqType
   | (FormulaColumnReqType &
-      LinkToAnotherColumnReqType &
-      LookupColumnReqType &
-      NormalColumnRequestType &
-      RollupColumnReqType)
+    LinkToAnotherColumnReqType &
+    LookupColumnReqType &
+    NormalColumnRequestType &
+    RollupColumnReqType)
 ) & {
   column_name?: string;
   /** Column order in a specific view */
@@ -549,6 +549,37 @@ export interface FilterType {
   children?: FilterType[];
   /** Comparison Operator */
   comparison_op?:
+  | 'allof'
+  | 'anyof'
+  | 'blank'
+  | 'btw'
+  | 'checked'
+  | 'empty'
+  | 'eq'
+  | 'ge'
+  | 'gt'
+  | 'gte'
+  | 'in'
+  | 'is'
+  | 'isWithin'
+  | 'isnot'
+  | 'le'
+  | 'like'
+  | 'lt'
+  | 'lte'
+  | 'nallof'
+  | 'nanyof'
+  | 'nbtw'
+  | 'neq'
+  | 'nlike'
+  | 'not'
+  | 'notblank'
+  | 'notchecked'
+  | 'notempty'
+  | 'notnull'
+  | 'null'
+  | null
+  | (
     | 'allof'
     | 'anyof'
     | 'blank'
@@ -577,41 +608,30 @@ export interface FilterType {
     | 'notchecked'
     | 'notempty'
     | 'notnull'
-    | 'null'
-    | null
-    | (
-        | 'allof'
-        | 'anyof'
-        | 'blank'
-        | 'btw'
-        | 'checked'
-        | 'empty'
-        | 'eq'
-        | 'ge'
-        | 'gt'
-        | 'gte'
-        | 'in'
-        | 'is'
-        | 'isWithin'
-        | 'isnot'
-        | 'le'
-        | 'like'
-        | 'lt'
-        | 'lte'
-        | 'nallof'
-        | 'nanyof'
-        | 'nbtw'
-        | 'neq'
-        | 'nlike'
-        | 'not'
-        | 'notblank'
-        | 'notchecked'
-        | 'notempty'
-        | 'notnull'
-        | ('null' & null)
-      );
+    | ('null' & null)
+  );
   /** Comparison Sub-Operator */
   comparison_sub_op?:
+  | 'daysAgo'
+  | 'daysFromNow'
+  | 'exactDate'
+  | 'nextMonth'
+  | 'nextNumberOfDays'
+  | 'nextWeek'
+  | 'nextYear'
+  | 'oneMonthAgo'
+  | 'oneMonthFromNow'
+  | 'oneWeekAgo'
+  | 'oneWeekFromNow'
+  | 'pastMonth'
+  | 'pastNumberOfDays'
+  | 'pastWeek'
+  | 'pastYear'
+  | 'today'
+  | 'tomorrow'
+  | 'yesterday'
+  | null
+  | (
     | 'daysAgo'
     | 'daysFromNow'
     | 'exactDate'
@@ -629,28 +649,8 @@ export interface FilterType {
     | 'pastYear'
     | 'today'
     | 'tomorrow'
-    | 'yesterday'
-    | null
-    | (
-        | 'daysAgo'
-        | 'daysFromNow'
-        | 'exactDate'
-        | 'nextMonth'
-        | 'nextNumberOfDays'
-        | 'nextWeek'
-        | 'nextYear'
-        | 'oneMonthAgo'
-        | 'oneMonthFromNow'
-        | 'oneWeekAgo'
-        | 'oneWeekFromNow'
-        | 'pastMonth'
-        | 'pastNumberOfDays'
-        | 'pastWeek'
-        | 'pastYear'
-        | 'today'
-        | 'tomorrow'
-        | ('yesterday' & null)
-      );
+    | ('yesterday' & null)
+  );
   /** Foreign Key to Column */
   fk_column_id?: StringOrNullType;
   /** Foreign Key to Hook */
@@ -699,6 +699,37 @@ export interface FilterLogListType {
 export interface FilterReqType {
   /** Comparison Operator */
   comparison_op?:
+  | 'allof'
+  | 'anyof'
+  | 'blank'
+  | 'btw'
+  | 'checked'
+  | 'empty'
+  | 'eq'
+  | 'ge'
+  | 'gt'
+  | 'gte'
+  | 'in'
+  | 'is'
+  | 'isWithin'
+  | 'isnot'
+  | 'le'
+  | 'like'
+  | 'lt'
+  | 'lte'
+  | 'nallof'
+  | 'nanyof'
+  | 'nbtw'
+  | 'neq'
+  | 'nlike'
+  | 'not'
+  | 'notblank'
+  | 'notchecked'
+  | 'notempty'
+  | 'notnull'
+  | 'null'
+  | null
+  | (
     | 'allof'
     | 'anyof'
     | 'blank'
@@ -727,41 +758,30 @@ export interface FilterReqType {
     | 'notchecked'
     | 'notempty'
     | 'notnull'
-    | 'null'
-    | null
-    | (
-        | 'allof'
-        | 'anyof'
-        | 'blank'
-        | 'btw'
-        | 'checked'
-        | 'empty'
-        | 'eq'
-        | 'ge'
-        | 'gt'
-        | 'gte'
-        | 'in'
-        | 'is'
-        | 'isWithin'
-        | 'isnot'
-        | 'le'
-        | 'like'
-        | 'lt'
-        | 'lte'
-        | 'nallof'
-        | 'nanyof'
-        | 'nbtw'
-        | 'neq'
-        | 'nlike'
-        | 'not'
-        | 'notblank'
-        | 'notchecked'
-        | 'notempty'
-        | 'notnull'
-        | ('null' & null)
-      );
+    | ('null' & null)
+  );
   /** Comparison Sub-Operator */
   comparison_sub_op?:
+  | 'daysAgo'
+  | 'daysFromNow'
+  | 'exactDate'
+  | 'nextMonth'
+  | 'nextNumberOfDays'
+  | 'nextWeek'
+  | 'nextYear'
+  | 'oneMonthAgo'
+  | 'oneMonthFromNow'
+  | 'oneWeekAgo'
+  | 'oneWeekFromNow'
+  | 'pastMonth'
+  | 'pastNumberOfDays'
+  | 'pastWeek'
+  | 'pastYear'
+  | 'today'
+  | 'tomorrow'
+  | 'yesterday'
+  | null
+  | (
     | 'daysAgo'
     | 'daysFromNow'
     | 'exactDate'
@@ -779,28 +799,8 @@ export interface FilterReqType {
     | 'pastYear'
     | 'today'
     | 'tomorrow'
-    | 'yesterday'
-    | null
-    | (
-        | 'daysAgo'
-        | 'daysFromNow'
-        | 'exactDate'
-        | 'nextMonth'
-        | 'nextNumberOfDays'
-        | 'nextWeek'
-        | 'nextYear'
-        | 'oneMonthAgo'
-        | 'oneMonthFromNow'
-        | 'oneWeekAgo'
-        | 'oneWeekFromNow'
-        | 'pastMonth'
-        | 'pastNumberOfDays'
-        | 'pastWeek'
-        | 'pastYear'
-        | 'today'
-        | 'tomorrow'
-        | ('yesterday' & null)
-      );
+    | ('yesterday' & null)
+  );
   /** Foreign Key to Column */
   fk_column_id?: StringOrNullType;
   /** Belong to which filter ID */
@@ -1237,12 +1237,12 @@ export interface HookType {
    * @example insert
    */
   operation?:
-    | 'insert'
-    | 'update'
-    | 'delete'
-    | 'bulkInsert'
-    | 'bulkUpdate'
-    | 'bulkDelete';
+  | 'insert'
+  | 'update'
+  | 'delete'
+  | 'bulkInsert'
+  | 'bulkUpdate'
+  | 'bulkDelete';
   /**
    * Retry Count
    * @example 10
@@ -1306,12 +1306,12 @@ export interface HookReqType {
    * @example insert
    */
   operation:
-    | 'insert'
-    | 'update'
-    | 'delete'
-    | 'bulkInsert'
-    | 'bulkUpdate'
-    | 'bulkDelete';
+  | 'insert'
+  | 'update'
+  | 'delete'
+  | 'bulkInsert'
+  | 'bulkUpdate'
+  | 'bulkDelete';
   /**
    * Retry Count
    * @example 10
@@ -1386,12 +1386,12 @@ export interface HookLogType {
    * @example insert
    */
   operation?:
-    | 'insert'
-    | 'update'
-    | 'delete'
-    | 'bulkInsert'
-    | 'bulkUpdate'
-    | 'bulkDelete';
+  | 'insert'
+  | 'update'
+  | 'delete'
+  | 'bulkInsert'
+  | 'bulkUpdate'
+  | 'bulkDelete';
   /**
    * Hook Payload
    * @example {"method":"POST","body":"{{ json data }}","headers":[{}],"parameters":[{}],"auth":"","path":"https://webhook.site/6eb45ce5-b611-4be1-8b96-c2965755662b"}
@@ -1743,44 +1743,44 @@ export interface NormalColumnRequestType {
   title?: string;
   /** UI Data Type */
   uidt?:
-    | 'Attachment'
-    | 'AutoNumber'
-    | 'Barcode'
-    | 'Button'
-    | 'Checkbox'
-    | 'Collaborator'
-    | 'Count'
-    | 'CreateTime'
-    | 'Currency'
-    | 'Date'
-    | 'DateTime'
-    | 'Decimal'
-    | 'Duration'
-    | 'Email'
-    | 'Formula'
-    | 'ForeignKey'
-    | 'GeoData'
-    | 'Geometry'
-    | 'ID'
-    | 'JSON'
-    | 'LastModifiedTime'
-    | 'LongText'
-    | 'LinkToAnotherRecord'
-    | 'Lookup'
-    | 'MultiSelect'
-    | 'Number'
-    | 'Percent'
-    | 'PhoneNumber'
-    | 'Rating'
-    | 'Rollup'
-    | 'SingleLineText'
-    | 'SingleSelect'
-    | 'SpecificDBType'
-    | 'Time'
-    | 'URL'
-    | 'Year'
-    | 'QrCode'
-    | 'Links';
+  | 'Attachment'
+  | 'AutoNumber'
+  | 'Barcode'
+  | 'Button'
+  | 'Checkbox'
+  | 'Collaborator'
+  | 'Count'
+  | 'CreateTime'
+  | 'Currency'
+  | 'Date'
+  | 'DateTime'
+  | 'Decimal'
+  | 'Duration'
+  | 'Email'
+  | 'Formula'
+  | 'ForeignKey'
+  | 'GeoData'
+  | 'Geometry'
+  | 'ID'
+  | 'JSON'
+  | 'LastModifiedTime'
+  | 'LongText'
+  | 'LinkToAnotherRecord'
+  | 'Lookup'
+  | 'MultiSelect'
+  | 'Number'
+  | 'Percent'
+  | 'PhoneNumber'
+  | 'Rating'
+  | 'Rollup'
+  | 'SingleLineText'
+  | 'SingleSelect'
+  | 'SpecificDBType'
+  | 'Time'
+  | 'URL'
+  | 'Year'
+  | 'QrCode'
+  | 'Links';
   /** Is this column unique? */
   un?: BoolType;
   /** Is this column unique? */
@@ -2065,13 +2065,13 @@ export interface ProjectUserReqType {
   email: string;
   /** Base User Role */
   roles:
-    | 'no-access'
-    | 'commenter'
-    | 'editor'
-    | 'guest'
-    | 'owner'
-    | 'viewer'
-    | 'creator';
+  | 'no-access'
+  | 'commenter'
+  | 'editor'
+  | 'guest'
+  | 'owner'
+  | 'viewer'
+  | 'creator';
 }
 
 /**
@@ -2106,13 +2106,13 @@ export interface RollupType {
    * @example count
    */
   rollup_function?:
-    | 'count'
-    | 'min'
-    | 'max'
-    | 'avg'
-    | 'countDistinct'
-    | 'sumDistinct'
-    | 'avgDistinct';
+  | 'count'
+  | 'min'
+  | 'max'
+  | 'avg'
+  | 'countDistinct'
+  | 'sumDistinct'
+  | 'avgDistinct';
 }
 
 /**
@@ -2127,14 +2127,14 @@ export interface RollupColumnReqType {
   title?: string;
   /** Rollup Function */
   rollup_function?:
-    | 'avg'
-    | 'avgDistinct'
-    | 'count'
-    | 'countDistinct'
-    | 'max'
-    | 'min'
-    | 'sum'
-    | 'sumDistinct';
+  | 'avg'
+  | 'avgDistinct'
+  | 'count'
+  | 'countDistinct'
+  | 'max'
+  | 'min'
+  | 'sum'
+  | 'sumDistinct';
   /** UI DataType */
   uidt?: 'Rollup';
 }
@@ -2416,6 +2416,24 @@ export interface UserType {
   /** Access token version */
   token_version?: string;
 }
+/**
+ * Model for Organization
+ */
+export interface OrganizationType {
+  /** Unique identifier for the given user. */
+  id: string;
+  /**
+   * The date that the user was created.
+   * @format date
+   */
+  created_at?: string;
+  /**
+   * The date that the user was created.
+   * @format date
+   */
+  updated_at?: string;
+  name?: string;
+}
 
 /**
  * Model for User Info
@@ -2486,12 +2504,12 @@ export interface ViewType {
   uuid?: StringOrNullType;
   /** Associated View Model */
   view?:
-    | FormType
-    | GalleryType
-    | GridType
-    | KanbanType
-    | MapType
-    | (FormType & GalleryType & GridType & KanbanType & MapType);
+  | FormType
+  | GalleryType
+  | GridType
+  | KanbanType
+  | MapType
+  | (FormType & GalleryType & GridType & KanbanType & MapType);
 }
 
 /**
@@ -2737,15 +2755,15 @@ export type NotificationType = {
   updated_at?: any;
   created_at?: any;
 } & (
-  | ProjectInviteEventType
-  | ProjectEventType
-  | TableEventType
-  | ViewEventType
-  | ColumnEventType
-  | WelcomeEventType
-  | SortEventType
-  | FilterEventType
-);
+    | ProjectInviteEventType
+    | ProjectEventType
+    | TableEventType
+    | ViewEventType
+    | ColumnEventType
+    | WelcomeEventType
+    | SortEventType
+    | FilterEventType
+  );
 
 /**
  * Model for Notification List
@@ -2849,7 +2867,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...((method &&
           this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
+          method.toLowerCase() as keyof HeadersDefaults
           ]) ||
           {}),
         ...(params1.headers || {}),
@@ -9113,15 +9131,15 @@ export class Api<
             | GalleryColumnType
             | (GridColumnType & FormColumnType & GalleryColumnType)
           ) &
-            ColumnType;
+          ColumnType;
           /** Model for Table */
           model?: TableType;
         } & {
           view?:
-            | FormType
-            | GridType
-            | GalleryType
-            | (FormType & GridType & GalleryType);
+          | FormType
+          | GridType
+          | GalleryType
+          | (FormType & GridType & GalleryType);
         },
         {
           /** @example BadRequest [Error]: <ERROR MESSAGE> */
@@ -9375,13 +9393,13 @@ export class Api<
          * @example mysql2
          */
         client?:
-          | 'mssql'
-          | 'mysql'
-          | 'mysql2'
-          | 'oracledb'
-          | 'pg'
-          | 'snowflake'
-          | 'sqlite3';
+        | 'mssql'
+        | 'mysql'
+        | 'mysql2'
+        | 'oracledb'
+        | 'pg'
+        | 'snowflake'
+        | 'sqlite3';
         connection?: {
           host?: string;
           port?: string;
@@ -9482,13 +9500,13 @@ export class Api<
            * @example mysql2
            */
           client?:
-            | 'mssql'
-            | 'mysql'
-            | 'mysql2'
-            | 'oracledb'
-            | 'pg'
-            | 'snowflake'
-            | 'sqlite3';
+          | 'mssql'
+          | 'mysql'
+          | 'mysql2'
+          | 'oracledb'
+          | 'pg'
+          | 'snowflake'
+          | 'sqlite3';
           /** Connection Config */
           connection?: {
             /** DB User */

@@ -1,6 +1,7 @@
 export enum MetaTable {
   PROJECT = 'nc_bases_v2',
   BASES = 'nc_sources_v2',
+  ORGANIZATIONS = 'nc_custom_organization_v2',
   MODELS = 'nc_models_v2',
   COLUMNS = 'nc_columns_v2',
   COLUMN_VALIDATIONS = 'nc_columns_validations_v2',

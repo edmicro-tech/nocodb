@@ -314,6 +314,7 @@
     "teamAndAuth": "Người dùng & Xác thực",
     "rolesUserMgmt": "Vai trò & Quản lý người dùng",
     "userMgmt": "Quản lý người dùng",
+    "organizationMgmt": "Quản lý tổ chức",
     "userManagement": "Quản lý người dùng",
     "inviteUser": "Mời người dùng mới",
     "accountSettings": "Cài đặt tài khoản",
@@ -433,6 +434,7 @@
     "serverCA": "Máy chủ ca.",
     "requriedCa": "Bắt buộc-ca.",
     "requriedIdentity": "Yêu cầu-Nhận dạng.",
+    "backToWorkspace": "Trở về trang chủ",
     "inflection": {
       "tableName": "Thay đổi - Tên bảng",
       "columnName": "Thay đổi - Tên cột"
@@ -511,6 +513,7 @@
     "refreshProject": "Làm mới các cơ sở dữ liệu",
     "saveProject": "Lưu cơ sở dữ liệu",
     "deleteKanbanStack": "Delete stack?",
+    "addOrganization": "Thêm tổ chức",
     "createProjectExtended": {
       "extDB": "Tạo bằng cách kết nối <br> vào cơ sở dữ liệu bên ngoài",
       "excel": "Tạo cơ sở dữ liệu từ Excel",
