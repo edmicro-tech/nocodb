@@ -142,7 +142,12 @@ const { getMeta } = useMetas()
 
 const { addUndo, clone, defineViewScope } = useUndoRedo()
 
-const { isViewColumnsLoading, updateGridViewColumn, gridViewCols, resizingColOldWith } = useViewColumnsOrThrow()
+const {
+  isViewColumnsLoading: _isViewColumnsLoading,
+  updateGridViewColumn,
+  gridViewCols,
+  resizingColOldWith,
+} = useViewColumnsOrThrow()
 
 const { isExpandedFormCommentMode } = storeToRefs(useConfigStore())
 
@@ -179,6 +184,8 @@ const fillHandle = ref<HTMLElement>()
 
 const gridRect = useElementBounding(gridWrapper)
 const isModalOpen = ref(false)
+
+const isViewColumnsLoading = computed(() => _isViewColumnsLoading.value || !meta.value)
 
 // #Permissions
 const { isUIAllowed } = useRoles()
@@ -415,7 +422,9 @@ const dummyRowDataForLoading = computed(() => {
 })
 
 const showSkeleton = computed(
-  () => disableSkeleton !== true && (isViewDataLoading.value || isPaginationLoading.value || isViewColumnsLoading.value),
+  () =>
+    (disableSkeleton !== true && (isViewDataLoading.value || isPaginationLoading.value || isViewColumnsLoading.value)) ||
+    !meta.value,
 )
 
 // #Grid
@@ -1117,22 +1126,6 @@ onBeforeUnmount(async () => {
 reloadViewDataHook?.on(reloadViewDataHandler)
 openNewRecordFormHook?.on(openNewRecordHandler)
 
-// TODO: Use CSS animations
-const showLoaderAfterDelay = ref(false)
-watch([isViewDataLoading, showSkeleton, isPaginationLoading], () => {
-  if (!isViewDataLoading.value && !showSkeleton.value && !isPaginationLoading.value) {
-    showLoaderAfterDelay.value = false
-
-    return
-  }
-
-  showLoaderAfterDelay.value = false
-
-  setTimeout(() => {
-    showLoaderAfterDelay.value = true
-  }, 500)
-})
-
 // #Watchers
 
 // reset context menu target on hide
@@ -1223,7 +1216,7 @@ const handleCellClick = (event: MouseEvent, row: number, col: number) => {
 }
 
 const loaderText = computed(() => {
-  if (isViewDataLoading.value) {
+  if (isPaginationLoading.value) {
     if (paginationDataRef.value?.totalRows && paginationDataRef.value?.pageSize) {
       return `Loading page<br/>${paginationDataRef.value.page} of ${Math.ceil(
         paginationDataRef.value?.totalRows / paginationDataRef.value?.pageSize,
@@ -1254,8 +1247,7 @@ onKeyStroke('ArrowDown', onDown)
       }" class="border-r-1 border-l-1 border-gray-200 h-full"></div>
     </div>
     <div ref="gridWrapper" class="nc-grid-wrapper min-h-0 flex-1 relative" :class="gridWrapperClass">
-      <div v-show="showSkeleton && !isPaginationLoading && showLoaderAfterDelay"
-        class="flex items-center justify-center absolute l-0 t-0 w-full h-full z-10 pb-10">
+      <div v-show="isPaginationLoading" class="flex items-center justify-center absolute l-0 t-0 w-full h-full z-10 pb-10">
         <div class="flex flex-col justify-center gap-2">
           <GeneralLoader size="xlarge" />
           <span class="text-center" v-html="loaderText"></span>
@@ -1625,9 +1617,14 @@ onKeyStroke('ArrowDown', onDown)
       :hide-sidebars="paginationStyleRef?.hideSidebars === true" :fixed-size="paginationStyleRef?.fixedSize"
       :extra-style="paginationStyleRef?.extraStyle">
       <template #add-record>
-        <div v-if="isAddingEmptyRowAllowed" class="flex ml-1">
-          <NcButton v-if="isMobileMode" v-e="[isAddNewRecordGridMode ? 'c:row:add:grid' : 'c:row:add:form']"
-            class="nc-grid-add-new-row" type="secondary" @click="onNewRecordToFormClick()">
+        <div v-if="isAddingEmptyRowAllowed && !showSkeleton && !isPaginationLoading" class="flex ml-1">
+          <NcButton
+            v-if="isMobileMode"
+            v-e="[isAddNewRecordGridMode ? 'c:row:add:grid' : 'c:row:add:form']"
+            class="nc-grid-add-new-row"
+            type="secondary"
+            @click="onNewRecordToFormClick()"
+          >
             {{ $t('activity.newRecord') }}
           </NcButton>
           <a-dropdown-button v-else v-e="[isAddNewRecordGridMode ? 'c:row:add:grid:toggle' : 'c:row:add:form:toggle']"
