@@ -159,6 +159,7 @@ export enum CacheScope {
   SINGLE_QUERY = 'singleQuery',
   JOBS = 'nc_jobs',
   PRESIGNED_URL = 'presignedUrl',
+  STORE = 'store',
 }
 
 export enum CacheGetType {
