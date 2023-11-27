@@ -1,6 +1,6 @@
 {
   "dashboards": {
-    "create_new_dashboard_project": "Create New Interface",
+    "create_new_dashboard_project": "Tạo giao diện mới",
     "connect_data_sources": "Connect data sources",
     "alert": "Alert",
     "alert-message": "No databases have been connected. Connect database bases to build interfaces. Skip this step and add databases from the base home page later.",
@@ -724,7 +724,7 @@
     "clickToCopyFieldId": "Click to copy Field Id",
     "enterPassword": "Enter password",
     "bySigningUp": "By signing up, you agree to the",
-    "subscribeToOurWeeklyNewsletter": "Subscribe to our weekly newsletter",
+    "subscribeToOurWeeklyNewsletter": "Đăng ký nhận tin hàng tuần của chúng tôi",
     "verifyingPassword": "Verifying Password",
     "thisSharedViewIsProtected": "This shared view is protected",
     "successfullySubmittedFormData": "Successfully submitted form data",
