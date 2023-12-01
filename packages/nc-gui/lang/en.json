@@ -198,7 +198,9 @@
     "useSurveyMode": "Use Survey Mode",
     "shift": "Shift",
     "enter": "Enter",
-    "seconds": "Seconds"
+    "seconds": "Seconds",
+    "confirmToDelete": "Please fill 'confirm' to delete",
+    "confirmationError": "Please fill correct syntax to confirm delete"
   },
   "objects": {
     "workspace": "Workspace",

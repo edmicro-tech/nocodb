@@ -19,6 +19,7 @@ const { isViewsLoading } = storeToRefs(useViewsStore())
 const { isMobileMode } = useGlobal()
 
 const { allowCSVDownload } = useSharedView()
+const { isUIAllowed } = useRoles()
 </script>
 
 <template>

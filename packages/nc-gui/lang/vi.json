@@ -144,7 +144,9 @@
     "enablePublic": "Cho phép chia sẻ công khai",
     "restrictAccess": "Đặt mật khẩu truy cập",
     "allowDownload": "Cho phép tải xuống",
-    "createEntity": "Tạo {entity}"
+    "createEntity": "Tạo {entity}",
+    "confirmToDelete": "Vui lòng nhập 'confirm' để xác nhận xóa",
+    "confirmationError": "Vui lòng nhập đúng cú pháp để xóa"
   },
   "objects": {
     "workspace": "Workspace",
@@ -165,7 +167,6 @@
     "webhooks": "Webhooks.",
     "view": "view",
     "views": "Lượt xem",
-    "sidebar": "Sidebar",
     "viewType": {
       "grid": "Lưới",
       "gallery": "Bộ sưu tập",
