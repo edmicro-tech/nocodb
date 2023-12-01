@@ -31,7 +31,7 @@ export default class Organization {
         ncMeta = Noco.ncMeta,
     ) {
         const insertObj = extractProps(organization, [
-            'id',
+            // 'id',
             'name',
         ]);
 
@@ -44,6 +44,7 @@ export default class Organization {
         );
         return this.get(id, ncMeta);
     }
+
     static async get(id, ncMeta = Noco.ncMeta): Promise<Organization> {
 
         let user = await ncMeta.metaGet2(null, null, MetaTable.ORGANIZATIONS, id);
@@ -109,5 +110,23 @@ export default class Organization {
         const existingOrganization = await this.get(id, ncMeta);
         // set meta
         return await ncMeta.metaUpdate(null, null, MetaTable.ORGANIZATIONS, updateObj, id);
+    }
+
+
+    public static async getUsersCount(
+        {
+            query,
+        }: {
+            query?: string;
+        },
+        ncMeta = Noco.ncMeta,
+    ): Promise<number> {
+        const queryBuilder = ncMeta.knex(MetaTable.ORGANIZATIONS);
+
+        if (query) {
+            queryBuilder.where('name', `%${query.toLowerCase?.()}%`);
+        }
+
+        return (await queryBuilder.count('id', { as: 'count' }).first()).count;
     }
 }

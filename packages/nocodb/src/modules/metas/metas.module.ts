@@ -73,6 +73,8 @@ import { BaseUsersService } from '~/services/base-users/base-users.service';
 import { NotificationsService } from '~/services/notifications.service';
 import { NotificationsController } from '~/controllers/notifications.controller';
 import { NotificationsGateway } from '~/gateways/notifications/notifications.gateway';
+import { OrganizationController } from 'src/controllers/api-organization.controller';
+import { OrganizationService } from 'src/services/organization/organization.service';
 
 export const metaModuleMetadata = {
   imports: [
@@ -87,42 +89,43 @@ export const metaModuleMetadata = {
   controllers: [
     ...(process.env.NC_WORKER_CONTAINER !== 'true'
       ? [
-          ApiDocsController,
-          ApiTokensController,
-          ...(process.env.NC_SECURE_ATTACHMENTS === 'true'
-            ? [AttachmentsSecureController]
-            : [AttachmentsController]),
-          AuditsController,
-          SourcesController,
-          CachesController,
-          ColumnsController,
-          FiltersController,
-          FormColumnsController,
-          FormsController,
-          GalleriesController,
-          GridColumnsController,
-          GridsController,
-          HooksController,
-          KanbansController,
-          MapsController,
-          MetaDiffsController,
-          ModelVisibilitiesController,
-          OrgLcenseController,
-          OrgTokensController,
-          OrgUsersController,
-          PluginsController,
-          BaseUsersController,
-          BasesController,
-          PublicMetasController,
-          ViewsController,
-          ViewColumnsController,
-          UtilsController,
-          TablesController,
-          SyncController,
-          SortsController,
-          SharedBasesController,
-          NotificationsController,
-        ]
+        ApiDocsController,
+        ApiTokensController,
+        ...(process.env.NC_SECURE_ATTACHMENTS === 'true'
+          ? [AttachmentsSecureController]
+          : [AttachmentsController]),
+        AuditsController,
+        SourcesController,
+        CachesController,
+        ColumnsController,
+        FiltersController,
+        FormColumnsController,
+        FormsController,
+        GalleriesController,
+        GridColumnsController,
+        GridsController,
+        HooksController,
+        KanbansController,
+        MapsController,
+        MetaDiffsController,
+        ModelVisibilitiesController,
+        OrgLcenseController,
+        OrgTokensController,
+        OrgUsersController,
+        OrganizationController,
+        PluginsController,
+        BaseUsersController,
+        BasesController,
+        PublicMetasController,
+        ViewsController,
+        ViewColumnsController,
+        UtilsController,
+        TablesController,
+        SyncController,
+        SortsController,
+        SharedBasesController,
+        NotificationsController,
+      ]
       : []),
   ],
   providers: [
@@ -149,6 +152,7 @@ export const metaModuleMetadata = {
     OrgTokensEeService,
     OrgTokensService,
     OrgUsersService,
+    OrganizationService,
     PluginsService,
     BaseUsersService,
     BasesService,
@@ -189,4 +193,4 @@ export const metaModuleMetadata = {
 };
 
 @Module(metaModuleMetadata)
-export class MetasModule {}
+export class MetasModule { }

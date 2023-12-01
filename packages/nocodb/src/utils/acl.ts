@@ -21,7 +21,11 @@ const permissionScopes = {
     // Base
     'baseList',
     'baseCreate',
-
+    // Organization
+    'organizationList',
+    'organizationAdd',
+    'organizationUpdate',
+    'organizationDelete',
     // User
     'userList',
     'userAdd',
@@ -127,9 +131,9 @@ const permissionScopes = {
 
 const rolePermissions:
   | Record<
-      Exclude<OrgUserRoles, OrgUserRoles.SUPER_ADMIN> | ProjectRoles | 'guest',
-      { include?: Record<string, boolean>; exclude?: Record<string, boolean> }
-    >
+    Exclude<OrgUserRoles, OrgUserRoles.SUPER_ADMIN> | ProjectRoles | 'guest',
+    { include?: Record<string, boolean>; exclude?: Record<string, boolean> }
+  >
   | Record<OrgUserRoles.SUPER_ADMIN, string> = {
   guest: {},
   [OrgUserRoles.SUPER_ADMIN]: '*',
@@ -249,6 +253,10 @@ const rolePermissions:
   },
   [OrgUserRoles.CREATOR]: {
     include: {
+      organizationList: true,
+      organizationAdd: true,
+      organizationUpdate: true,
+      organizationDelete: true,
       userList: true,
       userAdd: true,
       userUpdate: true,
