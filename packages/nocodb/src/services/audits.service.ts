@@ -71,7 +71,8 @@ export class AuditsService {
     const format1 = "DD/MM/YYYY HH:mm:ss"
     let result = await Audit.getAllAudit();
     result.forEach(element => {
-      element.created_at = moment(element.created_at).format(format1);
+      let dateTime = new Date(element.created_at);
+      element.created_at = moment(dateTime.setHours(dateTime.getHours() + 7)).format(format1);
     });
     return result;
   }
