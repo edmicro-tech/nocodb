@@ -627,7 +627,12 @@ export class MetaService {
       aggField?: string;
     },
   ): Promise<number> {
-    const query = this.knexConnection(target);
+    const query = this.knexConnection(target).leftJoin(
+      this.knexConnection('nc_bases_v2')
+        .as('base'),
+      'nc_models_v2.base_id',
+      'base.id',
+    ).where('base.deleted', false);
 
     if (base_id !== null && base_id !== undefined) {
       query.where('base_id', base_id);
