@@ -90,7 +90,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex w-full flex-col p-1 border-t-1 border-gray-200 gap-y-2">
+  <div class="flex w-full flex-col p-1 border-t-1 border-gray-200 gap-y-1">
     <NcDropdown v-model:visible="isMenuOpen" placement="topLeft" overlay-class-name="!min-w-64">
       <div class="flex flex-row py-2 px-3 gap-x-2 items-center hover:bg-gray-200 rounded-lg cursor-pointer h-10"
         data-testid="nc-sidebar-userinfo">

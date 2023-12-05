@@ -11,3 +11,14 @@
     Join NocoDB Cloud
   </a> -->
 </template>
+
+<style lang="scss">
+.nc-join-cloud-tooltip {
+  .ant-tooltip-inner {
+    @apply !bg-transparent !p-0 !text-gray-700 rounded-3xl;
+  }
+  .ant-tooltip-arrow-content {
+    @apply !bg-white;
+  }
+}
+</style>
