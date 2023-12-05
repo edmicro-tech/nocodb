@@ -94,7 +94,9 @@ export const useTablesStore = defineStore('tablesStore', () => {
 
     baseTables.value.set(baseId, tables.list || [])
   }
-
+  const countTable = () => {
+    return api.dbTable.countAll();
+  }
   const addTable = (baseId: string, table: TableType) => {
     const tables = baseTables.value.get(baseId)
     if (!tables) return
@@ -245,6 +247,7 @@ export const useTablesStore = defineStore('tablesStore', () => {
     activeTableId,
     navigateToTable,
     tableUrl,
+    countTable
   }
 })
 

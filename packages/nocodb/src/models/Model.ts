@@ -232,6 +232,31 @@ export default class Model implements TableType {
 
     return modelList.map((m) => new Model(m));
   }
+  public static async coutAll(
+    ncMeta = Noco.ncMeta
+  ) {
+    let listTables = await ncMeta.metaList2(null, null, MetaTable.MODELS, {
+      condition: {
+        enabled: true,
+        type: 'table',
+        deleted: null
+      },
+      fields: ['table_name']
+    });
+    return listTables;
+  }
+  public static async countBaseHaveTable(
+    ncMeta = Noco.ncMeta
+  ) {
+    let count = await ncMeta.metaCountDistinct(null, null, MetaTable.MODELS, {
+      condition: {
+        enabled: true,
+        type: 'table',
+      },
+      aggField: 'base_id'
+    });
+    return count;
+  }
 
   public static async listWithInfo(
     {
@@ -301,13 +326,13 @@ export default class Model implements TableType {
   public static async getByIdOrName(
     args:
       | {
-          base_id: string;
-          source_id: string;
-          table_name: string;
-        }
+        base_id: string;
+        source_id: string;
+        table_name: string;
+      }
       | {
-          id?: string;
-        },
+        id?: string;
+      },
     ncMeta = Noco.ncMeta,
   ): Promise<Model> {
     const k = 'id' in args ? args?.id : args;
@@ -856,47 +881,47 @@ export default class Model implements TableType {
     if (!modelId) {
       const model = source_id
         ? await ncMeta.metaGet2(
-            null,
-            null,
-            MetaTable.MODELS,
-            { base_id, source_id },
-            null,
-            {
-              _or: [
-                {
-                  id: {
-                    eq: aliasOrId,
-                  },
+          null,
+          null,
+          MetaTable.MODELS,
+          { base_id, source_id },
+          null,
+          {
+            _or: [
+              {
+                id: {
+                  eq: aliasOrId,
                 },
-                {
-                  title: {
-                    eq: aliasOrId,
-                  },
+              },
+              {
+                title: {
+                  eq: aliasOrId,
                 },
-              ],
-            },
-          )
+              },
+            ],
+          },
+        )
         : await ncMeta.metaGet2(
-            null,
-            null,
-            MetaTable.MODELS,
-            { base_id },
-            null,
-            {
-              _or: [
-                {
-                  id: {
-                    eq: aliasOrId,
-                  },
+          null,
+          null,
+          MetaTable.MODELS,
+          { base_id },
+          null,
+          {
+            _or: [
+              {
+                id: {
+                  eq: aliasOrId,
                 },
-                {
-                  title: {
-                    eq: aliasOrId,
-                  },
+              },
+              {
+                title: {
+                  eq: aliasOrId,
                 },
-              ],
-            },
-          );
+              },
+            ],
+          },
+        );
       if (model) {
         await NocoCache.set(cacheKey, model.id);
         await NocoCache.set(`${CacheScope.MODEL}:${model.id}`, model);
@@ -912,7 +937,7 @@ export default class Model implements TableType {
       base_id,
       source_id,
       exclude_id,
-    }: { table_name; base_id; source_id; exclude_id? },
+    }: { table_name; base_id; source_id; exclude_id?},
     ncMeta = Noco.ncMeta,
   ) {
     return !(await ncMeta.metaGet2(
@@ -933,7 +958,7 @@ export default class Model implements TableType {
       base_id,
       source_id,
       exclude_id,
-    }: { title; base_id; source_id; exclude_id? },
+    }: { title; base_id; source_id; exclude_id?},
     ncMeta = Noco.ncMeta,
   ) {
     return !(await ncMeta.metaGet2(
@@ -969,7 +994,7 @@ export default class Model implements TableType {
         existingCache.meta = typeof meta === 'string' ? JSON.parse(meta) : meta;
         // set cache
         await NocoCache.set(key, existingCache);
-      } catch {}
+      } catch { }
     }
     // set meta
     return await ncMeta.metaUpdate(

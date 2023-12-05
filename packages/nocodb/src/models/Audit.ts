@@ -231,6 +231,17 @@ export default class Audit implements AuditType {
     });
   }
 
+  static async getAllAudit(limit = 10, offset = 0) {
+    return await Noco.ncMeta.metaListWhereNot(null, null, MetaTable.AUDIT, {
+      condition: { op_type: 'AUTHENTICATION' },
+      orderBy: {
+        created_at: 'desc',
+      },
+      limit,
+      offset,
+    });
+  }
+
   static async sourceAuditCount(sourceId: string) {
     return (
       await Noco.ncMeta

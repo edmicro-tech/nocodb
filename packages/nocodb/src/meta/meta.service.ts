@@ -473,7 +473,19 @@ export class MetaService {
 
     return query;
   }
-
+  public async checkExistDataTable(
+    target: string
+  ) {
+    const query = this.knexConnection(target);
+    return query.first().then((res) => {
+      const dataExists = !!res;
+      return dataExists;
+    })
+      .catch((error) => {
+        console.error('Error checking data existence:', error);
+        throw error; // You can handle the error according to your needs
+      });
+  }
   public async metaList2(
     base_id: string,
     dbAlias: string,
@@ -520,6 +532,59 @@ export class MetaService {
 
     return query;
   }
+  public async metaListWhereNot(
+    base_id: string,
+    dbAlias: string,
+    target: string,
+    args?: {
+      condition?: { [p: string]: any };
+      limit?: number;
+      offset?: number;
+      xcCondition?;
+      fields?: string[];
+      orderBy?: { [key: string]: 'asc' | 'desc' };
+    },
+  ): Promise<any[]> {
+    const query = this.knexConnection(target).leftJoin(
+      this.knexConnection('nc_bases_v2')
+        .as('base'),
+      'base.id',
+      'nc_audit_v2.base_id',
+    );
+
+    if (base_id !== null && base_id !== undefined) {
+      query.where('base_id', base_id);
+    }
+    if (dbAlias !== null && dbAlias !== undefined) {
+      query.where('source_id', dbAlias);
+    }
+
+    if (args?.condition) {
+      query.whereNot(args.condition);
+    }
+    if (args?.limit) {
+      query.limit(args.limit);
+    }
+    if (args?.offset) {
+      query.offset(args.offset);
+    }
+    if (args?.xcCondition) {
+      (query as any).condition(args.xcCondition);
+    }
+
+    if (args?.orderBy) {
+      for (const [col, dir] of Object.entries(args.orderBy)) {
+        query.orderBy(col, dir);
+      }
+    }
+    if (args?.fields?.length) {
+      query.select(...args.fields);
+    }
+    query.select('nc_audit_v2.*')
+      .select('base.title')
+
+    return query;
+  }
 
   public async metaCount(
     base_id: string,
@@ -549,6 +614,37 @@ export class MetaService {
     }
 
     query.count(args?.aggField || 'id', { as: 'count' }).first();
+
+    return +(await query)?.['count'] || 0;
+  }
+  public async metaCountDistinct(
+    base_id: string,
+    dbAlias: string,
+    target: string,
+    args?: {
+      condition?: { [p: string]: any };
+      xcCondition?;
+      aggField?: string;
+    },
+  ): Promise<number> {
+    const query = this.knexConnection(target);
+
+    if (base_id !== null && base_id !== undefined) {
+      query.where('base_id', base_id);
+    }
+    if (dbAlias !== null && dbAlias !== undefined) {
+      query.where('source_id', dbAlias);
+    }
+
+    if (args?.condition) {
+      query.where(args.condition);
+    }
+
+    if (args?.xcCondition) {
+      (query as any).condition(args.xcCondition);
+    }
+
+    query.countDistinct(args?.aggField || 'id', { as: 'count' }).first();
 
     return +(await query)?.['count'] || 0;
   }

@@ -21,7 +21,7 @@ import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 @Controller()
 @UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class TablesController {
-  constructor(private readonly tablesService: TablesService) {}
+  constructor(private readonly tablesService: TablesService) { }
 
   @Get([
     '/api/v1/db/meta/projects/:baseId/tables',
@@ -44,6 +44,21 @@ export class TablesController {
         roles: extractRolesObj(req.user.base_roles),
       }),
     );
+  }
+  @Get([
+    '/api/v2/meta/bases/tables/count',
+  ])
+  @Acl('tableList')
+  async countTables(
+    @Request() req,
+  ) {
+    let handleTable = await this.tablesService.getCountAllTable()
+    let result = {
+      numberOfTable: handleTable.numberOfTables,
+      numberTableEmpty: handleTable.numberTableEmpty,
+      numberOfBaseHaveTable: await this.tablesService.getCountBaseHaveTable()
+    }
+    return result;
   }
 
   @Post([

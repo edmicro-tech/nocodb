@@ -9,7 +9,10 @@ html {
 body {
   line-height: 1.3125rem;
 }
-
+.splitpanes__pane{
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+ }
 :root {
   --topbar-height: 3.1rem;
   --sidebar-bottom-height: 3rem;

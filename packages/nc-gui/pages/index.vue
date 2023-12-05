@@ -39,12 +39,15 @@ const isSharedView = computed(() => {
   const routeName = (route.value.name as string) || ''
 
   // check route is not base page by route name
-  return !routeName.startsWith('index-typeOrId-baseId-') && !['index', 'index-typeOrId'].includes(routeName)
+  return !routeName.startsWith('index-typeOrId-baseId-') && !['index', 'index-typeOrId'].includes(routeName) && !routeName.startsWith('index-home')
+
 })
 
 const isSharedFormView = computed(() => {
   const routeName = (route.value.name as string) || ''
   // check route is shared form view route
+  console.log(routeName.startsWith('index-typeOrId-form-viewId'));
+
   return routeName.startsWith('index-typeOrId-form-viewId')
 })
 
@@ -72,8 +75,11 @@ async function handleRouteTypeIdChange() {
   // Load bases
   await populateWorkspace()
 
-  if (!route.value.params.baseId && basesList.value.length > 0) {
-    await autoNavigateToProject()
+  if (!route.value.params.baseId && basesList.value.length > 0 && isUIAllowed('homePage')) {
+    navigateTo('/home')
+  }
+  else if (!route.value.params.baseId && basesList.value.length > 0) {
+    autoNavigateToProject();
   }
 }
 
@@ -139,12 +145,8 @@ provide(ToggleDialogInj, toggleDialog)
         <NuxtPage />
       </template>
     </NuxtLayout>
-    <LazyDashboardSettingsModal
-      v-model:model-value="dialogOpen"
-      v-model:open-key="openDialogKey"
-      v-model:data-sources-state="dataSourcesState"
-      :base-id="baseId"
-    />
+    <LazyDashboardSettingsModal v-model:model-value="dialogOpen" v-model:open-key="openDialogKey"
+      v-model:data-sources-state="dataSourcesState" :base-id="baseId" />
     <DlgSharedBaseDuplicate v-if="isUIAllowed('baseDuplicate')" v-model="isDuplicateDlgOpen" />
   </div>
 </template>

@@ -37,7 +37,7 @@ export class TablesService {
     protected readonly metaDiffService: MetaDiffsService,
     protected readonly appHooksService: AppHooksService,
     protected readonly columnsService: ColumnsService,
-  ) {}
+  ) { }
 
   async tableUpdate(param: {
     tableId: any;
@@ -356,6 +356,32 @@ export class TablesService {
       ? tableList
       : (tableList.filter((t) => !t.mm) as Model[]);
   }
+  async getCountAllTable() {
+    let allTables = await Model.coutAll();
+    allTables = allTables.filter(x => x.table_name.startsWith('nc_'));
+
+    let countTableEmpty = 0;
+
+    // Using for...of loop to ensure proper asynchronous execution
+    for (const element of allTables) {
+      const dataExists = await Noco.ncMeta.checkExistDataTable(element);
+      if (!dataExists) {
+        countTableEmpty += 1;
+      }
+    }
+
+    let result = {
+      numberOfTables: allTables.length,
+      numberTableEmpty: countTableEmpty
+    };
+
+    return result;
+  }
+
+  async getCountBaseHaveTable() {
+    return await Model.countBaseHaveTable();
+  }
+
 
   async tableCreate(param: {
     baseId: string;

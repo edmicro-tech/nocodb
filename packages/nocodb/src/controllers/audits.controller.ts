@@ -20,7 +20,7 @@ import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 @Controller()
 @UseGuards(MetaApiLimiterGuard, GlobalGuard)
 export class AuditsController {
-  constructor(private readonly auditsService: AuditsService) {}
+  constructor(private readonly auditsService: AuditsService) { }
 
   @Post(['/api/v1/db/meta/audits/comments', '/api/v2/meta/audits/comments'])
   @HttpCode(200)
@@ -50,6 +50,13 @@ export class AuditsController {
   async commentList(@Req() req: Request) {
     return new PagedResponseImpl(
       await this.auditsService.commentList({ query: req.query }),
+    );
+  }
+  @Get(['/api/v1/db/meta/audits/all', '/api/v2/meta/audits/all'])
+  // @Acl('commentList')
+  async getAllAudits(@Req() req: Request) {
+    return new PagedResponseImpl(
+      await this.auditsService.getAllAudits(),
     );
   }
 

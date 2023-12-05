@@ -6,12 +6,13 @@ import { AppHooksListenerService } from '~/services/app-hooks-listener.service';
 import { NcError } from '~/helpers/catchError';
 import { validatePayload } from '~/helpers';
 import { Audit, Model } from '~/models';
+import moment from 'moment';
 
 @Injectable()
 export class AuditsService {
   constructor(
     protected readonly appHooksListenerService: AppHooksListenerService,
-  ) {}
+  ) { }
 
   async commentRow(param: { body: AuditRowUpdateReqType; user: any }) {
     validatePayload('swagger.json#/components/schemas/CommentReq', param.body);
@@ -65,6 +66,14 @@ export class AuditsService {
 
   async commentList(param: { query: any }) {
     return await Audit.commentsList(param.query);
+  }
+  async getAllAudits() {
+    const format1 = "DD/MM/YYYY HH:mm:ss"
+    let result = await Audit.getAllAudit();
+    result.forEach(element => {
+      element.created_at = moment(element.created_at).format(format1);
+    });
+    return result;
   }
 
   async auditList(param: { query: any; baseId: string }) {
