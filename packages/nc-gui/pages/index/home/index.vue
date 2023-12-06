@@ -43,12 +43,12 @@ await $fetch(`/api/v2/meta/audits/all`, {
 <template>
   <div class="mx-auto max-w-10xl px-6 lg:px-8 overflow-auto">
     <div class="max-w-10xl mx-auto px-4 sm:px-6 sm:py-12 lg:px-8">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-3xl">Thống kê cơ sở dữ liệu</h2>
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-2xl">Thống kê cơ sở dữ liệu</h2>
       <div class="grid grid-cols-1 gap-5 xl:grid-cols-3 md:grid-cols-2 mt-4">
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Tổng số CSDL</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Tổng số CSDL</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ basesList?.length }}</dd>
             </dl>
           </div>
@@ -56,7 +56,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Số lượng CSDL có dữ liệu</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Số lượng CSDL có dữ liệu</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ numberOfBaseHaveTable
               }}</dd>
             </dl>
@@ -65,7 +65,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Số lượng CSDL trống</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Số lượng CSDL trống</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ basesList?.length -
                 numberOfBaseHaveTable }}</dd>
             </dl>
@@ -74,7 +74,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <!-- <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Cơ sở dữ liệu truy cập nhiều nhất</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Cơ sở dữ liệu truy cập nhiều nhất</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">166.7K</dd>
             </dl>
           </div>
@@ -82,12 +82,12 @@ await $fetch(`/api/v2/meta/audits/all`, {
       </div>
     </div>
     <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-3xl">Thống kê bảng dữ liệu</h2>
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-2xl">Thống kê bảng dữ liệu</h2>
       <div class="grid grid-cols-1 gap-5 xl:grid-cols-3 md:grid-cols-2 mt-4">
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Tổng số bảng dữ liệu</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Tổng số bảng dữ liệu</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ numberOfTables }}</dd>
             </dl>
           </div>
@@ -95,7 +95,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Số lượng bảng có dữ liệu</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Số lượng bảng có dữ liệu</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ numberOfTables - numberTableEmpty }}
               </dd>
             </dl>
@@ -104,7 +104,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Số lượng bảng trống</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Số lượng bảng trống</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">{{ numberTableEmpty }}</dd>
             </dl>
           </div>
@@ -112,7 +112,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
         <!-- <div class="bg-white overflow-hidden shadow sm:rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <dl>
-              <dt class="text-sm leading-5 font-medium text-gray-500 truncate">Bảng dữ liệu truy cập nhiều nhất</dt>
+              <dt class="text-sm leading-5 font-medium text-gray-800 truncate">Bảng dữ liệu truy cập nhiều nhất</dt>
               <dd class="mt-1 text-3xl leading-9 font-semibold text-indigo-600">166.7K</dd>
             </dl>
           </div>
@@ -121,7 +121,7 @@ await $fetch(`/api/v2/meta/audits/all`, {
     </div>
     <div class="max-w-10xl mx-auto px-4 sm:px-6 sm:py-8 lg:px-8">
       <!-- Stacked list -->
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-3xl">Danh sách hoạt động gần đây</h2>
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-2xl">Danh sách hoạt động gần đây</h2>
       <ul role="list" class="mt-5 divide-y divide-gray-200 border-t border-gray-200 sm:mt-0 sm:border-t-0">
         <li v-for="element of listAudit">
           <div class="group block">
