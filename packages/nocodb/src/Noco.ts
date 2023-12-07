@@ -17,6 +17,8 @@ import type http from 'http';
 import { MetaTable } from '~/utils/globals';
 import { AppModule } from '~/app.module';
 import { isEE } from '~/utils';
+import session from 'express-session';
+import passport from 'passport';
 
 dotenv.config();
 
@@ -91,7 +93,7 @@ export default class Noco {
   public static async loadEEState(): Promise<boolean> {
     try {
       return (this.ee = isEE);
-    } catch {}
+    } catch { }
     return (this.ee = false);
   }
 
@@ -108,7 +110,18 @@ export default class Noco {
       }
       process.env.NC_DISABLE_TELE = 'true';
     }
-
+    nestApp.use(session({
+      secret: 'micdbsession', // to sign session id
+      resave: false, // will default to false in near future: https://github.com/expressjs/session#resave
+      saveUninitialized: false, // will default to false in near future: https://github.com/expressjs/session#saveuninitialized
+      rolling: true, // keep session alive
+      cookie: {
+        maxAge: 30 * 60 * 1000, // session expires in 1hr, refreshed by `rolling: true` option.
+        httpOnly: true, // so that cookie can't be accessed via client-side script
+      }
+    }));
+    nestApp.use(passport.initialize());
+    nestApp.use(passport.session());
     nestApp.useWebSocketAdapter(new IoAdapter(httpServer));
 
     this._httpServer = nestApp.getHttpAdapter().getInstance();

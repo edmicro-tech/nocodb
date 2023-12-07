@@ -33,7 +33,7 @@ export class AuthController {
     protected readonly usersService: UsersService,
     protected readonly appHooksService: AppHooksService,
     protected readonly config: ConfigService<AppConfig>,
-  ) {}
+  ) { }
 
   @Post([
     '/auth/user/signup',
@@ -110,10 +110,29 @@ export class AuthController {
     res.json(await this.usersService.login(req.user, req));
   }
 
+  @Post(`/auth/oidc/genTokenByCode`)
+  @HttpCode(200)
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  async oidcSignin(@Req() req: Request, @Res() res: Response) {
+    await this.setRefreshToken({ req, res });
+    res.json(await this.usersService.login(req.user, req));
+  }
+
   @Get('/auth/google')
   @UseGuards(PublicApiLimiterGuard, AuthGuard('google'))
   googleAuthenticate() {
     // google strategy will take care the request
+  }
+  @Get('/auth/oidc')
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  oidcAuthenticate() {
+    // oidc strategy will take care the request
+  }
+  @Get('/callback')
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  oidcCallBack(@Res() res: Response) {
+    res.redirect('/');
+    // oidc strategy will take care the request
   }
 
   @Get(['/auth/user/me', '/api/v1/db/auth/user/me', '/api/v1/auth/user/me'])

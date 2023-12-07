@@ -165,7 +165,6 @@ function navigateForgotPassword() {
             </a>
 
             <div
-              v-if="appInfo.oidcAuthEnabled"
               class="self-center flex flex-col flex-wrap gap-4 items-center mt-4 justify-center"
             >
               <a :href="`${appInfo.ncSiteUrl}/auth/oidc`" class="!text-primary !no-underline">
@@ -173,12 +172,12 @@ function navigateForgotPassword() {
                   <span class="flex items-center gap-2">
                     <MdiLogin />
 
-                    <template v-if="!appInfo.disableEmailAuth">
+                    <template >
                       {{ $t('labels.signUpWithProvider', { provider: appInfo.oidcProviderName || 'OpenID Connect' }) }}
                     </template>
-                    <template v-else>
+                    <!-- <template v-else>
                       {{ $t('general.signIn') }}
-                    </template>
+                    </template> -->
                   </span>
                 </button>
               </a>
