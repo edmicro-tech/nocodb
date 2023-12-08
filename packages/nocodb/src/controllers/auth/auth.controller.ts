@@ -131,7 +131,8 @@ export class AuthController {
   @Get('/callback')
   @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   oidcCallBack(@Res() res: Response) {
-    res.redirect('/');
+    let search = window.location.search;
+    res.redirect('/dashboard/' + search);
     // oidc strategy will take care the request
   }
 
