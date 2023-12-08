@@ -172,9 +172,7 @@ function navigateForgotPassword() {
                   <span class="flex items-center gap-2">
                     <MdiLogin />
 
-                    <template >
-                      {{ $t('labels.signUpWithProvider', { provider: appInfo.oidcProviderName || 'OpenID Connect' }) }}
-                    </template>
+                      {{ $t('labels.signInWithProvider', { provider:  'OpenID Connect' }) }}
                     <!-- <template v-else>
                       {{ $t('general.signIn') }}
                     </template> -->
