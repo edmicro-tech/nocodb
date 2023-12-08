@@ -14,12 +14,10 @@ export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc'
     super(clientConfig);
   }
 
-  async validate(req: Request, profile: any, done: Function): Promise<any> {
-    debugger
-    console.log(profile);
-    const email = profile.emails[0].value;
+  async validate(req: Request, profile: any, email: any, done: Function): Promise<any> {
+    const emailValue = profile.emails[0]?.value ?? email;
     try {
-      const user = await User.getByEmail(email);
+      const user = await User.getByEmail(emailValue);
 
       if (user) {
         // If base ID is defined, extract base level roles
@@ -36,7 +34,7 @@ export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc'
         const salt = await promisify(bcrypt.genSalt)(10);
         const newUser = await this.usersService.registerNewUserIfAllowed({
           email_verification_token: null,
-          email: profile.emails[0].value,
+          email: emailValue,
           password: '',
           salt,
           req,
@@ -73,7 +71,7 @@ export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc'
       scope: ['openid', 'profile', 'email', 'offline_access', 'u.api'],
       passReqToCallback: true,
       filterProtocolClaims: true,
-      skipUserProfile: false, 
+      skipUserProfile: false,
       loadUserInfo: true,
       state: req.query.state,
     });
@@ -95,7 +93,7 @@ export const OidcStrategyProvider: FactoryProvider = {
       scope: ['openid', 'profile', 'email', 'offline_access', 'u.api'],
       passReqToCallback: true,
       filterProtocolClaims: true,
-      skipUserProfile: false, 
+      skipUserProfile: false,
       loadUserInfo: true,
     };
 
