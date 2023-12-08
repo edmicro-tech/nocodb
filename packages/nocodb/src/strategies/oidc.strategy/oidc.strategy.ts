@@ -1,6 +1,6 @@
 import { FactoryProvider, Injectable, Optional } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy as OpenIDConnectStrategy } from 'passport-openidconnect'; // Fix import statement
+import { Strategy, VerifyCallback } from 'passport-openidconnect'; // Fix import statement
 import { UsersService } from '~/services/users/users.service';
 import { Request } from 'express';
 import { BaseUser, User } from 'src/models';
@@ -8,13 +8,13 @@ import { sanitiseUserObj } from '~/utils';
 import { promisify } from 'util';
 import bcrypt from 'bcryptjs';
 @Injectable()
-export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc') {
+export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   constructor(@Optional() clientConfig: any,
     private readonly usersService: UsersService) {
     super(clientConfig);
   }
 
-  async validate(req: Request, profile: any, done: Function): Promise<any> {
+  async validate(req: Request, profile: any, done: VerifyCallback): Promise<any> {
     const email = profile.email;
     try {
       const user = await User.getByEmail(email);
