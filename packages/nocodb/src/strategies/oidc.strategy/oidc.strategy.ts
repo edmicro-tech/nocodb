@@ -14,10 +14,10 @@ export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc'
     super(clientConfig);
   }
 
-  async validate(req: Request, profile: any, email: any, done: Function): Promise<any> {
-    const emailValue = profile.emails[0]?.value ?? email;
+  async validate(req: Request, profile: any, done: Function): Promise<any> {
+    const email = profile.email;
     try {
-      const user = await User.getByEmail(emailValue);
+      const user = await User.getByEmail(email);
 
       if (user) {
         // If base ID is defined, extract base level roles
@@ -34,7 +34,7 @@ export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc'
         const salt = await promisify(bcrypt.genSalt)(10);
         const newUser = await this.usersService.registerNewUserIfAllowed({
           email_verification_token: null,
-          email: emailValue,
+          email: profile.email,
           password: '',
           salt,
           req,
