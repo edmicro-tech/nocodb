@@ -17,7 +17,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'openidconnect') {
 
   async validate(req: Request, issuer: any, profile: any, done: VerifyCallback): Promise<any> {
     console.log(profile);
-    const email = profile.email;
+    const email = profile.emails[0].value;
     try {
       const user = await User.getByEmail(email);
       if (user) {
@@ -41,7 +41,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'openidconnect') {
         const salt = await promisify(bcrypt.genSalt)(10);
         const newUser = await this.usersService.registerNewUserIfAllowed({
           email_verification_token: null,
-          email: profile.email,
+          email: profile.emails[0].value,
           password: '',
           salt,
           req,
