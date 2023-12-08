@@ -1,6 +1,6 @@
 import { FactoryProvider, Injectable, Optional } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-openidconnect';
+import { Strategy as OpenIDConnectStrategy } from 'passport-openidconnect'; // Fix import statement
 import { UsersService } from '~/services/users/users.service';
 import { Request } from 'express';
 import { BaseUser, User } from 'src/models';
@@ -8,16 +8,16 @@ import { sanitiseUserObj } from '~/utils';
 import { promisify } from 'util';
 import bcrypt from 'bcryptjs';
 @Injectable()
-export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
+export class OidcStrategy extends PassportStrategy(OpenIDConnectStrategy, 'oidc') {
   constructor(@Optional() clientConfig: any,
     private readonly usersService: UsersService) {
     super(clientConfig);
   }
 
-  async validate(req: Request, accessToken: string, refreshToken: string, profile: any, done: Function): Promise<any> {
+  async validate(req: Request, profile: any, done: Function): Promise<any> {
+    debugger
     console.log(profile);
     const email = profile.emails[0].value;
-
     try {
       const user = await User.getByEmail(email);
 
@@ -72,6 +72,9 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
       callbackURL: 'https://db.mic.gov.vn/callback',
       scope: ['openid', 'profile', 'email', 'offline_access', 'u.api'],
       passReqToCallback: true,
+      filterProtocolClaims: true,
+      skipUserProfile: false, 
+      loadUserInfo: true,
       state: req.query.state,
     });
   }
@@ -90,6 +93,10 @@ export const OidcStrategyProvider: FactoryProvider = {
       clientSecret: 'our-client-secret',
       callbackURL: 'https://db.mic.gov.vn/callback',
       scope: ['openid', 'profile', 'email', 'offline_access', 'u.api'],
+      passReqToCallback: true,
+      filterProtocolClaims: true,
+      skipUserProfile: false, 
+      loadUserInfo: true,
     };
 
     const strategy = new OidcStrategy(clientConfig, usersService);
