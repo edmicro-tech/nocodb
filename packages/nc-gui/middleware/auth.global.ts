@@ -53,7 +53,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (!state.signedIn.value) {
-    console.log("chạy vào oidc");
     await tryOidcAuth(api, state.signIn)
   }
 
@@ -129,6 +128,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
  * If present, try using google auth data to sign user in before navigating to the next page
  */
 async function tryGoogleAuth(api: Api<any>, signIn: Actions['signIn']) {
+  console.log('google', window.location.search);
   if (window.location.search && /\bscope=|\bstate=/.test(window.location.search) && /\bcode=/.test(window.location.search)) {
     let extraProps: any = {}
     try {
@@ -165,6 +165,7 @@ async function tryGoogleAuth(api: Api<any>, signIn: Actions['signIn']) {
  * If present, try using google auth data to sign user in before navigating to the next page
  */
 async function tryOidcAuth(api: Api<any>, signIn: Actions['signIn']) {
+  console.log('oidc', window.location.search);
   if (window.location.search && /\bscope=|\bstate=/.test(window.location.search) && /\bcode=/.test(window.location.search)) {
     let extraProps: any = {}
     try {
