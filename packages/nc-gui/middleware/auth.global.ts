@@ -48,9 +48,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   /** if user isn't signed in and google auth is enabled, try to check if sign-in data is present */
   if (!state.signedIn.value && state.appInfo.value.googleAuthEnabled) {
-    console.log("chạy vào sso");
-    
+
     await tryGoogleAuth(api, state.signIn)
+  }
+
+  if (!state.signedIn.value && state.appInfo.value.oidcAuthEnabled) {
+    console.log("chạy vào oidc");
+    await tryOidcAuth(api, state.signIn)
   }
 
   /** if public allow all visitors */
@@ -135,6 +139,36 @@ async function tryGoogleAuth(api: Api<any>, signIn: Actions['signIn']) {
         authProvider = 'oidc'
       }
 
+      // `extra` prop is used in our cloud implementation, so we are keeping it
+      const {
+        data: { token, extra },
+      } = await api.instance.post(`/auth/${authProvider}/genTokenByCode${window.location.search}`)
+
+      // if extra prop is null/undefined set it as an empty object as fallback
+      extraProps = extra || {}
+
+      signIn(token)
+    } catch (e: any) {
+      message.error(await extractSdkResponseErrorMsg(e))
+    }
+
+    const newURL = window.location.href.split('?')[0]
+    window.history.pushState(
+      'object',
+      document.title,
+      `${extraProps?.continueAfterSignIn ? `${newURL}#/?continueAfterSignIn=${extraProps.continueAfterSignIn}` : newURL}`,
+    )
+    window.location.reload()
+  }
+}
+/**
+ * If present, try using google auth data to sign user in before navigating to the next page
+ */
+async function tryOidcAuth(api: Api<any>, signIn: Actions['signIn']) {
+  if (window.location.search && /\bscope=|\bstate=/.test(window.location.search) && /\bcode=/.test(window.location.search)) {
+    let extraProps: any = {}
+    try {
+      let authProvider = 'oidc'
       // `extra` prop is used in our cloud implementation, so we are keeping it
       const {
         data: { token, extra },
