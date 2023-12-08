@@ -112,7 +112,7 @@ export class AuthController {
 
   @Post(`/auth/oidc/genTokenByCode`)
   @HttpCode(200)
-  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   async oidcSignin(@Req() req: Request, @Res() res: Response) {
     await this.setRefreshToken({ req, res });
     res.json(await this.usersService.login(req.user, req));
@@ -124,12 +124,12 @@ export class AuthController {
     // google strategy will take care the request
   }
   @Get('/auth/oidc')
-  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   oidcAuthenticate() {
     // oidc strategy will take care the request
   }
   @Get('/callback')
-  @UseGuards(PublicApiLimiterGuard, AuthGuard('oidc'))
+  @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   oidcCallBack(@Res() res: Response) {
     res.redirect('/');
     // oidc strategy will take care the request

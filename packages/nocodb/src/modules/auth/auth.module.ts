@@ -6,7 +6,6 @@ import { UsersService } from '~/services/users/users.service';
 import { AuthController } from '~/controllers/auth/auth.controller';
 import { MetasModule } from '~/modules/metas/metas.module';
 import { OidcStrategyProvider } from '~/strategies/oidc.strategy/oidc.strategy';
-import { SessionSerializer } from 'src/strategies/oidc.strategy/session.serializer';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { SessionSerializer } from 'src/strategies/oidc.strategy/session.serializ
   controllers: [
     ...(process.env.NC_WORKER_CONTAINER !== 'true' ? [AuthController] : []),
   ],
-  providers: [UsersService, GoogleStrategyProvider, OidcStrategyProvider, SessionSerializer],
+  providers: [UsersService, GoogleStrategyProvider, OidcStrategyProvider],
   exports: [UsersService],
 })
 export class AuthModule { }

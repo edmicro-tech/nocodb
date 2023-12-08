@@ -9,28 +9,32 @@ import { promisify } from 'util';
 import bcrypt from 'bcryptjs';
 import { VerifyCallback } from 'passport-google-oauth20';
 @Injectable()
-export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
+export class OidcStrategy extends PassportStrategy(Strategy, 'openidconnect') {
   constructor(@Optional() clientConfig: any,
     private readonly usersService: UsersService) {
     super(clientConfig);
   }
 
-  async validate(req: Request, profile: any): Promise<any> {
+  async validate(req: Request, issuer: any, profile: any, done: VerifyCallback): Promise<any> {
+    console.log(profile);
     const email = profile.email;
     try {
       const user = await User.getByEmail(email);
-
       if (user) {
         // If base ID is defined, extract base level roles
         if (req.ncProjectId) {
           const baseUser = await BaseUser.get(req.ncProjectId, user.id);
 
           user.roles = baseUser?.roles || user.roles;
-          // done(null, sanitiseUserObj(user));
-          return user;
+          console.log(user);
+
+          done(null, sanitiseUserObj(user));
+
         } else {
-          // done(null, sanitiseUserObj(user));
-          return user;
+          console.log(user);
+
+          done(null, sanitiseUserObj(user));
+
         }
       } else {
         // User not found, create a new user if allowed
@@ -42,11 +46,13 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
           salt,
           req,
         });
-        return newUser;
-        // done(null, sanitiseUserObj(newUser));
+        console.log(user);
+
+        // return newUser;
+        done(null, sanitiseUserObj(newUser));
       }
     } catch (err) {
-      // done(err, false);
+      done(err, false);
     }
   }
 
@@ -61,7 +67,6 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   }
 
   async authenticate(req: Request, options?: any): Promise<void> {
-    console.log(req);
     return super.authenticate(req, {
       ...options,
       issuer: 'https://beta-sso.mic.gov.vn',

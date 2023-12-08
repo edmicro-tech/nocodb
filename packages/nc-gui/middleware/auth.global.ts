@@ -48,6 +48,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   /** if user isn't signed in and google auth is enabled, try to check if sign-in data is present */
   if (!state.signedIn.value && state.appInfo.value.googleAuthEnabled) {
+    console.log("chạy vào sso");
+    
     await tryGoogleAuth(api, state.signIn)
   }
 
