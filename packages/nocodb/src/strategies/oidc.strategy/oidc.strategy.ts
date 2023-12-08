@@ -1,12 +1,13 @@
 import { FactoryProvider, Injectable, Optional } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-openidconnect'; // Fix import statement
+import { Strategy } from 'passport-openidconnect'; // Fix import statement
 import { UsersService } from '~/services/users/users.service';
 import { Request } from 'express';
 import { BaseUser, User } from 'src/models';
 import { sanitiseUserObj } from '~/utils';
 import { promisify } from 'util';
 import bcrypt from 'bcryptjs';
+import { VerifyCallback } from 'passport-google-oauth20';
 @Injectable()
 export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   constructor(@Optional() clientConfig: any,
@@ -14,7 +15,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
     super(clientConfig);
   }
 
-  async validate(req: Request, profile: any, done: VerifyCallback): Promise<any> {
+  async validate(req: Request, profile: any): Promise<any> {
     const email = profile.email;
     try {
       const user = await User.getByEmail(email);
@@ -25,9 +26,11 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
           const baseUser = await BaseUser.get(req.ncProjectId, user.id);
 
           user.roles = baseUser?.roles || user.roles;
-          done(null, sanitiseUserObj(user));
+          // done(null, sanitiseUserObj(user));
+          return user;
         } else {
-          done(null, sanitiseUserObj(user));
+          // done(null, sanitiseUserObj(user));
+          return user;
         }
       } else {
         // User not found, create a new user if allowed
@@ -39,11 +42,11 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
           salt,
           req,
         });
-
-        done(null, sanitiseUserObj(newUser));
+        return newUser;
+        // done(null, sanitiseUserObj(newUser));
       }
     } catch (err) {
-      done(err, false);
+      // done(err, false);
     }
   }
 
@@ -58,7 +61,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   }
 
   async authenticate(req: Request, options?: any): Promise<void> {
-
+    console.log(req);
     return super.authenticate(req, {
       ...options,
       issuer: 'https://beta-sso.mic.gov.vn',
