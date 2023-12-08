@@ -15,6 +15,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   }
 
   async validate(req: Request, accessToken: string, refreshToken: string, profile: any, done: Function): Promise<any> {
+    console.log(profile);
     const email = profile.emails[0].value;
 
     try {
@@ -65,6 +66,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
       issuer: 'https://beta-sso.mic.gov.vn',
       authorizationURL: 'https://beta-sso.mic.gov.vn/connect/authorize',
       tokenURL: 'https://beta-sso.mic.gov.vn/connect/token',
+      userInfoURL: 'https://beta-sso.mic.gov.vn/connect/userinfo',
       clientID: 'AitaClient',
       clientSecret: 'our-client-secret',
       callbackURL: 'https://db.mic.gov.vn/callback',
@@ -83,6 +85,7 @@ export const OidcStrategyProvider: FactoryProvider = {
       issuer: 'https://beta-sso.mic.gov.vn',
       authorizationURL: 'https://beta-sso.mic.gov.vn/connect/authorize',
       tokenURL: 'https://beta-sso.mic.gov.vn/connect/token',
+      userInfoURL: 'https://beta-sso.mic.gov.vn/connect/userinfo',
       clientID: 'AitaClient',
       clientSecret: 'our-client-secret',
       callbackURL: 'https://db.mic.gov.vn/callback',
