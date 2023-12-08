@@ -52,7 +52,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     await tryGoogleAuth(api, state.signIn)
   }
 
-  if (!state.signedIn.value && state.appInfo.value.oidcAuthEnabled) {
+  if (!state.signedIn.value) {
     console.log("chạy vào oidc");
     await tryOidcAuth(api, state.signIn)
   }
