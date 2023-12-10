@@ -115,9 +115,6 @@ export class AuthController {
   @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   async oidcSignin(@Req() req: Request, @Res() res: Response) {
     await this.setRefreshToken({ req, res });
-    console.log('res token', res.json());
-    console.log('req token', req);
-    console.log('res token json', res.json());
     res.json(await this.usersService.login(req.user, req));
   }
 
@@ -133,13 +130,10 @@ export class AuthController {
   }
   @Get('/callback')
   @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
-  oidcCallBack(@Req() req: Request, @Res() res: Response) {
-    console.log('callback', req);
-    console.log('callback json', req);
-    // Extract query parameters from the request URL
-    const queryParams = req.url.split('?')[1] || '';
-    res.redirect(`/dashboard?${queryParams}`);
-    // oidc strategy will take care the request
+  async oidcCallBack(@Req() req: Request, @Res() res: Response) {
+    await this.setRefreshToken({ res, req });
+    res.json(await this.usersService.login(req.user, req));
+    res.redirect('/dashboard');
   }
 
   @Get(['/auth/user/me', '/api/v1/db/auth/user/me', '/api/v1/auth/user/me'])
@@ -273,7 +267,7 @@ export class AuthController {
 
   async setRefreshToken({ res, req }) {
     const userId = req.user?.id;
-    console.log('refresh', req);
+    console.log('refresh', req.user);
 
     if (!userId) return;
 

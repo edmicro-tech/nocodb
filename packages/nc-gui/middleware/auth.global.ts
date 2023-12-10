@@ -52,9 +52,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     await tryGoogleAuth(api, state.signIn)
   }
 
-  if (!state.signedIn.value) {
-    await tryOidcAuth(api, state.signIn)
-  }
+  // if (!state.signedIn.value) {
+  //   await tryOidcAuth(api, state.signIn)
+  // }
 
   /** if public allow all visitors */
   if (to.meta.public) return
