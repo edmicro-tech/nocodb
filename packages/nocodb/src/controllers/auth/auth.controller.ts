@@ -135,8 +135,7 @@ export class AuthController {
     let result = await this.usersService.login(req.user, req);
     setTimeout(() => {
       res.redirect('https://db.mic.gov.vn');
-    }, 1000);
-    res.json(result);
+    }, 500);
   }
 
   @Get(['/auth/user/me', '/api/v1/db/auth/user/me', '/api/v1/auth/user/me'])
