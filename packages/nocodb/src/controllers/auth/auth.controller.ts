@@ -132,8 +132,9 @@ export class AuthController {
   @UseGuards(PublicApiLimiterGuard, AuthGuard('openidconnect'))
   async oidcCallBack(@Req() req: Request, @Res() res: Response) {
     await this.setRefreshToken({ res, req });
-    res.json(await this.usersService.login(req.user, req));
+    let result = await this.usersService.login(req.user, req);
     res.redirect('/dashboard');
+    res.json(result);
   }
 
   @Get(['/auth/user/me', '/api/v1/db/auth/user/me', '/api/v1/auth/user/me'])
