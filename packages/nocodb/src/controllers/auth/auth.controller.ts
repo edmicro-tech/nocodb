@@ -134,7 +134,7 @@ export class AuthController {
     await this.setRefreshToken({ res, req });
     let result = await this.usersService.login(req.user, req);
     setTimeout(() => {
-      res.redirect('https://db.mic.gov.vn');
+      res.redirect(process.env.NC_DOMAIN_APP);
     }, 500);
   }
 
