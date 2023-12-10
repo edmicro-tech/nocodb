@@ -133,7 +133,9 @@ export class AuthController {
   async oidcCallBack(@Req() req: Request, @Res() res: Response) {
     await this.setRefreshToken({ res, req });
     let result = await this.usersService.login(req.user, req);
-    res.redirect('/dashboard');
+    setTimeout(() => {
+      res.redirect('https://db.mic.gov.vn');
+    }, 1000);
     res.json(result);
   }
 
