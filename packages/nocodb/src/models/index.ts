@@ -37,3 +37,4 @@ export { default as View } from './View';
 export { default as LinksColumn } from './LinksColumn';
 export { default as Notification } from './Notification';
 export { default as PresignedUrl } from './PresignedUrl';
+export { default as Organization } from './Organization';
