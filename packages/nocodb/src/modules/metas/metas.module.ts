@@ -75,6 +75,10 @@ import { NotificationsController } from '~/controllers/notifications.controller'
 import { NotificationsGateway } from '~/gateways/notifications/notifications.gateway';
 import { OrganizationController } from 'src/controllers/api-organization.controller';
 import { OrganizationService } from 'src/services/organization/organization.service';
+import { GroupController } from 'src/controllers/api-group.controller';
+import { GroupService } from 'src/services/group/group.service';
+import { GroupBaseController } from 'src/controllers/api-group-base.controller';
+import { GroupBaseService } from 'src/services/group-base/group-base.service';
 
 export const metaModuleMetadata = {
   imports: [
@@ -113,6 +117,8 @@ export const metaModuleMetadata = {
         OrgTokensController,
         OrgUsersController,
         OrganizationController,
+        GroupController,
+        GroupBaseController,
         PluginsController,
         BaseUsersController,
         BasesController,
@@ -153,6 +159,8 @@ export const metaModuleMetadata = {
     OrgTokensService,
     OrgUsersService,
     OrganizationService,
+    GroupService,
+    GroupBaseService,
     PluginsService,
     BaseUsersService,
     BasesService,

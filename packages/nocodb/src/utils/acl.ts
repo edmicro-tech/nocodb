@@ -21,6 +21,10 @@ const permissionScopes = {
     // Base
     'baseList',
     'baseCreate',
+    'groupList',
+    'groupAdd',
+    'groupUpdate',
+    'groupDelete',
     // Organization
     'organizationList',
     'organizationAdd',
@@ -261,6 +265,10 @@ const rolePermissions:
   },
   [OrgUserRoles.CREATOR]: {
     include: {
+      groupList: true,
+      groupAdd: true,
+      groupUpdate: true,
+      groupDelete: true,
       organizationList: true,
       organizationAdd: true,
       organizationUpdate: true,

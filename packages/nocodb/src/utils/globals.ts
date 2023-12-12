@@ -44,6 +44,8 @@ export enum MetaTable {
   MAP_VIEW_COLUMNS = 'nc_map_view_columns_v2',
   STORE = 'nc_store',
   NOTIFICATION = 'notification',
+  GROUP_BASE = 'nc_group_base',
+  GROUP = 'nc_group',
 }
 
 export enum MetaTableOldV2 {
@@ -87,6 +89,9 @@ export const orderedMetaTables = [
   MetaTable.MODELS,
   MetaTable.BASES,
   MetaTable.PROJECT,
+  MetaTable.ORGANIZATIONS,
+  MetaTable.GROUP,
+  MetaTable.GROUP_BASE,
 ];
 
 export const sakilaTableNames = [

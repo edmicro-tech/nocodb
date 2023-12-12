@@ -307,6 +307,7 @@
     "teamAndSettings": "Cài đặt",
     "myProject": "Danh sách cơ sở dữ liệu của tôi",
     "createBase": "Tạo cơ sở dữ liệu",
+    "createGroup": "Tạo thư mục",
     "formTitle": "Tiêu đề mẫu",
     "collabView": "Chia sẻ view",
     "lockedView": "Khóa view",
@@ -875,6 +876,7 @@
       }
     },
     "info": {
+      "folderNameRequired": "Tên folder bắt buộc cần nhập",
       "pasteNotSupported": "Thao tác Dán không được hỗ trợ trên ô hiện tại",
       "roles": {
         "orgCreator": "Người tạo tổ chức có thể tạo cơ sở dữ liệu mới và truy cập vào bất kỳ cơ sở dữ liệu đã được mời.",

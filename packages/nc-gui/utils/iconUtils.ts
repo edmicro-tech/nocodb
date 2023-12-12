@@ -266,6 +266,8 @@ export const iconMap = {
   bt_solid: BelongsToSolidIcon,
   workspaceDefault: MsGroup,
   project: Project,
+  fileFolder: h('span', { class: 'material-symbols' }, 'folder'),
+  fileFolderOpen: h('span', { class: 'material-symbols' }, 'folder_open'),
   search: NcSearch,
   error: h('span', { class: 'material-symbols' }, 'error'),
   info: h(MsInfo, {}, () => 'info'),
