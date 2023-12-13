@@ -18,14 +18,13 @@ import { Acl } from '~/middlewares/extract-ids/extract-ids.middleware';
 import { MetaApiLimiterGuard } from '~/guards/meta-api-limiter.guard';
 import GroupBase from 'src/models/GroupBase';
 import { GroupBaseService } from 'src/services/group-base/group-base.service';
-
-@Controller()
 @UseGuards(MetaApiLimiterGuard, GlobalGuard)
+@Controller()
 export class GroupBaseController {
     constructor(private readonly groupBaseService: GroupBaseService) { }
 
-    @Get('/api/v1/groupBase')
-    @Acl('groupBaseList')
+    @Get('/api/v1/groupbase')
+    @Acl('groupBaseList', { scope: 'org' })
     async groupBaseList(@Req() req: Request) {
         return new PagedResponseImpl(
             await this.groupBaseService.list({
@@ -40,7 +39,7 @@ export class GroupBaseController {
     }
 
     @Patch('/api/v1/groupBases/:groupBaseId')
-    @Acl('groupBaseUpdate')
+    @Acl('groupBaseUpdate', { scope: 'org' })
     async groupBaseUpdate(@Body() body, @Param('groupBaseId') groupBaseId: string) {
         return await this.groupBaseService.update({
             id: groupBaseId,
@@ -49,7 +48,7 @@ export class GroupBaseController {
     }
 
     @Delete('/api/v1/groupBases/:groupBaseId')
-    @Acl('groupBaseDelete')
+    @Acl('groupBaseDelete', { scope: 'org' })
     async groupBaseDelete(@Param('groupBaseId') groupBaseId: string) {
         await this.groupBaseService.delete({
             id: groupBaseId
@@ -57,7 +56,7 @@ export class GroupBaseController {
         return { msg: 'The groupBase has been deleted successfully' };
     }
     @Delete('/api/v1/groupBases/idBase/:idBase')
-    @Acl('groupBaseDelete')
+    @Acl('groupBaseDelete', { scope: 'org' })
     async groupBaseDeleteByBaseId(@Param('idBase') idBase: string) {
         await this.groupBaseService.deleteByBaseId({
             idBase: idBase
@@ -67,7 +66,7 @@ export class GroupBaseController {
 
     @Post('/api/v1/groupBases')
     @HttpCode(200)
-    @Acl('groupBaseAdd')
+    @Acl('groupBaseAdd', { scope: 'org' })
     async groupBaseAdd(@Body() body, @Req() req: Request) {
         const result = await this.groupBaseService.create({
             tokenBody: body,

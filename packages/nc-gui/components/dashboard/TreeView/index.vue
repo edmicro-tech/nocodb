@@ -296,7 +296,7 @@ watch(
           <GeneralDeleteModal v-model:visible="isOpenModalDelete" entity-name="Folder" :on-delete="() => deleteFolder()">
           </GeneralDeleteModal>
         </div>
-        <div v-if="folder.listBaseInFolder?.length === 0 && openFolders?.includes(folder.id)"
+        <div v-if="basesList.filter(x => folder.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folder.id)"
           class="py-0.5 text-gray-500 ml-13.55">
           {{ $t('general.empty') }}
         </div>
