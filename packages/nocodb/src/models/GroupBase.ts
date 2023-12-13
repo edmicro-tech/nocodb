@@ -101,6 +101,15 @@ export default class GroupBase {
 
         return await ncMeta.metaDelete(null, null, MetaTable.GROUP_BASE, id);
     }
+    static async deleteByBaseId(idBase: string, ncMeta = Noco.ncMeta) {
+        if (!idBase) NcError.badRequest('idBase is required');
+
+        const org = await this.get({ idBase: idBase }, ncMeta);
+
+        if (!org) NcError.badRequest('GroupBase not found');
+
+        return await ncMeta.metaDelete(null, null, MetaTable.GROUP_BASE, { idBase: idBase });
+    }
 
 
     public static async update(id, org: Partial<GroupBase>, ncMeta = Noco.ncMeta) {

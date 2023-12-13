@@ -56,6 +56,14 @@ export class GroupBaseController {
         });
         return { msg: 'The groupBase has been deleted successfully' };
     }
+    @Delete('/api/v1/groupBases/idBase/:idBase')
+    @Acl('groupBaseDelete')
+    async groupBaseDeleteByBaseId(@Param('idBase') idBase: string) {
+        await this.groupBaseService.deleteByBaseId({
+            idBase: idBase
+        });
+        return { msg: 'The groupBase has been deleted successfully' };
+    }
 
     @Post('/api/v1/groupBases')
     @HttpCode(200)

@@ -315,7 +315,7 @@ watch(
           <DashboardTreeViewProjectNode />
         </ProjectWrapper>
       </template>
-      <WorkspaceEmptyPlaceholder v-else-if="!isWorkspaceLoading" />
+      <!-- <WorkspaceEmptyPlaceholder v-else-if="!isWorkspaceLoading" /> -->
     </div>
     <WorkspaceCreateProjectDlg v-model="baseCreateDlg" />
   </div>

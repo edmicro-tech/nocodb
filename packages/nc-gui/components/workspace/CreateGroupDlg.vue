@@ -50,10 +50,11 @@ const createGroup = async () => {
     } catch (e: any) {
         message.error(await extractSdkResponseErrorMsg(e))
     } finally {
+        creating.value = false
+        message.success("Create Folder Successful")
         setTimeout(() => {
-            creating.value = false
-            message.success("Create Folder Successful")
-        }, 500)
+            location.reload();
+        }, 500);
     }
 }
 

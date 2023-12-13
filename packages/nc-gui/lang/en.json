@@ -45,6 +45,7 @@
     "open": "Open",
     "close": "Close",
     "yes": "Yes",
+    "move": "Move",
     "no": "No",
     "ok": "OK",
     "back": "Back",
@@ -1072,6 +1073,7 @@
         "barcodeFieldsCannotBeDirectlyChanged": "Warning: Barcode fields cannot be directly changed."
       },
       "duplicateProject": "Are you sure you want to duplicate the base?",
+      "moveProject": "Please choose a folder to move the base",
       "duplicateTable": "Are you sure you want to duplicate the table?"
     },
     "info": {

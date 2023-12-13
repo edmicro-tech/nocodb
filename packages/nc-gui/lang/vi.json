@@ -42,6 +42,7 @@
     "quit": "Quit",
     "home": "Trang chủ",
     "load": "Trọng tải",
+    "move": "Di chuyển",
     "open": "Mở",
     "close": "Đóng",
     "yes": "Đúng",
@@ -866,6 +867,7 @@
     "tooLargeFieldEntity": "The field is too large to be converted to {entity}",
     "roleRequired": "Role required",
     "warning": {
+      "moveProject": "Vui lòng chọn thư mục để di chuyển base",
       "dbValid": "Please make sure database you are trying to connect is valid! This operation can cause schema loss!!",
       "barcode": {
         "renderError": "Lỗi mã vạch - vui lòng kiểm tra sự tương thích giữa dữ liệu đầu vào và loại mã vạch"

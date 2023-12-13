@@ -61,5 +61,9 @@ export class GroupBaseService {
         // todo: verify token belongs to the user
         return await GroupBase.delete(param.id);
     }
+    async deleteByBaseId(param: { idBase }) {
+        // todo: verify token belongs to the user
+        return await GroupBase.deleteByBaseId(param.idBase);
+    }
 
 }
