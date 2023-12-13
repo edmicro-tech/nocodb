@@ -650,7 +650,7 @@ const moveBase = () => {
   <DlgTableDelete v-if="contextMenuTarget.value?.id && base?.id" v-model:visible="isTableDeleteDialogVisible"
     :table-id="contextMenuTarget.value?.id" :base-id="base?.id" />
   <DlgProjectDelete v-model:visible="isProjectDeleteDialogVisible" :base-id="base?.id" />
-  <DlgMoveBase v-model:visible="isMoveBaseVisible" :base-id="base?.id" />
+  <DlgMoveBase v-if="isMoveBaseVisible" v-model:visible="isMoveBaseVisible" :base-id="base?.id" />
   <DlgProjectDuplicate v-if="selectedProjectToDuplicate" v-model="isDuplicateDlgOpen"
     :base="selectedProjectToDuplicate" />
   <GeneralModal v-model:visible="isErdModalOpen" size="large">

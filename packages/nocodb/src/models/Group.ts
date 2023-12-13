@@ -73,19 +73,19 @@ export default class Group {
                 `${MetaTable.GROUP}.name`,
                 `${MetaTable.GROUP}.created_at`,
                 `${MetaTable.GROUP}.updated_at`,
-                `${MetaTable.GROUP_BASE}.idGroup`,
-                `${MetaTable.GROUP_BASE}.idBase`,
+                // `${MetaTable.GROUP_BASE}.idGroup`,
+                // `${MetaTable.GROUP_BASE}.idBase`,
             );
 
         if (query) {
             queryBuilder.where(`${MetaTable.GROUP}.name`, 'like', `%${query.toLowerCase()}%`);
         }
 
-        queryBuilder = queryBuilder.leftJoin(
-            MetaTable.GROUP_BASE,
-            `${MetaTable.GROUP_BASE}.idGroup`,
-            `${MetaTable.GROUP}.id`
-        );
+        // queryBuilder = queryBuilder.leftJoin(
+        //     MetaTable.GROUP_BASE,
+        //     `${MetaTable.GROUP_BASE}.idGroup`,
+        //     `${MetaTable.GROUP}.id`
+        // );
 
         return queryBuilder;
 
