@@ -309,7 +309,7 @@ useMenuCloseOnEsc(open)
               {{ $t('title.editCards') }}
             </template>
             <template v-else>
-              {{ $t('objects.fields') }}
+              {{ $t('objects.field') }}
             </template>
           </span>
           <span v-if="numberOfHiddenFields" class="bg-brand-50 text-brand-500 py-1 px-2 text-md rounded-md">

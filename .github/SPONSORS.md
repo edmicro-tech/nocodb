@@ -12,7 +12,7 @@
 
 <p style="text-align: center;">&nbsp;</p>    
   
-<h2 align="center"><b>NocoDB Startup Sponsor</b></h2>
+<h2 align="center"><b>MicDB Startup Sponsor</b></h2>
 <table align="center" border-color="white">
   <tbody>
     <tr>
@@ -29,7 +29,7 @@
 
 <p style="text-align: center;">&nbsp;</p>    
   
-<h3 align="center"><b>NocoDB Evangelist Sponsors</b></h3>
+<h3 align="center"><b>MicDB Evangelist Sponsors</b></h3>
 <table align="center">
   <tbody>
     <tr>     
@@ -51,7 +51,7 @@
 
 <p style="text-align: center;">&nbsp;</p>  
   
-  <h3 align="center"><b>NocoDB Supporters</b></h3>
+  <h3 align="center"><b>MicDB Supporters</b></h3>
 <table  align="center">
   <tbody>
     <tr>

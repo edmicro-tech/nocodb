@@ -367,8 +367,8 @@
     "sqlMigrations": "SQL Migrācijas",
     "dbCredentials": "Datubāzes pieslēguma parametri",
     "advancedParameters": "SSL & Paplašinātie parametri",
-    "headCreateProject": "Izveidot projektu | NocoDB",
-    "headLogin": "Pieslēgties | NocoDB",
+    "headCreateProject": "Izveidot projektu | MicDB",
+    "headLogin": "Pieslēgties | MicDB",
     "resetPassword": "Atjaunot paroli",
     "teamAndSettings": "Komanda un iestatījumi",
     "apiDocs": "API dokumenti",
@@ -570,9 +570,9 @@
       "bookDemo": "Rezervē bezmaksas DEMO",
       "getAnswered": "Saņemt atbildi uz jautājumiem",
       "joinDiscord": "Pievienoties Discord",
-      "joinCommunity": "Pievienojieties NocoDB kopienai",
-      "joinReddit": "Pievienoties /r/NocoDB",
-      "followNocodb": "Sekot NocoDB",
+      "joinCommunity": "Pievienojieties MicDB kopienai",
+      "joinReddit": "Pievienoties /r/MicDB",
+      "followNocodb": "Sekot MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Reģistrējieties pakalpojumā {provider}",
     "signInWithProvider": "Pierakstīties, izmantojot {provider}",
     "agreeToTos": "Reģistrējoties jūs piekrītat pakalpojumu sniegšanas noteikumiem.",
-    "welcomeToNc": "Laipni lūdzam NocoDB!",
+    "welcomeToNc": "Laipni lūdzam MicDB!",
     "inviteOnlySignup": "Atļaut reģistrēties tikai izmantojot ielūguma url",
     "nextRow": "Nākamā rinda",
     "prevRow": "Iepriekšējā rinda",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Sistēmas definētās lomas nevar labot",
       "exportZip": "Eksportēt projekta metadatus zip arhīvā un lejupielādēt.",
       "importZip": "Importēt projekta metadatus zip arhīvu un restartēt.",
-      "importText": "Importēt NocoDB projektu augšupielādējot metadatu zip arhīvu",
+      "importText": "Importēt MicDB projektu augšupielādējot metadatu zip arhīvu",
       "metaNoChange": "Izmaiņas nav identificētas",
       "sqlMigration": "Shēmas migrācijas tiks izveidotas automātiski. Izveidot tabulu un pārlādēt šo lapu.",
       "dbConnectionStatus": "Vide apstiprināta",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Tu vari mums palīdzēt!",
-        "message": "Mēs esam sīka komanda, kas strādā nepārtraukti, lai nodrošinātu NocoDB atvērtā kodā. Mēs ticam, ka NocoDB rīkam ir jābūt pieejamam neierobežoti visiem problēmu risinātājiem internetā."
+        "message": "Mēs esam sīka komanda, kas strādā nepārtraukti, lai nodrošinātu MicDB atvērtā kodā. Mēs ticam, ka MicDB rīkam ir jābūt pieejamam neierobežoti visiem problēmu risinātājiem internetā."
       },
-      "loginMsg": "Pieslēgties NocoDB",
+      "loginMsg": "Pieslēgties MicDB",
       "passwordRecovery": {
         "message_1": "Lūdzu norādiet epasta adresi, ko izmantojāt reģistrējoties.",
         "message_2": "Mēs nosūtīsim jums epastu ar saiti, lai atjaunotu paroli.",

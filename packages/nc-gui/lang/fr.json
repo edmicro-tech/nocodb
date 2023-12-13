@@ -570,9 +570,9 @@
       "bookDemo": "Réserver une démonstration gratuite",
       "getAnswered": "Obtenir des réponses à vos questions",
       "joinDiscord": "Rejoindre le serveur Discord",
-      "joinCommunity": "Rejoindre la communauté NocoDB",
-      "joinReddit": "Rejoindre /r/NocoDB",
-      "followNocodb": "Suivre NocoDB",
+      "joinCommunity": "Rejoindre la communauté MicDB",
+      "joinReddit": "Rejoindre /r/MicDB",
+      "followNocodb": "Suivre MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "S’enregistrer avec {provider}",
     "signInWithProvider": "Se connecter avec {provider}",
     "agreeToTos": "En continuant, vous acceptez les Conditions d'Utilisation",
-    "welcomeToNc": "Bienvenue sur NocoDB !",
+    "welcomeToNc": "Bienvenue sur MicDB !",
     "inviteOnlySignup": "Autoriser l'inscription en utilisant uniquement l'url d'invitation",
     "nextRow": "Rang suivant",
     "prevRow": "Rang précédent",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Les rôles définis sur le système ne peuvent pas être modifiés",
       "exportZip": "Exporter le meta projet dans un fichier Zip et le télécharger.",
       "importZip": "Importer le fichier ZIP du meta projet et redémarrer.",
-      "importText": "Importer un projet NocoDB à partir d'un fichier ZIP de métadonnées",
+      "importText": "Importer un projet MicDB à partir d'un fichier ZIP de métadonnées",
       "metaNoChange": "Aucun changement identifié",
       "sqlMigration": "Les migrations de schéma seront créées automatiquement. Créez une table et rafraîchissez cette page.",
       "dbConnectionStatus": "Environnement validé",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Vous pouvez nous aider !",
-        "message": "Nous sommes une petite équipe travaillant à plein temps pour rendre NocoDB open-Source. Nous croyons qu'un outil comme NocoDB devrait être disponible librement à chaque solutionneur de problème sur Internet."
+        "message": "Nous sommes une petite équipe travaillant à plein temps pour rendre MicDB open-Source. Nous croyons qu'un outil comme MicDB devrait être disponible librement à chaque solutionneur de problème sur Internet."
       },
-      "loginMsg": "Se connecter à NocoDB",
+      "loginMsg": "Se connecter à MicDB",
       "passwordRecovery": {
         "message_1": "Veuillez fournir l'adresse mail que vous avez utilisée lorsque vous vous êtes inscrit.",
         "message_2": "Nous vous enverrons un courriel avec un lien pour réinitialiser votre mot de passe.",

@@ -1,13 +1,13 @@
 {
   "name": "nocodb-sdk",
   "version": "0.202.9",
-  "description": "NocoDB SDK",
+  "description": "MicDB SDK",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "author": {
-    "name": "NocoDB Inc",
-    "url": "https://nocodb.com/"
+    "name": "MicDB Inc",
+    "url": "https://db.mic.gov.vn/"
   },
   "homepage": "https://github.com/nocodb/nocodb",
   "repository": {

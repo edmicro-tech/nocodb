@@ -135,12 +135,12 @@ function openKeyboardShortcutDialog() {
           no-prefetch
           no-rel
           class="!no-underline !text-current"
-          to="https://twitter.com/NocoDB"
+          to="https://twitter.com/MicDB"
           target="_blank"
         >
           <div class="flex items-center text-sm">
             <component :is="iconMap.twitter" class="mx-3 text-lg" :color="colors.dark[1 % colors.dark.length]" />
-            <!-- Follow NocoDB -->
+            <!-- Follow MicDB -->
             <div>
               {{ $t('labels.community.followNocodb') }}
             </div>
@@ -173,11 +173,11 @@ function openKeyboardShortcutDialog() {
           no-rel
           class="!no-underline !text-current"
           target="_blank"
-          to="https://www.reddit.com/r/NocoDB/"
+          to="https://www.reddit.com/r/MicDB/"
         >
           <div class="ml-3 flex items-center text-sm">
             <component :is="iconMap.reddit" color="red" />
-            <span class="ml-4">/r/NocoDB/</span>
+            <span class="ml-4">/r/MicDB/</span>
           </div>
         </nuxt-link>
       </a-list-item>

@@ -387,8 +387,8 @@
     "sqlMigrations": "SQL Migrations",
     "dbCredentials": "Database Credentials",
     "advancedParameters": "SSL & Advanced parameters",
-    "headCreateProject": "Create Base | NocoDB",
-    "headLogin": "Log In | NocoDB",
+    "headCreateProject": "Create Base | MicDB",
+    "headLogin": "Log In | MicDB",
     "resetPassword": "Reset your password",
     "teamAndSettings": "Team & Settings",
     "apiDocs": "API Docs",
@@ -598,9 +598,9 @@
       "bookDemo": "Book a Free DEMO",
       "getAnswered": "Get your questions answered",
       "joinDiscord": "Join Discord",
-      "joinCommunity": "Join NocoDB Community",
-      "joinReddit": "/r/NocoDB",
-      "followNocodb": "Follow NocoDB",
+      "joinCommunity": "Join MicDB Community",
+      "joinReddit": "/r/MicDB",
+      "followNocodb": "Follow MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -650,7 +650,7 @@
     "signUpWithProvider": "Sign up with {provider}",
     "signInWithProvider": "Sign in with {provider}",
     "agreeToTos": "By signing up, you agree to the Terms of Service",
-    "welcomeToNc": "Welcome to NocoDB!",
+    "welcomeToNc": "Welcome to MicDB!",
     "inviteOnlySignup": "Allow signup only using invite url",
     "nextRow": "Next Record",
     "prevRow": "Previous Record",
@@ -1145,7 +1145,7 @@
       "staticRoleInfo": "System defined roles can't be edited",
       "exportZip": "Export base meta to zip file and download.",
       "importZip": "Import base meta zip file and restart.",
-      "importText": "Import NocoDB Base by uploading metadata zip file",
+      "importText": "Import MicDB Base by uploading metadata zip file",
       "metaNoChange": "No change identified",
       "sqlMigration": "Schema migrations will be created automatically. Create a table and refresh this page.",
       "dbConnectionStatus": "Environment validated",
@@ -1156,9 +1156,9 @@
       },
       "sponsor": {
         "header": "You can help us!",
-        "message": "We are a tiny team working full time to make NocoDB Open-source. We believe a tool like NocoDB should be available freely to every problem solver on Internet."
+        "message": "We are a tiny team working full time to make MicDB Open-source. We believe a tool like MicDB should be available freely to every problem solver on Internet."
       },
-      "loginMsg": "Log In To NocoDB",
+      "loginMsg": "Log In To MicDB",
       "passwordRecovery": {
         "message_1": "Please provide the email address you used when you signed up.",
         "message_2": "We will send you an email with a link to reset your password.",

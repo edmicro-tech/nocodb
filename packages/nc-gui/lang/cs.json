@@ -367,8 +367,8 @@
     "sqlMigrations": "SQL migrace",
     "dbCredentials": "Pověření k databázi",
     "advancedParameters": "SSL a pokročilé parametry",
-    "headCreateProject": "Vytvořit projekt | NocoDB",
-    "headLogin": "Přihlásit se | NocoDB",
+    "headCreateProject": "Vytvořit projekt | MicDB",
+    "headLogin": "Přihlásit se | MicDB",
     "resetPassword": "Obnovit heslo",
     "teamAndSettings": "Tým a nastavení",
     "apiDocs": "Dokumentace API",
@@ -570,9 +570,9 @@
       "bookDemo": "Zarezervujte si DEMO zdarma",
       "getAnswered": "Získejte odpovědi na své otázky",
       "joinDiscord": "Připojte se na Discord",
-      "joinCommunity": "Připojte se k NocoDB komunitě",
-      "joinReddit": "Připojte se k /r/NocoDB",
-      "followNocodb": "Sledovat NocoDB",
+      "joinCommunity": "Připojte se k MicDB komunitě",
+      "joinReddit": "Připojte se k /r/MicDB",
+      "followNocodb": "Sledovat MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Sign up with {provider}",
     "signInWithProvider": "Sign in with {provider}",
     "agreeToTos": "Registrací souhlasíte s podmínkami služby.",
-    "welcomeToNc": "Vítejte na NocoDB!",
+    "welcomeToNc": "Vítejte na MicDB!",
     "inviteOnlySignup": "Povolit registraci pouze pomocí pozvánky s odkazem",
     "nextRow": "Další řádek",
     "prevRow": "Předchozí řada",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Systémem definované role nelze upravovat",
       "exportZip": "Exportovat meta projektu do souboru zip a stáhnout.",
       "importZip": "Importujte meta soubor zip projektu a restartujte jej.",
-      "importText": "Import projektu NocoDB nahráním souboru zip s metadaty",
+      "importText": "Import projektu MicDB nahráním souboru zip s metadaty",
       "metaNoChange": "Nebyla zjištěna žádná změna",
       "sqlMigration": "Migrace schémat se vytvoří automaticky. Vytvořte tabulku a obnovte tuto stránku.",
       "dbConnectionStatus": "Ověřené prostředí",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Můžete nám pomoci!",
-        "message": "Jsme malý tým, který na plný úvazek pracuje na tom, aby NocoDB byla open-source. Věříme, že nástroj jako NocoDB by měl být volně dostupný každému řešiteli problémů na internetu."
+        "message": "Jsme malý tým, který na plný úvazek pracuje na tom, aby MicDB byla open-source. Věříme, že nástroj jako MicDB by měl být volně dostupný každému řešiteli problémů na internetu."
       },
-      "loginMsg": "Přihlášení k NocoDB",
+      "loginMsg": "Přihlášení k MicDB",
       "passwordRecovery": {
         "message_1": "Uveďte prosím e-mailovou adresu, kterou jste použili při registraci.",
         "message_2": "Pošleme vám e-mail s odkazem na obnovení hesla.",

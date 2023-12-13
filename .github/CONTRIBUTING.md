@@ -1,6 +1,6 @@
-# NocoDB Contributing Guide
+# MicDB Contributing Guide
 
-Thanks for spending your time to contribute! The following is a set of guidelines for contributing to NocoDB. 
+Thanks for spending your time to contribute! The following is a set of guidelines for contributing to MicDB. 
 
 ## Table of Contents
 

@@ -160,7 +160,7 @@ export default `<!doctype html>
                                             </tbody>
                                         </table>
                                         <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
-                                            Thanks regards NocoDB.</p>
+                                            Thanks regards MicDB.</p>
                                     </td>
                                 </tr>
                             </table>
@@ -189,7 +189,7 @@ export default `<!doctype html>
                             <td class="content-block powered-by"
                                 style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;"
                                 valign="top" align="center">
-                                <a href="http://nocodb.com/">NocoDB</a>
+                                <a href="http://nocodb.com/">MicDB</a>
                                 <!--                Powered by <a href="http://htmlemail.io">HTMLemail</a>.-->
                             </td>
                         </tr>

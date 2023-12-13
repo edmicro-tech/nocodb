@@ -1365,7 +1365,7 @@ export class AtImportProcessor {
 
       // kludge -
       // trim spaces on either side of column name
-      // leads to error in NocoDB
+      // leads to error in MicDB
       Object.keys(rec).forEach((key) => {
         const replacedKey = key.trim().replace(/\./g, '_');
         if (key !== replacedKey) {
@@ -2025,7 +2025,7 @@ export class AtImportProcessor {
 
         // console.log(filter)
         if (datatype === UITypes.Links) {
-          // skip filters for links; Link filters in NocoDB are only rollup counts
+          // skip filters for links; Link filters in MicDB are only rollup counts
           // where-as in airtable, filter can be textual
           updateMigrationSkipLog(
             await sMap.getNcNameFromAtId(viewId),

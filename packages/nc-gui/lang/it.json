@@ -367,8 +367,8 @@
     "sqlMigrations": "Migrazioni SQL",
     "dbCredentials": "Credenziali del database",
     "advancedParameters": "SSL e parametri avanzati",
-    "headCreateProject": "Crea progetto | NocoDB",
-    "headLogin": "Accedi | NocoDB",
+    "headCreateProject": "Crea progetto | MicDB",
+    "headLogin": "Accedi | MicDB",
     "resetPassword": "Reimposta la tua password",
     "teamAndSettings": "Team e Impostazioni",
     "apiDocs": "Documentazione API",
@@ -570,9 +570,9 @@
       "bookDemo": "Prenota una demo gratuita",
       "getAnswered": "Ottieni risposte alle tue domande",
       "joinDiscord": "Unisciti su Discord",
-      "joinCommunity": "Unisciti alla community di NocoDB",
-      "joinReddit": "Unisciti a /r/NocoDB su Reddit",
-      "followNocodb": "Segui NocoDB",
+      "joinCommunity": "Unisciti alla community di MicDB",
+      "joinReddit": "Unisciti a /r/MicDB su Reddit",
+      "followNocodb": "Segui MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Si iscriva a {provider}",
     "signInWithProvider": "Accedi con {provider}",
     "agreeToTos": "Iscrivendosi, accetta i Termini di Servizio",
-    "welcomeToNc": "Benvenuto in NocoDB!",
+    "welcomeToNc": "Benvenuto in MicDB!",
     "inviteOnlySignup": "Consente l'iscrizione solo utilizzando l'url di invito",
     "nextRow": "Prossima fila",
     "prevRow": "Fila precedente",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "I ruoli definiti dal sistema non possono essere modificati",
       "exportZip": "Esporta e scarica meta del progetto come file zip.",
       "importZip": "Importa il file zip dei meta del progetto e riavvia.",
-      "importText": "Importa progetto NocoDB caricando il file zip dei metadata",
+      "importText": "Importa progetto MicDB caricando il file zip dei metadata",
       "metaNoChange": "Nessun cambiamento identificato",
       "sqlMigration": "Le migrazioni dello schema saranno create automaticamente. Crea una tabella e aggiorna questa pagina.",
       "dbConnectionStatus": "Ambiente convalidato",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Puoi aiutarci!",
-        "message": "Siamo un piccolo team che lavora a tempo pieno per rendere NocoDB open-source. Crediamo che uno strumento come NocoDB dovrebbe essere disponibile liberamente per problem-solver su Internet."
+        "message": "Siamo un piccolo team che lavora a tempo pieno per rendere MicDB open-source. Crediamo che uno strumento come MicDB dovrebbe essere disponibile liberamente per problem-solver su Internet."
       },
-      "loginMsg": "Accedi a NocoDB",
+      "loginMsg": "Accedi a MicDB",
       "passwordRecovery": {
         "message_1": "Per favore, fornisci l'indirizzo email che hai utilizzato durante la tua registrazione.",
         "message_2": "Ti invieremo un'e-mail con un link per ripristinare la password.",

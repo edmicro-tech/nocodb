@@ -183,7 +183,7 @@ jobs:
         run: |
           FORMULA_CLASS_STR=$(cat << EOF
           class Nocodb < Formula
-            desc "NocoDB : Opensource smart spreadsheet"
+            desc "MicDB : Opensource smart spreadsheet"
             homepage "https://github.com/nocodb/nocodb"
             url "https://github.com/nocodb/nocodb/releases/download/${{ github.event.inputs.tag || inputs.tag }}/nocodb.tar.gz"
             sha256 "${{ steps.compress.outputs.CHECKSUM }}"

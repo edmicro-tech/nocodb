@@ -1,4 +1,4 @@
-name: 'NocoDB Nightly Dev Release'
+name: 'MicDB Nightly Dev Release'
 
 on:
   # Triggered manually

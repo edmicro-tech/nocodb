@@ -85,7 +85,7 @@ class NewMgr {
     args.url = [];
 
     console.log(
-      `NocoDB requires a database to store metadata of database-spreadsheets.\nPlease enter the database credentials (defaults to SQLite3)`
+      `MicDB requires a database to store metadata of database-spreadsheets.\nPlease enter the database credentials (defaults to SQLite3)`
         .green.bold
     );
     const answers = await inquirer.prompt([

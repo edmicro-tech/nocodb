@@ -39,7 +39,7 @@ You can drag drop the tables to rearrange them in the diagram. Note that, such r
 
 ## API Snippet
 
-NocoDB provides programmatic access to your data via REST APIs. API snippets in NocoDB offer ready-made code examples in various programming languages, simplifying the process of integrating your data with external applications. These snippets save time and effort by providing a quick and easy reference for developers, enabling them to interact with your NocoDB database programmatically without the need to write code from scratch.
+MicDB provides programmatic access to your data via REST APIs. API snippets in MicDB offer ready-made code examples in various programming languages, simplifying the process of integrating your data with external applications. These snippets save time and effort by providing a quick and easy reference for developers, enabling them to interact with your MicDB database programmatically without the need to write code from scratch.
 
 A quick snippet for different scripts & languages is listed in this section.
 
@@ -98,7 +98,7 @@ axios.request(options).then(function (response) {
 });
 ```
 </TabItem>
-<TabItem value="NocoDB SDK" label="NocoDB SDK">
+<TabItem value="MicDB SDK" label="MicDB SDK">
 
 ```bash
 import { Api } from "nocodb-sdk";
@@ -236,7 +236,7 @@ CURLcode ret = curl_easy_perform(hnd);
 - Native
 - Unirest
 
-### NocoDB SDK
+### MicDB SDK
 - Javascript
 - Node
 
@@ -251,17 +251,17 @@ CURLcode ret = curl_easy_perform(hnd);
 
 ## Webhook
 
-Webhooks are essential for real-time communication and automation between NocoDB and external systems. They serve several crucial purposes:
+Webhooks are essential for real-time communication and automation between MicDB and external systems. They serve several crucial purposes:
 
-1. **Instant Notifications:** Webhooks enable immediate notifications when there are changes in your NocoDB database. This real-time information can be crucial for timely responses to important events, such as new data entries, updates, or deletions.
+1. **Instant Notifications:** Webhooks enable immediate notifications when there are changes in your MicDB database. This real-time information can be crucial for timely responses to important events, such as new data entries, updates, or deletions.
 
-2. **Automation:** They facilitate the automation of processes by triggering actions in external systems based on database events. For example, you can automate tasks like sending emails, updating spreadsheets, or syncing data with other applications in response to changes in NocoDB.
+2. **Automation:** They facilitate the automation of processes by triggering actions in external systems based on database events. For example, you can automate tasks like sending emails, updating spreadsheets, or syncing data with other applications in response to changes in MicDB.
 
-3. **Integration:** Webhooks allow you to seamlessly integrate NocoDB with other tools and services, enhancing the overall functionality of your database. This integration can streamline workflows, improve data consistency, and reduce manual data entry.
+3. **Integration:** Webhooks allow you to seamlessly integrate MicDB with other tools and services, enhancing the overall functionality of your database. This integration can streamline workflows, improve data consistency, and reduce manual data entry.
 
-4. **Bulk Operations:** NocoDB's support for webhooks in bulk endpoints makes it efficient to handle multiple records simultaneously. This is especially useful when dealing with large datasets or when you need to perform batch operations in external systems.
+4. **Bulk Operations:** MicDB's support for webhooks in bulk endpoints makes it efficient to handle multiple records simultaneously. This is especially useful when dealing with large datasets or when you need to perform batch operations in external systems.
 
-In summary, webhooks in NocoDB empower you to create dynamic, responsive, and interconnected workflows by keeping external systems in sync with your database's activities.
+In summary, webhooks in MicDB empower you to create dynamic, responsive, and interconnected workflows by keeping external systems in sync with your database's activities.
 
 ![image](/img/v2/table-details/details-webhook.png)
 

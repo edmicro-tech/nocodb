@@ -3,10 +3,10 @@
         <a href="https://www.nocodb.com">
             <img src="/packages/nc-gui/assets/img/brand/mic_vietnam_logo.png" width="80" />
             <br>
-            NocoDB
+            MicDB
         </a>
     </div>
-    The Open Source Airtable Alternative <br>
+     <br>
 </h1>
 
 <p align="center">
@@ -20,16 +20,6 @@ Turns any MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart spreadshe
 
 </div>
 
-<p align="center">
-    <a href="http://www.nocodb.com"><b>Website</b></a> •
-    <a href="https://discord.gg/5RgZmkW"><b>Discord</b></a> •
-    <a href="https://community.nocodb.com/"><b>Community</b></a> •
-    <a href="https://twitter.com/nocodb"><b>Twitter</b></a> •
-    <a href="https://www.reddit.com/r/NocoDB/"><b>Reddit</b></a> •
-    <a href="https://docs.nocodb.com/"><b>Documentation</b></a>
-</p>
-
-![video avi](https://github.com/nocodb/nocodb/assets/86527202/e2fad786-f211-4dcb-9bd3-aaece83a6783)
 
 <div align="center">
 
@@ -106,7 +96,7 @@ nocodb/nocodb:latest
 
 > If you plan to input some special characters, you may need to change the character set and collation yourself when creating the database. Please check out the examples for [MySQL Docker](https://github.com/nocodb/nocodb/issues/1340#issuecomment-1049481043).
 
-> Different commands just indicate the database that NocoDB will use internally for metadata storage, but that doesn't influence the ability to connect to a different database type. 
+> Different commands just indicate the database that MicDB will use internally for metadata storage, but that doesn't influence the ability to connect to a different database type. 
 
 ## Binaries
 
@@ -258,14 +248,14 @@ We provide different integrations in three main categories. See <a href="https:/
 
 ### Programmatic Access
 
-We provide the following ways to let users programmatically invoke actions. You can use a token (either JWT or Social Auth) to sign your requests for authorization to NocoDB.
+We provide the following ways to let users programmatically invoke actions. You can use a token (either JWT or Social Auth) to sign your requests for authorization to MicDB.
 
 - ⚡ &nbsp;REST APIs
-- ⚡ &nbsp;NocoDB SDK
+- ⚡ &nbsp;MicDB SDK
 
 ### Sync Schema
 
-We allow you to sync schema changes if you have made changes outside NocoDB GUI. However, it has to be noted then you will have to bring your own schema migrations for moving from one environment to another. See <a href="https://docs.nocodb.com/setup-and-usages/sync-schema/" target="_blank">Sync Schema</a> for details.
+We allow you to sync schema changes if you have made changes outside MicDB GUI. However, it has to be noted then you will have to bring your own schema migrations for moving from one environment to another. See <a href="https://docs.nocodb.com/setup-and-usages/sync-schema/" target="_blank">Sync Schema</a> for details.
 
 ### Audit
 

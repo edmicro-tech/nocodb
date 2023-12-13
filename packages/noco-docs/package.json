@@ -3,8 +3,8 @@
   "version": "1.1.0",
   "private": true,
   "author": {
-    "name": "NocoDB Inc",
-    "url": "https://nocodb.com/"
+    "name": "MicDB Inc",
+    "url": "https://db.mic.gov.vn/"
   },
   "homepage": "https://github.com/nocodb/nocodb",
   "license": "AGPL-3.0-or-later",

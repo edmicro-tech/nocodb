@@ -367,8 +367,8 @@
     "sqlMigrations": "SQL Aktarımı",
     "dbCredentials": "Veritabanı Kimlik Bilgileri",
     "advancedParameters": "SSL & Gelişmiş parametreler",
-    "headCreateProject": "Proje Oluştur | NocoDB",
-    "headLogin": "Giriş | NocoDB",
+    "headCreateProject": "Proje Oluştur | MicDB",
+    "headLogin": "Giriş | MicDB",
     "resetPassword": "Şifrenizi sıfırlayın",
     "teamAndSettings": "Takım & Ayarlar",
     "apiDocs": "API Yardım",
@@ -570,9 +570,9 @@
       "bookDemo": "Ücretsiz bir demo rezervasyonu yapın",
       "getAnswered": "Sorularınıza cevap bulun",
       "joinDiscord": "Discord'a katıl",
-      "joinCommunity": "NocoDB topluluğuna katıl",
-      "joinReddit": "/r/NocoDB'ye katıl",
-      "followNocodb": "NocoDB'yi takip et",
+      "joinCommunity": "MicDB topluluğuna katıl",
+      "joinReddit": "/r/MicDB'ye katıl",
+      "followNocodb": "MicDB'yi takip et",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "{provider} ile kaydolun",
     "signInWithProvider": "{provider} ile oturum açın",
     "agreeToTos": "Kaydolarak Hizmet Koşullarını kabul etmiş olursunuz",
-    "welcomeToNc": "NocoDB'ye hoş geldiniz!",
+    "welcomeToNc": "MicDB'ye hoş geldiniz!",
     "inviteOnlySignup": "Yalnızca davet url'si kullanarak kaydolmaya izin ver",
     "nextRow": "Sonraki Sıra",
     "prevRow": "Önceki Sıra",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Sistem tanımlı roller düzenlenemez",
       "exportZip": "Proje metasını zip olarak dışa aktar ve indir.",
       "importZip": "Proje metasını zip olarak içe aktar ve yeniden başlat.",
-      "importText": "Metadata zip dosyası yükleyerek NocoDB Projesini içe aktar",
+      "importText": "Metadata zip dosyası yükleyerek MicDB Projesini içe aktar",
       "metaNoChange": "Herhangi bir değişiklik algılanmadı",
       "sqlMigration": "Şema aktarımları otomatik olarak oluşturalacak. Bir tablo oluşturup bu sayfayı yenileyin.",
       "dbConnectionStatus": "Ortam doğrulandı",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Bize yardım edebilirsiniz!",
-        "message": "Biz NocoDB'yi açık kaynaklı yapmak için tam zamanlı çalışan küçük bir takımız. İnanıyoruz ki NocoDB gibi bir araç internetteki herkes için erişilebilir olmalı."
+        "message": "Biz MicDB'yi açık kaynaklı yapmak için tam zamanlı çalışan küçük bir takımız. İnanıyoruz ki MicDB gibi bir araç internetteki herkes için erişilebilir olmalı."
       },
-      "loginMsg": "NocoDB'ye Giriş Yap",
+      "loginMsg": "MicDB'ye Giriş Yap",
       "passwordRecovery": {
         "message_1": "Lütfen kayıt olurken kullandığınız e-posta adresini girin.",
         "message_2": "Size şifre sıfırlama linki içeren bir mail göndereceğiz.",

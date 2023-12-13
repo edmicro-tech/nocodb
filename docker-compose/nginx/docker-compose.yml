@@ -7,7 +7,7 @@ networks:
 # This is an example setup with an Nginx reverse proxy.
 # If you already have an Nginx reverse proxy running,
 # then allow the docker-compose.yml to reference an external network that the reverse proxy container is on
-# (in lieu of the frontend network in this file) and have the NocoDB container connect to it.
+# (in lieu of the frontend network in this file) and have the MicDB container connect to it.
 services: 
   certbot: 
     command: "certonly --webroot --webroot-path=/var/www/html --email user@example.domain --agree-tos --no-eff-email -d example.domain,www.example.domain,nocodb.example.domain"

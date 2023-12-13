@@ -368,7 +368,7 @@
     "dbCredentials": "데이터베이스 자격 증명",
     "advancedParameters": "SSL 및 고급 매개 변수",
     "headCreateProject": "프로젝트 만들기 | nocoDB",
-    "headLogin": "로그인 | NocoDB",
+    "headLogin": "로그인 | MicDB",
     "resetPassword": "비밀번호 재설정",
     "teamAndSettings": "팀 & 설정",
     "apiDocs": "API 문서",
@@ -570,9 +570,9 @@
       "bookDemo": "무료 데모 예약",
       "getAnswered": "디스코드",
       "joinDiscord": "디스코드 참가",
-      "joinCommunity": "NocoDB 커뮤니티 참가",
-      "joinReddit": "Join /r/NocoDB",
-      "followNocodb": "NocoDB 팔로우",
+      "joinCommunity": "MicDB 커뮤니티 참가",
+      "joinReddit": "Join /r/MicDB",
+      "followNocodb": "MicDB 팔로우",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -621,8 +621,8 @@
     "subscribeNewsletter": "뉴스 레터 구독",
     "signUpWithProvider": "{provider}에 가입",
     "signInWithProvider": "{provider}에 로그인",
-    "agreeToTos": "NocoDB의 {tosLink}에 동의합니다.",
-    "welcomeToNc": "Welcome to NocoDB!",
+    "agreeToTos": "MicDB의 {tosLink}에 동의합니다.",
+    "welcomeToNc": "Welcome to MicDB!",
     "inviteOnlySignup": "초대 URL을 사용한 가입만 허용",
     "nextRow": "다음 행",
     "prevRow": "이전 행",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "시스템 정의 역할을 편집할 수 없습니다",
       "exportZip": "프로젝트 메타를 zip 파일로 내보내고 다운로드하십시오.",
       "importZip": "프로젝트 메타 zip 파일을 가져와서 다시 시작하십시오.",
-      "importText": "메타 데이터 zip 파일을 업로드하여 NocoDB 프로젝트를 가져옵니다",
+      "importText": "메타 데이터 zip 파일을 업로드하여 MicDB 프로젝트를 가져옵니다",
       "metaNoChange": "변경된 사항이 없습니다. ",
       "sqlMigration": "스키마 마이그레이션이 자동으로 생성됩니다. 테이블을 만들고이 페이지를 새로 고칩니다.",
       "dbConnectionStatus": "환경 검증",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "당신은 우리를 도울 수 있습니다!",
-        "message": "우리는 NocoDB 오픈소스를 만들기 위해 구성된 소규모 팀입니다. 우리는 NocoDB와 같은 도구가 인터넷의 다양한 문제를 해결하는데 사용될 수 있다고 믿습니다."
+        "message": "우리는 MicDB 오픈소스를 만들기 위해 구성된 소규모 팀입니다. 우리는 MicDB와 같은 도구가 인터넷의 다양한 문제를 해결하는데 사용될 수 있다고 믿습니다."
       },
-      "loginMsg": "NocoDB 로그인",
+      "loginMsg": "MicDB 로그인",
       "passwordRecovery": {
         "message_1": "가입할 때 사용한 이메일 주소를 입력하십시오.",
         "message_2": "이메일을 통해 비밀번호를 재설정할 링크를 보내드리겠습니다.",

@@ -1,11 +1,11 @@
 {
   "name": "playwright",
   "version": "1.0.0",
-  "description": "NocoDB playwright",
+  "description": "MicDB playwright",
   "private": true,
   "author": {
-    "name": "NocoDB",
-    "url": "https://nocodb.com/"
+    "name": "MicDB",
+    "url": "https://db.mic.gov.vn/"
   },
   "homepage": "https://github.com/nocodb/nocodb",
   "repository": {

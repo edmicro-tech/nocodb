@@ -149,7 +149,7 @@ const formulas: Record<string, any> = {
     },
     description: 'Input parameter character length',
     syntax: 'LEN(value)',
-    examples: ['LEN("NocoDB") => 6', 'LEN({column1})'],
+    examples: ['LEN("MicDB") => 6', 'LEN({column1})'],
   },
   MIN: {
     type: formulaTypes.NUMERIC,
@@ -363,7 +363,7 @@ const formulas: Record<string, any> = {
     },
     description: 'Alias for SUBSTR',
     syntax: 'MID(str, position, [count])',
-    examples: ['MID("NocoDB", 3, 2) => "co"', 'MID({column1}, 3, 2)'],
+    examples: ['MID("MicDB", 3, 2) => "co"', 'MID({column1}, 3, 2)'],
   },
   IF: {
     type: formulaTypes.COND_EXP,

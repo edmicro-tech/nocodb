@@ -1,11 +1,11 @@
 {
   "name": "create-nocodb-app",
   "version": "0.1.28",
-  "description": "Create NocoDB app using CLI",
+  "description": "Create MicDB app using CLI",
   "private": true,
   "author": {
-    "name": "NocoDB Inc",
-    "url": "https://nocodb.com/"
+    "name": "MicDB Inc",
+    "url": "https://db.mic.gov.vn/"
   },
   "homepage": "https://github.com/nocodb/nocodb",
   "repository": {

@@ -6,7 +6,7 @@
   "info": {
     "title": "nocodb",
     "version": "1.0",
-    "description": "NocoDB API Documentation"
+    "description": "MicDB API Documentation"
   },
   "x-tagGroups": [
     {
@@ -12763,7 +12763,7 @@
                         {
                           "id": "adt_3sii7erfwrlegb",
                           "user": "w@nocodb.com",
-                          "display_name": "NocoDB",
+                          "display_name": "MicDB",
                           "ip": null,
                           "source_id": null,
                           "base_id": "p_63b4q0qengen1x",
@@ -12780,7 +12780,7 @@
                         {
                           "id": "adt_fezs668qbxj8gc",
                           "user": "w@nocodb.com",
-                          "display_name": "NocoDB",
+                          "display_name": "MicDB",
                           "ip": null,
                           "source_id": null,
                           "base_id": "p_63b4q0qengen1x",
@@ -13445,7 +13445,7 @@
                         "UpdatedAt": "2023-03-03T10:03:06.484Z",
                         "attachment": [
                           {
-                            "url": "https://nocodb.com/dummy.png",
+                            "url": "https://db.mic.gov.vn/dummy.png",
                             "title": "image.png",
                             "mimetype": "image/png",
                             "size": 0
@@ -14455,7 +14455,7 @@
                   "properties": {
                     "currentVersion": {
                       "type": "string",
-                      "description": "Current NocoDB Version",
+                      "description": "Current MicDB Version",
                       "example": "0.104.0"
                     },
                     "releaseVersion": {
@@ -16642,7 +16642,7 @@
           {
             "id": "adt_l5we7pkx70vaao",
             "user": "w@nocodb.com",
-            "display_name": "NocoDB",
+            "display_name": "MicDB",
             "ip": "::ffff:127.0.0.1",
             "source_id": "ds_3l9qx8xqksenrl",
             "base_id": "p_9sx43moxhqtjm3",
@@ -16670,7 +16670,7 @@
           "display_name": {
             "type": "string",
             "description": "The display name of user performing the action",
-            "example": "NocoDB"
+            "example": "MicDB"
           },
           "ip": {
             "type": "string",
@@ -19682,7 +19682,7 @@
                 "UpdatedAt": "2023-03-03T10:03:06.484Z",
                 "attachment": [
                   {
-                    "url": "https://nocodb.com/dummy.png",
+                    "url": "https://db.mic.gov.vn/dummy.png",
                     "title": "image.png",
                     "mimetype": "image/png",
                     "size": 0

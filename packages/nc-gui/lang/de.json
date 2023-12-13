@@ -367,8 +367,8 @@
     "sqlMigrations": "SQL-Migrationen",
     "dbCredentials": "Datenbank-Anmeldeinformationen",
     "advancedParameters": "SSL & Erweiterte Parameter",
-    "headCreateProject": "Projekt erstellen | NocoDB",
-    "headLogin": "Anmelden | NocoDB",
+    "headCreateProject": "Projekt erstellen | MicDB",
+    "headLogin": "Anmelden | MicDB",
     "resetPassword": "Passwort zurücksetzen",
     "teamAndSettings": "Team & Einstellungen",
     "apiDocs": "API Dokumentation",
@@ -570,9 +570,9 @@
       "bookDemo": "Eine kostenlose Demo buchen",
       "getAnswered": "Erhalten Sie Antworten auf Ihre Fragen",
       "joinDiscord": "Discord beitreten",
-      "joinCommunity": "NocoDB Community beitreten",
-      "joinReddit": "/r/NocoDB beitreten",
-      "followNocodb": "Folgen Sie NocoDB",
+      "joinCommunity": "MicDB Community beitreten",
+      "joinReddit": "/r/MicDB beitreten",
+      "followNocodb": "Folgen Sie MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Mit {provider} anmelden",
     "signInWithProvider": "Mit {provider} einloggen",
     "agreeToTos": "Mit Ihrer Anmeldung stimmen Sie den allgemeinen Nutzungsbedingungen zu",
-    "welcomeToNc": "Willkommen bei NocoDB!",
+    "welcomeToNc": "Willkommen bei MicDB!",
     "inviteOnlySignup": "Anmeldung nur über Einladungs-URL zulassen",
     "nextRow": "Nächste Reihe",
     "prevRow": "Vorherige Reihe",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Systemdefinierte Rollen können nicht bearbeitet werden",
       "exportZip": "Projekt-Meta in ZIP-Datei exportieren und downloaden",
       "importZip": "Projekt Meta-ZIP-Datei importieren und neu starten.",
-      "importText": "Importieren von NocoDB-Projekt durch Hochladen von Metadaten-ZIP-Datei",
+      "importText": "Importieren von MicDB-Projekt durch Hochladen von Metadaten-ZIP-Datei",
       "metaNoChange": "Keine Änderung identifiziert",
       "sqlMigration": "Schemen-Migrationen werden automatisch erstellt. Tabelle erstellen und diese Seite aktualisieren.",
       "dbConnectionStatus": "Umgebung validiert",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Sie können uns helfen!",
-        "message": "Wir sind ein winziges Team, welches Vollzeit arbeitet, um NocoDB Open-Source zu machen. Wir glauben, daß ein Werkzeug wie NocoDB für jeden Problemlöser im Internet frei verfügbar sein sollte."
+        "message": "Wir sind ein winziges Team, welches Vollzeit arbeitet, um MicDB Open-Source zu machen. Wir glauben, daß ein Werkzeug wie MicDB für jeden Problemlöser im Internet frei verfügbar sein sollte."
       },
-      "loginMsg": "In NocoDB einloggen",
+      "loginMsg": "In MicDB einloggen",
       "passwordRecovery": {
         "message_1": "Bitte geben Sie die E-Mail-Adresse an, die Sie bei der Anmeldung verwendet haben.",
         "message_2": "Wir senden Ihnen eine E-Mail mit einem Link, um das Passwort zurückzusetzen.",

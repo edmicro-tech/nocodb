@@ -11,7 +11,7 @@
           class="w-10 min-w-10 transition-all duration-200 p-1 transform"
           href="#"
         >
-          <img width="25" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+          <img width="25" alt="Edmicro MicDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
         </a>
 
         <div class="font-semibold text-base">Mic Database System</div>

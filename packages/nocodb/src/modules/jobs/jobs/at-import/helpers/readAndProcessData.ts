@@ -281,7 +281,7 @@ export async function importLTARData({
     // skip if already inserted
     if (colMeta.colOptions.fk_mm_model_id in insertedAssocRef) continue;
 
-    // self links: skip if the column under consideration is the add-on column NocoDB creates
+    // self links: skip if the column under consideration is the add-on column MicDB creates
     if (ncLinkMappingTable.every((a) => a.nc.title !== colMeta.title)) continue;
 
     // mark as inserted

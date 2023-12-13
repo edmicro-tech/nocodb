@@ -1,18 +1,18 @@
 {
   "name": "nocodb-root",
-  "description": "NocoDB Root",
+  "description": "MicDB Root",
   "private": true,
   "author": {
-    "name": "NocoDB Inc",
-    "url": "https://nocodb.com/"
+    "name": "MicDB Inc",
+    "url": "https://db.mic.gov.vn"
   },
-  "homepage": "https://github.com/nocodb/nocodb",
+  "homepage": "https://db.mic.gov.vn",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nocodb/nocodb.git"
+    "url": "https://db.mic.gov.vn"
   },
   "bugs": {
-    "url": "https://github.com/nocodb/nocodb/issues"
+    "url": "https://db.mic.gov.vns"
   },
   "license": "AGPL-3.0-or-later",
   "devDependencies": {

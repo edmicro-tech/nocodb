@@ -102,7 +102,7 @@ export class HookHandlerService implements OnModuleInit, OnModuleDestroy {
           );
           (await NcPluginMgrv2.emailAdapter(false))?.mailSend({
             to: emails.join(','),
-            subject: 'NocoDB Form',
+            subject: 'MicDB Form',
             html: ejs.render(formSubmissionEmailTemplate, {
               data: transformedData,
               tn: tnPath,

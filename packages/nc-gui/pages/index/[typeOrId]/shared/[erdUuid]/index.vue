@@ -43,7 +43,7 @@ onMounted(async () => {
       <template #title>
         {{ appInfo.version }}
       </template>
-      <img width="50" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+      <img width="50" alt="Edmicro MicDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
     </a-tooltip>
     <div class="ml-2 font-bold text-gray-500 uppercase">{{ base.title }}</div>
   </div>

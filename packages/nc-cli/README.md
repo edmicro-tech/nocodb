@@ -1,3 +1,3 @@
 # nc-cli
 
-Create a NocoDB Application with CLI
+Create a MicDB Application with CLI

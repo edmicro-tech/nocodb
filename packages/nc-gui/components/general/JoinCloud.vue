@@ -8,7 +8,7 @@
     href="https://app.nocodb.com/#/signin?utm_source=OSS&utm_medium=OSS&utm_campaign=OSS&utm_content=OSS"
   >
     <component :is="iconMap.cloud" class="mr-1" />
-    Join NocoDB Cloud
+    Join MicDB Cloud
   </a> -->
 </template>
 

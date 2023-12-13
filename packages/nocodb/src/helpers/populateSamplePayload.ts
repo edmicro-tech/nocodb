@@ -159,7 +159,7 @@ async function getSampleColumnValue(column: Column): Promise<any> {
       {
         return [
           {
-            url: 'https://nocodb.com/dummy.png',
+            url: 'https://db.mic.gov.vn/dummy.png',
             title: 'image.png',
             mimetype: 'image/png',
             size: 0,
@@ -217,7 +217,7 @@ async function getSampleColumnValue(column: Column): Promise<any> {
       break;
     case UITypes.URL:
       {
-        return 'https://nocodb.com';
+        return 'https://db.mic.gov.vn';
       }
       break;
     case UITypes.Number:

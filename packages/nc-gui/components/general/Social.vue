@@ -38,14 +38,14 @@ const isZhLang = computed(() => locale.value.startsWith('zh'))
       :is="iconMap.reddit"
       v-e="['e:community:reddit']"
       class="icon text-[#FF4600]"
-      @click="open('https://www.reddit.com/r/NocoDB/')"
+      @click="open('https://www.reddit.com/r/MicDB/')"
     />
 
     <component
       :is="iconMap.twitter"
       v-e="['e:community:twitter']"
       class="icon text-[#1DA1F2]"
-      @click="open('https://twitter.com/NocoDB')"
+      @click="open('https://twitter.com/MicDB')"
     />
 
     <component

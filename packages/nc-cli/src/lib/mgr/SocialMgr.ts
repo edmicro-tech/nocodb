@@ -12,7 +12,7 @@ class SocialMgr {
       const shareUrl = await SocialMgr.getShareUrl({
         text: 'A revolutionary API framework with a Desktop App.',
         type: args.type,
-        url: 'https://NocoDB.com'
+        url: 'https://MicDB.com'
       });
       open(shareUrl, { wait: true });
     } catch (e) {
@@ -45,7 +45,7 @@ class SocialMgr {
           break;
 
         case 'Github - ⭐️ or 👀 repo':
-          open('https://github.com/NocoDB/NocoDB', { wait: true });
+          open('https://github.com/MicDB/MicDB', { wait: true });
           break;
 
         default:
@@ -54,7 +54,7 @@ class SocialMgr {
           const shareUrl = await SocialMgr.getShareUrl({
             text,
             type: answer.media,
-            url: 'https://NocoDB.com'
+            url: 'https://MicDB.com'
           });
 
           open(shareUrl, { wait: true });

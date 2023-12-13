@@ -367,8 +367,8 @@
     "sqlMigrations": "SQL移行",
     "dbCredentials": "データベース認証情報",
     "advancedParameters": "SSL＆高度なパラメータ",
-    "headCreateProject": "プロジェクトを作成 | NocoDB",
-    "headLogin": "ログイン | NocoDB",
+    "headCreateProject": "プロジェクトを作成 | MicDB",
+    "headLogin": "ログイン | MicDB",
     "resetPassword": "パスワードをリセットする",
     "teamAndSettings": "チームと設定",
     "apiDocs": "API ドキュメント",
@@ -570,9 +570,9 @@
       "bookDemo": "デモを予約",
       "getAnswered": "あなたの質問に回答しましょう",
       "joinDiscord": "Discord に参加",
-      "joinCommunity": "NocoDB のコミュニティに参加",
-      "joinReddit": "/r/NocoDB に参加",
-      "followNocodb": "NocoDB をフォロー",
+      "joinCommunity": "MicDB のコミュニティに参加",
+      "joinReddit": "/r/MicDB に参加",
+      "followNocodb": "MicDB をフォロー",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "{provider}でログイン",
     "signInWithProvider": "{provider}でログイン",
     "agreeToTos": "サインアップすることで、利用規約に同意するものとみなされます。",
-    "welcomeToNc": "NocoDB へようこそ！",
+    "welcomeToNc": "MicDB へようこそ！",
     "inviteOnlySignup": "招待URL からのサインアップのみ許可",
     "nextRow": "次の行",
     "prevRow": "前の行",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "システム定義のロールを編集できません",
       "exportZip": "プロジェクトメタデータzipファイルをエクスポート",
       "importZip": "プロジェクトメタデータzipファイルをインポートして再起動",
-      "importText": "メタデータzipファイルをアップロードしてNocoDBプロジェクトをインポート",
+      "importText": "メタデータzipファイルをアップロードしてMicDBプロジェクトをインポート",
       "metaNoChange": "変更はありません",
       "sqlMigration": "スキーママーグレーションは自動的に作成されます。テーブルを作成してこのページを更新します。",
       "dbConnectionStatus": "環境検証",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "私達を支援してください！",
-        "message": "私たちはNocoDBのオープンソースを作るためにフルタイムで働いている小さなチームです。 私たちは、 NocoDB のようなツールはインターネット上のすべての問題解決に取り組む人々が利用できるべきだと信じています。"
+        "message": "私たちはMicDBのオープンソースを作るためにフルタイムで働いている小さなチームです。 私たちは、 MicDB のようなツールはインターネット上のすべての問題解決に取り組む人々が利用できるべきだと信じています。"
       },
-      "loginMsg": "NocoDBにログインする",
+      "loginMsg": "MicDBにログインする",
       "passwordRecovery": {
         "message_1": "サインアップしたときに使用したメールアドレスを入力してください。",
         "message_2": "パスワードをリセットするためのリンク付きの電子メールを送信する。",

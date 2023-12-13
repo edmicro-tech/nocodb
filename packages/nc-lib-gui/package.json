@@ -1,10 +1,10 @@
 {
   "name": "nc-lib-gui",
   "version": "0.202.9",
-  "description": "NocoDB GUI",
+  "description": "MicDB GUI",
   "author": {
-    "name": "NocoDB",
-    "url": "https://nocodb.com/"
+    "name": "MicDB",
+    "url": "https://db.mic.gov.vn/"
   },
   "homepage": "https://github.com/nocodb/nocodb",
   "license": "AGPL-3.0-or-later",

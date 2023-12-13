@@ -1,6 +1,6 @@
 export default {
   mid: [
-    '\n@NocoDB - generates instant REST/GraphQL API on any database.\n+ Has GUI based schema migrations!\n+ Built in API-Client and terminal!\n+ Dark theme and much more!\n'
+    '\n@MicDB - generates instant REST/GraphQL API on any database.\n+ Has GUI based schema migrations!\n+ Built in API-Client and terminal!\n+ Dark theme and much more!\n'
   ],
   prefix: [
     'Super slick!',

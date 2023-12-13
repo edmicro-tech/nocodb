@@ -570,9 +570,9 @@
       "bookDemo": "احجز ديمو مجاني",
       "getAnswered": "احصل على إجابات لأسئلتك",
       "joinDiscord": "انضم إلى Discord",
-      "joinCommunity": "انضم إلى مجتمع NocoDB",
+      "joinCommunity": "انضم إلى مجتمع MicDB",
       "joinReddit": "انضم إلى /r/NocodB",
-      "followNocodb": "تابع NocoDB",
+      "followNocodb": "تابع MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "التسجيل بواسطة {provider}",
     "signInWithProvider": "Sign in with {provider}",
     "agreeToTos": "بالتسجيل، أنت توافق على شروط الخدمة",
-    "welcomeToNc": "مرحبا بكم في NocoDB!",
+    "welcomeToNc": "مرحبا بكم في MicDB!",
     "inviteOnlySignup": "Allow signup only using invite url",
     "nextRow": "Next Row",
     "prevRow": "Previous Row",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "يمكنك مساعدتنا!",
-        "message": "نحن فريق صغير يعمل بدوام كامل لجعل NocoDB مفتوح المصدر. ونحن نعتقد أن أداة مثل NocoDB يجب أن تكون متاحة بحرية لكل من يريد حل مشكله على شبكة الإنترنت."
+        "message": "نحن فريق صغير يعمل بدوام كامل لجعل MicDB مفتوح المصدر. ونحن نعتقد أن أداة مثل MicDB يجب أن تكون متاحة بحرية لكل من يريد حل مشكله على شبكة الإنترنت."
       },
-      "loginMsg": "تسجيل الدخول إلى NocoDB",
+      "loginMsg": "تسجيل الدخول إلى MicDB",
       "passwordRecovery": {
         "message_1": "يرجى تقديم عنوان البريد الإلكتروني الذي استخدمته عند التسجيل.",
         "message_2": "سوف نرسل لك رسالة بريد إلكتروني تحتوي على رابط لإعادة تعيين كلمة المرور الخاصة بك.",

@@ -367,8 +367,8 @@
     "sqlMigrations": "مهاجرت‌های SQL",
     "dbCredentials": "اعتبارنامه‌های پایگاه داده",
     "advancedParameters": "SSL و پارامترهای پیشرفته",
-    "headCreateProject": "ایجاد پروژه | NocoDB",
-    "headLogin": "ورود | NocoDB",
+    "headCreateProject": "ایجاد پروژه | MicDB",
+    "headLogin": "ورود | MicDB",
     "resetPassword": "بازنشانی کلمه عبور شما",
     "teamAndSettings": "تیم و تنظیمات",
     "apiDocs": "مستندات API",
@@ -571,8 +571,8 @@
       "getAnswered": "پاسخ سوالات خود را دریافت کنید",
       "joinDiscord": "به Discord بپیوندید",
       "joinCommunity": "ملحق شدن به انجمن Nocodb",
-      "joinReddit": "به NocoDB بپیوندید",
-      "followNocodb": "NocoDB را دنبال کنید",
+      "joinReddit": "به MicDB بپیوندید",
+      "followNocodb": "MicDB را دنبال کنید",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Sign up with {provider}",
     "signInWithProvider": "Sign in with {provider}",
     "agreeToTos": "با ثبت نام، شما با شرایط ارائه سرویس ما موافقت میکنید",
-    "welcomeToNc": "به NocoDB خوش آمدید!",
+    "welcomeToNc": "به MicDB خوش آمدید!",
     "inviteOnlySignup": "فقط با لینک دعوت اجازه ثبت نام دهید",
     "nextRow": "ردیف بعدی",
     "prevRow": "ردیف قبلی",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "نقش های تعریف شده سیستم قابل ویرایش نیستند",
       "exportZip": "خروج فراداده پروژه به عنوان فایل فشرده و دریافت آن.",
       "importZip": "ورود فایل فشرده فراداده پروژه و شروع مجدد.",
-      "importText": "ورود پروژه NocoDB با بارگذاری فایل فشرده فراداده",
+      "importText": "ورود پروژه MicDB با بارگذاری فایل فشرده فراداده",
       "metaNoChange": "هیچ تغییری شناسایی نشد",
       "sqlMigration": "مهاجرت‌های شِما به طور خودکار ساخته خواهند شد. جدولی ایجاد و صفحه را مجددا لود کن.",
       "dbConnectionStatus": "فضا معتبر است",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "شما می‌توانید از ما حمایت کنید!",
-        "message": "ما گروه کوچکی هستیم که تمام وقت کار می‌کنیم تا NocoDB یک ابزار Open-Source باشد؛ ما معتقدیم ابزاری مانند NocoDB باید به صورت رایگان برای هر حل کننده مساله ای روی اینترنت در دسترس باشد."
+        "message": "ما گروه کوچکی هستیم که تمام وقت کار می‌کنیم تا MicDB یک ابزار Open-Source باشد؛ ما معتقدیم ابزاری مانند MicDB باید به صورت رایگان برای هر حل کننده مساله ای روی اینترنت در دسترس باشد."
       },
-      "loginMsg": "ورود به NocoDB",
+      "loginMsg": "ورود به MicDB",
       "passwordRecovery": {
         "message_1": "لطفا پست الکترونیکی خود را که در هنگام ثبت نام استفاده کردید وارد کنید.",
         "message_2": "ما یک لینک جهت تغییر کلمه عبور به پست الکترونیکی شما ارسال خواهیم کرد.",

@@ -33,7 +33,7 @@ const logout = async () => {
           <template #title>
             {{ currentVersion }}
           </template>
-          <img width="35" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+          <img width="35" alt="Edmicro MicDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
         </a-tooltip>
       </div>
 

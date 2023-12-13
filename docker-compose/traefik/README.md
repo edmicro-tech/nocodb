@@ -12,7 +12,7 @@ Look into the `.env` file and update the vaiables before executing `docker-compo
 
 Looks for new nocodb image every day at 5:00 and recreates the container.
 
-## NocoDB
+## MicDB
 
 - Accessible via `nocodb.DOMAINNAME/dashboard`
 - Uses postgres db for storage

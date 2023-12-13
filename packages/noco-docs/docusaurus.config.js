@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "NocoDB",
+  title: "MicDB",
   tagline: "The Open Source Airtable Alternative",
   favicon: "img/favicon.ico",
 
@@ -124,7 +124,7 @@ const config = {
       navbar: {
         title: "",
         logo: {
-          alt: "NocoDB",
+          alt: "MicDB",
           src: "img/nocodb-full-color.png",
         },
         items: [
@@ -133,14 +133,14 @@ const config = {
             position: "right",
           },
           {
-            href: "https://nocodb.com/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
-            html: "Join NocoDB Cloud For FREE",
+            href: "https://db.mic.gov.vn/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
+            html: "Join MicDB Cloud For FREE",
             position: "right",
             className: "header-join-link",
           },
           {
-            href: "https://nocodb.com/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
-            html: "Join NocoDB Cloud",
+            href: "https://db.mic.gov.vn/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
+            html: "Join MicDB Cloud",
             position: "right",
             className: "header-join-link-medium",
           },
@@ -155,14 +155,14 @@ const config = {
       footer: {
         style: "dark",
         logo: {
-          alt: "NocoDB",
+          alt: "MicDB",
           src: "img/icon.png",
           width: 50,
         },
         links: [
           {
-            label: "Join NocoDB Cloud For FREE",
-            href: "https://nocodb.com/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
+            label: "Join MicDB Cloud For FREE",
+            href: "https://db.mic.gov.vn/?utm_source=docs&utm_medium=docs&utm_campaign=docs&utm_content=docs",
             className: "footer-join-link",
           },
           {
@@ -171,7 +171,7 @@ const config = {
           },
           {
             label: "Website",
-            href: "https://nocodb.com/",
+            href: "https://db.mic.gov.vn/",
           },
           {
             label: "Community",
@@ -186,7 +186,7 @@ const config = {
             href: "https://twitter.com/nocodb",
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} NocoDB`,
+        copyright: `Copyright © ${new Date().getFullYear()} MicDB`,
       },
       prism: {
         theme: lightCodeTheme,

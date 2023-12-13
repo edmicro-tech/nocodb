@@ -131,7 +131,7 @@ onMounted(() => {
           </a>
           <a
             v-e="['c:nocodb:reddit']"
-            href="https://www.reddit.com/r/NocoDB"
+            href="https://www.reddit.com/r/MicDB"
             target="_blank"
             class="!underline-transparent"
             rel="noopener noreferrer"
@@ -215,7 +215,7 @@ onMounted(() => {
       </template>
     </NcDropdown>
     <!-- 
-    <div v-if="appInfo.ee" class="text-gray-500 text-xs pl-3">© 2023 NocoDB. Inc</div>
+    <div v-if="appInfo.ee" class="text-gray-500 text-xs pl-3">© 2023 MicDB. Inc</div>
     <div v-else-if="isMounted" class="flex flex-row justify-between flex-wrap pt-1 truncate">
       <div class="flex items-start flex-row justify-center px-3 gap-2">
         <GithubButton href="https://github.com/nocodb/nocodb" data-icon="octicon-star" data-show-count="true" data-size="large">

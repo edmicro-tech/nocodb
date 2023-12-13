@@ -367,8 +367,8 @@
     "sqlMigrations": "Migrácie SQL",
     "dbCredentials": "Poverenia databázy",
     "advancedParameters": "SSL a pokročilé parametre",
-    "headCreateProject": "Vytvorenie projektu | NocoDB",
-    "headLogin": "Prihlásenie | NocoDB",
+    "headCreateProject": "Vytvorenie projektu | MicDB",
+    "headLogin": "Prihlásenie | MicDB",
     "resetPassword": "Obnovenie hesla",
     "teamAndSettings": "Tím a nastavenia",
     "apiDocs": "Dokumenty API",
@@ -570,9 +570,9 @@
       "bookDemo": "Objednajte si bezplatné DEMO",
       "getAnswered": "Získajte odpovede na svoje otázky",
       "joinDiscord": "Pripojte sa k službe Discord",
-      "joinCommunity": "Pripojte sa ku komunite NocoDB",
-      "joinReddit": "Pripojte sa k /r/NocoDB",
-      "followNocodb": "Sledujte NocoDB",
+      "joinCommunity": "Pripojte sa ku komunite MicDB",
+      "joinReddit": "Pripojte sa k /r/MicDB",
+      "followNocodb": "Sledujte MicDB",
       "communityTranslated": "(Community Translated)"
     },
     "twitter": "Twitter",
@@ -622,7 +622,7 @@
     "signUpWithProvider": "Sign up with {provider}",
     "signInWithProvider": "Sign in with {provider}",
     "agreeToTos": "Registráciou súhlasíte s podmienkami služby",
-    "welcomeToNc": "Vitajte na NocoDB!",
+    "welcomeToNc": "Vitajte na MicDB!",
     "inviteOnlySignup": "Povoľte registráciu len pomocou url pozvánky",
     "nextRow": "Ďalší riadok",
     "prevRow": "Predchádzajúci rad",
@@ -1116,7 +1116,7 @@
       "staticRoleInfo": "Systémom definované roly nie je možné upravovať",
       "exportZip": "Exportovať meta projektu do súboru zip a stiahnuť.",
       "importZip": "Importujte meta súbor zip projektu a reštartujte ho.",
-      "importText": "Import projektu NocoDB nahraním súboru zip s metadátami",
+      "importText": "Import projektu MicDB nahraním súboru zip s metadátami",
       "metaNoChange": "Nebola identifikovaná žiadna zmena",
       "sqlMigration": "Migrácie schém sa vytvoria automaticky. Vytvorte tabuľku a obnovte túto stránku.",
       "dbConnectionStatus": "Prostredie overené",
@@ -1127,9 +1127,9 @@
       },
       "sponsor": {
         "header": "Môžete nám pomôcť!",
-        "message": "Sme malý tím, ktorý na plný úväzok pracuje na tom, aby sa NocoDB stala open-source. Veríme, že nástroj ako NocoDB by mal byť voľne dostupný každému riešiteľovi problémov na internete."
+        "message": "Sme malý tím, ktorý na plný úväzok pracuje na tom, aby sa MicDB stala open-source. Veríme, že nástroj ako MicDB by mal byť voľne dostupný každému riešiteľovi problémov na internete."
       },
-      "loginMsg": "Prihlásenie do databázy NocoDB",
+      "loginMsg": "Prihlásenie do databázy MicDB",
       "passwordRecovery": {
         "message_1": "Uveďte e-mailovú adresu, ktorú ste použili pri registrácii.",
         "message_2": "Pošleme vám e-mail s odkazom na obnovenie hesla.",

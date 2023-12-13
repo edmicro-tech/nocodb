@@ -12,7 +12,7 @@ onMounted(() => {
   // if we are, communicate to the parent page whenever we navigate to a new url,
   // so that the parent page can respond to it properly.
   // E.g. by making the browser navigate to that url, and not just the iframe.
-  // This is useful for integrating NocoDB into other products,
+  // This is useful for integrating MicDB into other products,
   // such as Outline (https://github.com/outline/outline/pull/4184).
   if (window.parent !== window) {
     const notifyLocationChange = (value: string) =>
@@ -55,7 +55,7 @@ export default {
             <template #title>
               {{ appInfo.version }}
             </template>
-            <img width="35" alt="Edmicro NocoDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
+            <img width="35" alt="Edmicro MicDB" src="~/assets/img/brand/mic_vietnam_logo.png" />
           </a-tooltip>
         </div>
 
