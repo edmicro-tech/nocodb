@@ -668,7 +668,8 @@
     "sourceNameRequired": "Source name is required",
     "changeWsName": "Change Workspace Name",
     "pressEnter": "Press Enter",
-    "newFormLoaded": "New form will be loaded after"
+    "newFormLoaded": "New form will be loaded after",
+    "webhook": "Webhook"
   },
   "activity": {
     "openInANewTab": "Open in a new tab",
@@ -1048,6 +1049,7 @@
     "acceptOnlyValid": "Accepts only",
     "apiTokenCreate": "Create personal API tokens to use in automation or external apps.",
     "selectFieldToSort": "Select Field to Sort",
+    "selectFieldToGroup": "Select Field to Group",
     "thereAreNoRecordsInTable": "There are no records in table",
     "createWebhookMsg1": "Get started with web-hooks!",
     "createWebhookMsg2": "Create web-hooks to power you automations,",
@@ -1237,7 +1239,9 @@
       "goToPrevious": "Go to previous",
       "goToNext": "Go to next",
       "thankYou": "Thank you!",
-      "submittedFormData": "You have successfully submitted the form data."
+      "submittedFormData": "You have successfully submitted the form data.",
+      "editingSystemKeyNotSupported": "Editing system key not supported"
+
     },
     "error": {
       "nameRequired": "Name Required",
@@ -1313,7 +1317,8 @@
       "duplicateParameterKeysAreNotAllowed": "Duplicate parameter keys are not allowed",
       "fieldRequired": "{value} cannot be empty.",
       "projectNotAccessible": "Base not accessible",
-      "copyToClipboardError": "Failed to copy to clipboard"
+      "copyToClipboardError": "Failed to copy to clipboard",
+      "pasteFromClipboardError": "Failed to paste from clipboard"
     },
     "toast": {
       "exportMetadata": "Base metadata exported successfully",

@@ -34,6 +34,7 @@ import {
   useI18n,
   useMultiSelect,
   useNuxtApp,
+  usePaste,
   useRoles,
   useRoute,
   useSmartsheetStoreOrThrow,
@@ -167,6 +168,8 @@ const predictNextColumn = async () => {
 const predictNextFormulas = async () => {
   await _predictNextFormulas(meta)
 }
+
+const { paste } = usePaste()
 
 // #Refs
 
@@ -1243,14 +1246,22 @@ onKeyStroke('ArrowDown', onDown)
 <template>
   <div class="flex flex-col" :class="`${headerOnly !== true ? 'h-full w-full' : ''}`">
     <div data-testid="drag-icon-placeholder" class="absolute w-1 h-1 pointer-events-none opacity-0"></div>
-    <div ref="dragColPlaceholderDomRef" :class="{
-      'hidden w-0 !h-0 left-0 !max-h-0 !max-w-0': !draggedCol,
-    }" class="absolute flex items-center z-40 top-0 h-full bg-gray-50 pointer-events-none opacity-60">
-      <div v-if="draggedCol" :style="{
+    <div
+      ref="dragColPlaceholderDomRef"
+      :class="{
+        'hidden w-0 !h-0 left-0 !max-h-0 !max-w-0': !draggedCol,
+      }"
+      class="absolute flex items-center z-40 top-0 h-full bg-gray-50 pointer-events-none opacity-60"
+    >
+      <div
+        v-if="draggedCol"
+        :style="{
         'min-width': gridViewCols[draggedCol.id!]?.width || '200px',
         'max-width': gridViewCols[draggedCol.id!]?.width || '200px',
         'width': gridViewCols[draggedCol.id!]?.width || '200px',
-      }" class="border-r-1 border-l-1 border-gray-200 h-full"></div>
+      }"
+        class="border-r-1 border-l-1 border-gray-200 h-full"
+      ></div>
     </div>
     <div ref="gridWrapper" class="nc-grid-wrapper min-h-0 flex-1 relative" :class="gridWrapperClass">
       <div v-show="isPaginationLoading"
@@ -1565,13 +1576,56 @@ onKeyStroke('ArrowDown', onDown)
             </NcMenuItem>
 
             <!--            Clear cell -->
-            <NcMenuItem v-if="contextMenuTarget &&
+            <!-- <NcMenuItem v-if="contextMenuTarget &&
               hasEditPermission &&
               selectedRange.isSingleCell() &&
               (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
               " v-e="['a:row:clear']" class="nc-base-menu-item" @click="clearCell(contextMenuTarget)">
-              <GeneralIcon icon="close" />
-              {{ $t('general.clear') }}
+              <GeneralIcon icon="close" /> -->
+              <!-- {{ $t('general.clear') }} -->
+            <NcMenuItem
+              v-if="contextMenuTarget"
+              class="nc-base-menu-item"
+              data-testid="context-menu-item-paste"
+              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
+              @click="paste"
+            >
+              <div v-e="['a:row:paste']" class="flex gap-2 items-center">
+                <GeneralIcon icon="paste" />
+                <!-- Paste -->
+                {{ $t('general.paste') }}
+              </div>
+            </NcMenuItem>
+
+            <!-- Clear cell -->
+            <NcMenuItem
+              v-if="
+                contextMenuTarget &&
+                hasEditPermission &&
+                selectedRange.isSingleCell() &&
+                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              "
+              class="nc-base-menu-item"
+              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
+              @click="clearCell(contextMenuTarget)"
+            >
+              <div v-e="['a:row:clear']" class="flex gap-2 items-center">
+                <GeneralIcon icon="close" />
+                {{ $t('general.clear') }}
+              </div>
+            </NcMenuItem>
+
+            <!-- Clear cell -->
+            <NcMenuItem
+              v-else-if="contextMenuTarget && hasEditPermission"
+              class="nc-base-menu-item"
+              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
+              @click="clearSelectedRangeOfCells()"
+            >
+              <div v-e="['a:row:clear-range']" class="flex gap-2 items-center">
+                <GeneralIcon icon="closeBox" class="text-gray-500" />
+                {{ $t('general.clear') }}
+              </div>
             </NcMenuItem>
 
             <!--            Clear cell -->
@@ -1641,37 +1695,40 @@ onKeyStroke('ArrowDown', onDown)
             <template #overlay>
               <div class="relative overflow-visible min-h-17 w-10">
                 <div
-                  class="absolute -top-19 flex flex-col h-34.5 w-70 bg-white rounded-lg border-1 border-gray-200 justify-start overflow-hidden"
+                  class="absolute -top-19 flex flex-col min-h-34.5 w-70 p-1.5 bg-white rounded-lg border-1 border-gray-200 justify-start overflow-hidden"
                   style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)"
                   :class="{
                     '-left-44': !isAddNewRecordGridMode,
                     '-left-32': isAddNewRecordGridMode,
-                  }">
-                  <div v-e="['c:row:add:grid']"
-                    class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-grid group"
-                    @click="onNewRecordToGridClick">
+                  }"
+                >
+                  <div
+                    v-e="['c:row:add:grid']"
+                    class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-600 nc-new-record-with-grid group"
+                    @click="onNewRecordToGridClick"
+                  >
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-3">
                         <component :is="viewIcons[ViewTypes.GRID]?.icon" class="nc-view-icon text-inherit" />
                         {{ $t('activity.newRecord') }} - {{ $t('objects.viewType.grid') }}
                       </div>
-                      <div class="h-4 w-4 flex flex-row items-center justify-center">
-                        <GeneralIcon v-if="isAddNewRecordGridMode" icon="check" />
-                      </div>
+
+                      <GeneralIcon v-if="isAddNewRecordGridMode" icon="check" class="w-4 h-4 text-primary" />
                     </div>
                     <div class="flex flex-row text-xs text-gray-400 ml-7.25">{{ $t('labels.addRowGrid') }}</div>
                   </div>
-                  <div v-e="['c:row:add:form']"
-                    class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer hover:bg-gray-100 text-gray-600 nc-new-record-with-form group"
-                    @click="onNewRecordToFormClick">
+                  <div
+                    v-e="['c:row:add:form']"
+                    class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-600 nc-new-record-with-form group"
+                    @click="onNewRecordToFormClick"
+                  >
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-2.5">
                         <GeneralIcon class="h-4.5 w-4.5" icon="article" />
                         {{ $t('activity.newRecord') }} - {{ $t('objects.viewType.form') }}
                       </div>
-                      <div class="h-4 w-4 flex flex-row items-center justify-center">
-                        <GeneralIcon v-if="!isAddNewRecordGridMode" icon="check" />
-                      </div>
+
+                      <GeneralIcon v-if="!isAddNewRecordGridMode" icon="check" class="w-4 h-4 text-primary" />
                     </div>
                     <div class="flex flex-row text-xs text-gray-400 ml-7.05">{{ $t('labels.addRowForm') }}</div>
                   </div>
