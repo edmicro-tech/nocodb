@@ -22,8 +22,8 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'openidconnect') {
       const user = await User.getByEmail(email);
       if (user) {
         // If base ID is defined, extract base level roles
-        if (req.ncProjectId) {
-          const baseUser = await BaseUser.get(req.ncProjectId, user.id);
+        if (req.ncBaseId) {
+          const baseUser = await BaseUser.get(req.ncBaseId, user.id);
 
           user.roles = baseUser?.roles || user.roles;
           console.log(user);
