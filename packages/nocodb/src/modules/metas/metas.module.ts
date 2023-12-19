@@ -79,6 +79,8 @@ import { GroupController } from 'src/controllers/api-group.controller';
 import { GroupService } from 'src/services/group/group.service';
 import { GroupBaseController } from 'src/controllers/api-group-base.controller';
 import { GroupBaseService } from 'src/services/group-base/group-base.service';
+import { UserOrganizationService } from 'src/services/user-organization/user-organization.service';
+import { UserOrganizationController } from 'src/controllers/api-user-organization.controller';
 
 export const metaModuleMetadata = {
   imports: [
@@ -119,6 +121,7 @@ export const metaModuleMetadata = {
         OrganizationController,
         GroupController,
         GroupBaseController,
+        UserOrganizationController,
         PluginsController,
         BaseUsersController,
         BasesController,
@@ -174,6 +177,7 @@ export const metaModuleMetadata = {
     SharedBasesService,
     BulkDataAliasService,
     NotificationsService,
+    UserOrganizationService,
     NotificationsGateway,
   ],
   exports: [

@@ -367,6 +367,7 @@
     "connectDataSource": "Kết nối nguồn dữ liệu mới",
     "controlAppearance": "Thay đổi thông tin của bạn",
     "name": "Tên",
+    "folder": "Thư mục",
     "backWorkspace": "Trở lại",
     "createdBy": "Tạo bởi",
     "notifyVia": "Thông báo qua",
@@ -1126,6 +1127,7 @@
       "updated": "Cập nhật thành công",
       "sharedViewDeleted": "Đã xóa chế độ xem đã chia sẻ thành công",
       "userDeleted": "Đã xóa người dùng thành công",
+      "orgDeleted": "Đã xóa tổ chức thành công",
       "viewRenamed": "Đã đổi tên chế độ xem thành công",
       "tokenGenerated": "Đã tạo mã thông báo thành công",
       "tokenDeleted": "Đã xóa mã thông báo thành công",
@@ -1147,7 +1149,8 @@
       "columnCreated": "Đã tạo cột",
       "passwordChanged": "Đã thay đổi mật khẩu thành công. Vui lòng đăng nhập lại.",
       "settingsSaved": "Đã lưu cài đặt thành công",
-      "roleUpdated": "Đã cập nhật vai trò thành công"
+      "roleUpdated": "Đã cập nhật vai trò thành công",
+      "orgUpdated": "Đã cập nhật tổ chức thành công"
     }
   }
 }

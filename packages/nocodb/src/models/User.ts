@@ -202,11 +202,11 @@ export default class User implements UserType {
   ) {
     let queryBuilder = ncMeta.knex(MetaTable.USERS);
 
-    if (offset) queryBuilder = queryBuilder.offset(offset);
+    if (offset) queryBuilder.offset(offset);
 
-    if (limit) queryBuilder = queryBuilder.limit(limit);
+    if (limit) queryBuilder.limit(limit);
 
-    queryBuilder = queryBuilder
+    queryBuilder
       .select(
         `${MetaTable.USERS}.id`,
         `${MetaTable.USERS}.email`,
@@ -224,7 +224,20 @@ export default class User implements UserType {
             `${MetaTable.USERS}.id = ${MetaTable.PROJECT_USERS}.fk_user_id`,
           )
           .as('projectsCount'),
-      );
+      )
+      .leftJoin(
+        MetaTable.USER_ORGANIZATION,
+        `${MetaTable.USERS}.id`,
+        `${MetaTable.USER_ORGANIZATION}.idUser`,
+      )
+      .leftJoin(
+        MetaTable.ORGANIZATIONS,
+        `${MetaTable.USER_ORGANIZATION}.idOrganization`,
+        `${MetaTable.ORGANIZATIONS}.id`,
+      )
+      .select(`${MetaTable.ORGANIZATIONS}.name AS organizationName`,
+      `${MetaTable.ORGANIZATIONS}.id AS idOrganization`);
+
     if (query) {
       queryBuilder.where('email', 'like', `%${query.toLowerCase?.()}%`);
     }

@@ -8,15 +8,14 @@ import { Model, ModelRoleVisibility, View } from '~/models';
 import { MetaService } from 'src/meta/meta.service';
 import { BasesService } from '../bases.service';
 import { MetaTable } from 'src/utils/globals';
-import { Organization } from '~/models';
 import { PagedResponseImpl } from 'src/helpers/PagedResponse';
 import { extractProps } from 'src/helpers/extractProps';
+import UserOrganization from 'src/models/UserOrganization';
 
 @Injectable()
-export class OrganizationService {
+export class UserOrganizationService {
     constructor(
         protected metaService: MetaService,
-        protected basesService: BasesService,
     ) {
     }
 
@@ -24,14 +23,14 @@ export class OrganizationService {
         // todo: add better typing
         query: Record<string, any>;
     }) {
-        return await Organization.list(
+        return await UserOrganization.list(
             param.query
         )
     };
     async create(param: {
-        tokenBody: Organization;
+        tokenBody: UserOrganization;
     }) {
-        return await Organization.insert({
+        return await UserOrganization.insert({
             ...param.tokenBody,
         });
     }
@@ -39,25 +38,31 @@ export class OrganizationService {
         id,
         params,
     }: {
-        id: number;
+        id: string;
         params: {
-            name?: string;
+            idUser?: string,
+            idOrganization?: string,
         };
     }) {
-        const updateObj = extractProps(params, ['name']);
+        const updateObj = extractProps(params, ['idUser', 'idOrganization']);
 
-        return await Organization.update(id, updateObj);
+        return await UserOrganization.update(id, updateObj);
     }
     async delete(param: { id }) {
-        const organization = await Organization.get(param.id);
+
+        const groupBase = await UserOrganization.get(param.id);
         if (
-            !organization
+            !groupBase
         ) {
-            NcError.notFound('Organization not found');
+            NcError.notFound('UserOrganization not found');
         }
 
         // todo: verify token belongs to the user
-        return await Organization.delete(param.id);
+        return await UserOrganization.delete(param.id);
+    }
+    async deleteByUserId(param: { idUser }) {
+        // todo: verify token belongs to the user
+        return await UserOrganization.deleteByUserId(param.idUser);
     }
 
 }

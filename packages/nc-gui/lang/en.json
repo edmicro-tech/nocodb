@@ -231,6 +231,7 @@
       "calendar": "Calendar",
       "map": "Map"
     },
+    "organization": "Organization",
     "user": "User",
     "users": "Users",
     "dateJoined": "Date Joined",
@@ -472,6 +473,7 @@
     "negative": "Negative",
     "discard": "Discard",
     "default": "Default",
+    "folder": "Folder",
     "defaultNumberPercent": "Default Number (%)",
     "durationFormat": "Duration Format",
     "dateFormat": "Date Format",
@@ -1241,7 +1243,6 @@
       "thankYou": "Thank you!",
       "submittedFormData": "You have successfully submitted the form data.",
       "editingSystemKeyNotSupported": "Editing system key not supported"
-
     },
     "error": {
       "nameRequired": "Name Required",
@@ -1353,6 +1354,7 @@
       "updated": "Successfully updated",
       "sharedViewDeleted": "Deleted shared view successfully",
       "userDeleted": "User deleted successfully",
+      "orgDeleted": "Organization deleted successfully",
       "viewRenamed": "View renamed successfully",
       "tokenGenerated": "Token generated successfully",
       "tokenDeleted": "Token deleted successfully",
@@ -1374,7 +1376,8 @@
       "columnCreated": "Field created",
       "passwordChanged": "Password changed successfully. Please login again.",
       "settingsSaved": "Settings saved successfully",
-      "roleUpdated": "Role updated successfully"
+      "roleUpdated": "Role updated successfully",
+      "orgUpdated": "Organization updated successfully"
     }
   }
 }

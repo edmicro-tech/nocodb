@@ -40,7 +40,7 @@ export default class Organization {
             null,
             MetaTable.ORGANIZATIONS,
             insertObj,
-            true,
+            false,
         );
         return this.get(id, ncMeta);
     }
@@ -98,7 +98,7 @@ export default class Organization {
         const org = await this.get(id, ncMeta);
 
         if (!org) NcError.badRequest('Ogranization not found');
-
+        await ncMeta.metaDelete(null, null, MetaTable.USER_ORGANIZATION, { idOrganization: id });
         return await ncMeta.metaDelete(null, null, MetaTable.ORGANIZATIONS, id);
     }
 

@@ -59,11 +59,12 @@ const setMenuContext = (type: 'base' | 'source' | 'table' | 'main' | 'layout', v
   contextMenuTarget.type = type
   contextMenuTarget.value = value
 }
-const openFolders = ref([]);
-const listFolder = ref([]);
-const listGroupBase = ref([]);
+const openFolders = ref<any[]>([]);
+const listFolder = ref<any[]>([]);
+const listGroupBase = ref<any[]>([]);
 const deleteModalInfo = ref<any>(null)
-
+const isMoveBaseVisible = ref(false)
+const folderSelected = ref<any>(null)
 const loadFolder = async () => {
   await $fetch(`/api/v1/groupbase`, {
     baseURL,
@@ -83,6 +84,10 @@ const loadFolder = async () => {
   })
 }
 await loadFolder();
+const updateFolderName = async (folder: any) => {
+  folderSelected.value = folder;
+  isMoveBaseVisible.value = true;
+}
 function openRenameTableDialog(table: TableType, _ = false) {
   if (!table || !table.source_id) return
 
@@ -289,14 +294,22 @@ watch(
             <GeneralFolderIcon :isShow="openFolders?.includes(folder.id)" />
             <strong class="text-gray-700 ml-2 font-medium">{{ folder.name }}</strong>
           </NcButton>
-          <NcButton @click="openDeleteFolder(folder)" class="ml-auto mr-1" type="text" size="xxsmall">
-            <GeneralIcon icon="delete"
-              class="text-sm text-red-500 focus:outline-none" />
-          </NcButton>
+          <div class="ml-auto">
+            <NcButton @click="openDeleteFolder(folder)" class="mr-1" type="text" size="xxsmall">
+              <GeneralIcon icon="plus" class="text-sm text-gray-500 focus:outline-none" />
+            </NcButton>
+            <NcButton @click="updateFolderName(folder)" class="mr-1" type="text" size="xxsmall">
+              <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
+            </NcButton>
+            <NcButton @click="openDeleteFolder(folder)" class="mr-1" type="text" size="xxsmall">
+              <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none" />
+            </NcButton>
+          </div>
           <GeneralDeleteModal v-model:visible="isOpenModalDelete" entity-name="Folder" :on-delete="() => deleteFolder()">
           </GeneralDeleteModal>
         </div>
-        <div v-if="basesList.filter(x => folder.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folder.id)"
+        <div
+          v-if="basesList.filter(x => folder.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folder.id)"
           class="py-0.5 text-gray-500 ml-13.55">
           {{ $t('general.empty') }}
         </div>
@@ -318,6 +331,7 @@ watch(
       <!-- <WorkspaceEmptyPlaceholder v-else-if="!isWorkspaceLoading" /> -->
     </div>
     <WorkspaceCreateProjectDlg v-model="baseCreateDlg" />
+    <WorkspaceEditFolderDlg v-if="isMoveBaseVisible" v-model:visible="isMoveBaseVisible" :folder="folderSelected" />
   </div>
 </template>
 

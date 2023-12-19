@@ -120,7 +120,7 @@ export interface AuditType {
   user?: string;
   /**
    * The display name of user performing the action
-   * @example NocoDB
+   * @example MicDB
    */
   display_name?: string;
   /**
@@ -2946,7 +2946,7 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version 1.0
  * @baseUrl http://localhost:8080
  *
- * NocoDB API Documentation
+ * MicDB API Documentation
  */
 export class Api<
   SecurityDataType extends unknown
@@ -3341,7 +3341,7 @@ export class Api<
       }),
 
     /**
- * @description Regenerate user refresh token
+ * @description Creates a new refresh token and JWT auth token for the user. The refresh token is sent as a cookie, while the JWT auth token is included in the response body.
  * 
  * @tags Auth
  * @name TokenRefresh
@@ -3349,7 +3349,7 @@ export class Api<
  * @request POST:/api/v1/auth/token/refresh
  * @response `200` `{
   \**
-   * New access token for user
+   * New JWT auth token for user
    * @example 96751db2d53fb834382b682268874a2ea9ee610e4d904e688d1513f11d3c30d62d36d9e05dec0d63
    *\
   token?: string,
@@ -3365,7 +3365,7 @@ export class Api<
       this.request<
         {
           /**
-           * New access token for user
+           * New JWT auth token for user
            * @example 96751db2d53fb834382b682268874a2ea9ee610e4d904e688d1513f11d3c30d62d36d9e05dec0d63
            */
           token?: string;
@@ -9626,7 +9626,7 @@ export class Api<
  * @request GET:/api/v1/version
  * @response `200` `{
   \**
-   * Current NocoDB Version
+   * Current MicDB Version
    * @example 0.104.0
    *\
   currentVersion?: string,
@@ -9647,7 +9647,7 @@ export class Api<
       this.request<
         {
           /**
-           * Current NocoDB Version
+           * Current MicDB Version
            * @example 0.104.0
            */
           currentVersion?: string;
