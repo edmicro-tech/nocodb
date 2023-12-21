@@ -52,7 +52,7 @@ const { isSharedBase } = storeToRefs(useBase())
 const { setMenuContext, openRenameTableDialog, duplicateTable, contextMenuTarget } = inject(TreeViewInj)!
 
 const base = inject(ProjectInj)!
-
+const emit = defineEmits(['update:component'])
 const basesStore = useBases()
 
 const { isMobileMode } = useGlobal()
@@ -650,7 +650,8 @@ const moveBase = () => {
   <DlgTableDelete v-if="contextMenuTarget.value?.id && base?.id" v-model:visible="isTableDeleteDialogVisible"
     :table-id="contextMenuTarget.value?.id" :base-id="base?.id" />
   <DlgProjectDelete v-model:visible="isProjectDeleteDialogVisible" :base-id="base?.id" />
-  <DlgMoveBase v-if="isMoveBaseVisible" v-model:visible="isMoveBaseVisible" :base-id="base?.id" />
+  <DlgMoveBase v-if="isMoveBaseVisible" v-model:visible="isMoveBaseVisible" :base-id="base?.id"
+    @update:component="emit('update:component')" />
   <DlgProjectDuplicate v-if="selectedProjectToDuplicate" v-model="isDuplicateDlgOpen"
     :base="selectedProjectToDuplicate" />
   <GeneralModal v-model:visible="isErdModalOpen" size="large">

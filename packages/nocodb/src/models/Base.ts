@@ -219,7 +219,7 @@ export default class Base implements BaseType {
       `${CacheScope.PROJECT}:${baseId}`,
       CacheDelDirection.CHILD_TO_PARENT,
     );
-
+    await ncMeta.metaDelete(null, null, MetaTable.GROUP_BASE, { idBase: baseId });
     // set meta
     return await ncMeta.metaUpdate(
       null,

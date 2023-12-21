@@ -35,6 +35,13 @@ export class GroupService {
             ...param.tokenBody,
         });
     }
+    async createChild(param: {
+        tokenBody: Group;
+    }) {
+        return await Group.insertChildFolder({
+            ...param.tokenBody,
+        });
+    }
     async update({
         id,
         params,

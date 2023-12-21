@@ -10,7 +10,7 @@ const { isMobileMode } = useGlobal()
 const treeViewDom = ref<HTMLElement>()
 
 const isTreeViewOnScrollTop = ref(false)
-
+const emit = defineEmits(['update:component'])
 const checkScrollTopMoreThanZero = () => {
   if (isMobileMode.value) return
 
@@ -23,7 +23,11 @@ const checkScrollTopMoreThanZero = () => {
   }
   return false
 }
+const componentKey = ref(0);
 
+const forceRerender = () => {
+  componentKey.value += 1;
+};
 onMounted(() => {
   treeViewDom.value?.addEventListener('scroll', checkScrollTopMoreThanZero)
 })
@@ -34,27 +38,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
-    class="nc-sidebar flex flex-col bg-gray-50 outline-r-1 outline-gray-100 select-none w-full h-full"
-    :style="{
-      outlineWidth: '1px',
-    }"
-  >
+  <div class="nc-sidebar flex flex-col bg-gray-50 outline-r-1 outline-gray-100 select-none w-full h-full" :style="{
+    outlineWidth: '1px',
+  }">
     <div class="flex flex-col">
       <DashboardSidebarHeader />
 
-      <DashboardSidebarTopSection v-if="!isSharedBase" />
+      <DashboardSidebarTopSection @update:component="forceRerender()" v-if="!isSharedBase" />
     </div>
-    <div
-      ref="treeViewDom"
-      class="flex flex-col nc-scrollbar-dark-md flex-grow xs:(border-transparent pt-2 pr-2)"
-      :class="{
-        'border-t-1': !isSharedBase,
-        'border-transparent': !isTreeViewOnScrollTop,
-        'pt-0.25': isSharedBase,
-      }"
-    >
-      <DashboardTreeView v-if="!isWorkspaceLoading" />
+    <div ref="treeViewDom" class="flex flex-col nc-scrollbar-dark-md flex-grow xs:(border-transparent pt-2 pr-2)" :class="{
+      'border-t-1': !isSharedBase,
+      'border-transparent': !isTreeViewOnScrollTop,
+      'pt-0.25': isSharedBase,
+    }">
+      <DashboardTreeView :key="componentKey" v-if="!isWorkspaceLoading" />
     </div>
     <div v-if="!isSharedBase">
       <DashboardSidebarUserInfo />

@@ -16,6 +16,7 @@ export default class Group {
      */
     updated_at?: string;
     name?: string;
+    idParent?: string;
     constructor(data: Group) {
         Object.assign(this, data);
     }
@@ -34,6 +35,25 @@ export default class Group {
         ]);
 
         const { id, name } = await ncMeta.metaInsert2(
+            null,
+            null,
+            MetaTable.GROUP,
+            insertObj,
+            false,
+        );
+        return this.get(id, ncMeta);
+    }
+    public static async insertChildFolder(
+        Group: Partial<Group>,
+        ncMeta = Noco.ncMeta,
+    ) {
+        const insertObj = extractProps(Group, [
+            // 'id',
+            'name',
+            'idParent'
+        ]);
+        if (!insertObj.idParent || !insertObj.name) NcError.badRequest('Request is not valid');
+        const { id, name, idParent } = await ncMeta.metaInsert2(
             null,
             null,
             MetaTable.GROUP,
@@ -73,6 +93,7 @@ export default class Group {
                 `${MetaTable.GROUP}.name`,
                 `${MetaTable.GROUP}.created_at`,
                 `${MetaTable.GROUP}.updated_at`,
+                `${MetaTable.GROUP}.idParent`,
                 // `${MetaTable.GROUP_BASE}.idGroup`,
                 // `${MetaTable.GROUP_BASE}.idBase`,
             );

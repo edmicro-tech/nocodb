@@ -59,11 +59,14 @@ const setMenuContext = (type: 'base' | 'source' | 'table' | 'main' | 'layout', v
   contextMenuTarget.type = type
   contextMenuTarget.value = value
 }
+const isOptionsOpen = ref('')
 const openFolders = ref<any[]>([]);
 const listFolder = ref<any[]>([]);
 const listGroupBase = ref<any[]>([]);
 const deleteModalInfo = ref<any>(null)
-const isMoveBaseVisible = ref(false)
+const isEditFolderVisible = ref(false)
+const isAddFolderChildVisible = ref(false)
+const isCreateBaseVisible = ref(false)
 const folderSelected = ref<any>(null)
 const loadFolder = async () => {
   await $fetch(`/api/v1/groupbase`, {
@@ -84,9 +87,19 @@ const loadFolder = async () => {
   })
 }
 await loadFolder();
+
 const updateFolderName = async (folder: any) => {
   folderSelected.value = folder;
-  isMoveBaseVisible.value = true;
+  isEditFolderVisible.value = true;
+}
+const addChildFolder = async (folder: any) => {
+  folderSelected.value = folder;
+  isAddFolderChildVisible.value = true;
+}
+
+const createBaseInFolder = async (folder: any) => {
+  folderSelected.value = folder;
+  isCreateBaseVisible.value = true;
 }
 function openRenameTableDialog(table: TableType, _ = false) {
   if (!table || !table.source_id) return
@@ -159,7 +172,11 @@ const isCreateTableAllowed = computed(
     route.value.name !== 'index-index-create-external' &&
     route.value.name !== 'index-user-index',
 )
-
+onKeyStroke('Escape', () => {
+  if (isOptionsOpen.value) {
+    isOptionsOpen.value = ''
+  }
+})
 useEventListener(document, 'keydown', async (e: KeyboardEvent) => {
   const cmdOrCtrl = isMac() ? e.metaKey : e.ctrlKey
   if (e.altKey && !e.shiftKey && !cmdOrCtrl) {
@@ -211,6 +228,10 @@ function openDeleteFolder(folder: any) {
   deleteModalInfo.value = folder;
   isOpenModalDelete.value = true;
 }
+
+function isFolderOptionsOpen(folderId: string) { return isOptionsOpen.value === folderId; }
+
+
 const deleteFolder = async () => {
   try {
     await $fetch(`/api/v1/groups/${deleteModalInfo?.value?.id}`, {
@@ -288,26 +309,138 @@ watch(
   <div class="nc-treeview-container flex flex-col justify-between select-none">
     <div v-if="!isSharedBase" class="text-gray-500 font-medium pl-3.5 mb-1">{{ $t('objects.projects') }}</div>
     <div mode="inline" class="nc-treeview pb-0.5 flex-grow min-h-50 overflow-x-hidden">
-      <div v-if="listFolder?.length" v-for="folder of listFolder">
+      <div v-if="listFolder?.length" v-for="folder of listFolder.filter(x => x.idParent == null)" :key="folder.id">
         <div class="flex flex-row items-center mt-2">
           <NcButton v-e="['c:base:expand']" type="text" size="xxsmall" class="ml-4" @click="toggleDropdown(folder.id)">
             <GeneralFolderIcon :isShow="openFolders?.includes(folder.id)" />
             <strong class="text-gray-700 ml-2 font-medium">{{ folder.name }}</strong>
           </NcButton>
           <div class="ml-auto">
-            <NcButton @click="openDeleteFolder(folder)" class="mr-1" type="text" size="xxsmall">
-              <GeneralIcon icon="plus" class="text-sm text-gray-500 focus:outline-none" />
-            </NcButton>
-            <NcButton @click="updateFolderName(folder)" class="mr-1" type="text" size="xxsmall">
-              <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
-            </NcButton>
-            <NcButton @click="openDeleteFolder(folder)" class="mr-1" type="text" size="xxsmall">
-              <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none" />
-            </NcButton>
+            <div class="flex flex-row items-center gap-x-0.25 w-8">
+              <NcDropdown v-if="!isSharedBase" :trigger="['click']">
+                <NcButton class="nc-sidebar-node-btn" :class="{ '!text-black !opacity-100': true }"
+                  data-testid="nc-sidebar-context-menu" type="text" size="xxsmall" @click.stop>
+                  <GeneralIcon icon="threeDotHorizontal" class="text-xl w-4.75" />
+                </NcButton>
+                <template #overlay>
+                  <NcMenu class="nc-scrollbar-md" :style="{
+                    maxHeight: '70vh',
+                    overflow: 'overlay',
+                  }" :data-testid="`nc-sidebar-base-${folder.name}-options`" @click="isOptionsOpen = folder?.id">
+                    <template v-if="!isSharedBase">
+                      <NcMenuItem @click="addChildFolder(folder)">
+                        <NcButton class="mr-1" type="text" size="xxsmall">
+                          <GeneralIcon icon="plusCircle" class="text-sm text-gray-500 focus:outline-none" />
+                          <span class="ml-2 text-sm text-gray-700 font-medium">
+                            {{ $t('general.create') }} {{ $t('labels.folder') }}
+                          </span>
+                        </NcButton>
+                      </NcMenuItem>
+                      <NcMenuItem @click="createBaseInFolder(folder)">
+                        <NcButton class="mr-1" type="text" size="xxsmall">
+                          <GeneralIcon icon="plus" class="text-sm text-gray-500 focus:outline-none" />
+                          <span class="ml-2 text-sm text-gray-700 font-medium">
+                            {{ $t('general.create') }} {{ $t('labels.database') }}
+                          </span>
+                        </NcButton>
+                      </NcMenuItem>
+                      <NcMenuItem @click="updateFolderName(folder)">
+                        <NcButton class="mr-1" type="text" size="xxsmall">
+                          <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
+                          <span class="ml-2 text-sm text-gray-700 font-medium">
+                            {{ $t('general.rename') }}
+                          </span>
+                        </NcButton>
+                      </NcMenuItem>
+                      <NcMenuItem @click="openDeleteFolder(folder)">
+                        <NcButton class="mr-1" type="text" size="xxsmall">
+                          <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none mr-2" />
+                          <span class="ml-2 text-sm text-gray-700 font-medium">
+                            {{ $t('general.delete') }}
+                          </span>
+                        </NcButton>
+                      </NcMenuItem>
+                    </template>
+                  </NcMenu>
+                </template>
+              </NcDropdown>
+            </div>
           </div>
           <GeneralDeleteModal v-model:visible="isOpenModalDelete" entity-name="Folder" :on-delete="() => deleteFolder()">
           </GeneralDeleteModal>
         </div>
+        <!-- Child Folder -->
+        <div v-show="openFolders?.includes(folder.id)">
+          <div class="ml-3" v-if="listFolder.filter(x => x.idParent == folder?.id)?.length"
+            v-for="folderChild of listFolder.filter(x => x.idParent == folder?.id)" :key="folderChild.id">
+            <div class="flex flex-row items-center mt-2">
+              <NcButton v-e="['c:base:expand']" type="text" size="xxsmall" class="ml-4"
+                @click="toggleDropdown(folderChild.id)">
+                <GeneralFolderIcon :isShow="openFolders?.includes(folderChild.id)" />
+                <strong class="text-gray-700 ml-2 font-medium">{{ folderChild.name }}</strong>
+              </NcButton>
+              <div class="ml-auto">
+                <div class="flex flex-row items-center gap-x-0.25 w-8">
+                  <NcDropdown v-if="!isSharedBase" :trigger="['click']">
+                    <NcButton class="nc-sidebar-node-btn" :class="{ '!text-black !opacity-100': true }"
+                      data-testid="nc-sidebar-context-menu" type="text" size="xxsmall" @click.stop>
+                      <GeneralIcon icon="threeDotHorizontal" class="text-xl w-4.75" />
+                    </NcButton>
+                    <template #overlay>
+                      <NcMenu class="nc-scrollbar-md" :style="{
+                        maxHeight: '70vh',
+                        overflow: 'overlay',
+                      }" :data-testid="`nc-sidebar-base-${folderChild.name}-options`"
+                        @click="isOptionsOpen = folderChild?.id">
+                        <template v-if="!isSharedBase">
+                          <NcMenuItem @click="createBaseInFolder(folderChild)">
+                            <NcButton class="mr-1" type="text" size="xxsmall">
+                              <GeneralIcon icon="plus" class="text-sm text-gray-500 focus:outline-none" />
+                              <span class="ml-2 text-sm text-gray-700 font-medium">
+                                {{ $t('general.create') }} {{ $t('labels.database') }}
+                              </span>
+                            </NcButton>
+                          </NcMenuItem>
+                          <NcMenuItem @click="updateFolderName(folderChild)">
+                            <NcButton class="mr-1" type="text" size="xxsmall">
+                              <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
+                              <span class="ml-2 text-sm text-gray-700 font-medium">
+                                {{ $t('general.rename') }}
+                              </span>
+                            </NcButton>
+                          </NcMenuItem>
+                          <NcMenuItem @click="openDeleteFolder(folderChild)">
+                            <NcButton class="mr-1" type="text" size="xxsmall">
+                              <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none mr-2" />
+                              <span class="ml-2 text-sm text-gray-700 font-medium">
+                                {{ $t('general.delete') }}
+                              </span>
+                            </NcButton>
+                          </NcMenuItem>
+                        </template>
+                      </NcMenu>
+                    </template>
+                  </NcDropdown>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="basesList.filter(x => folderChild.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folderChild.id)"
+              class="py-0.5 text-gray-500 ml-13.55">
+              {{ $t('general.empty') }}
+            </div>
+            <div v-show="openFolders?.includes(folderChild.id)" class="ml-3">
+              <template v-if="folderChild.listBaseInFolder?.length">
+                <ProjectWrapper v-for="base of basesList.filter(x => folderChild.listBaseInFolder?.includes(x.id))"
+                  :key="base.id" :base-role="base.project_role" :base="base">
+                  <DashboardTreeViewProjectNode @update:component="loadFolder()" />
+                </ProjectWrapper>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Base In Parent Folder -->
         <div
           v-if="basesList.filter(x => folder.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folder.id)"
           class="py-0.5 text-gray-500 ml-13.55">
@@ -317,7 +450,7 @@ watch(
           <template v-if="folder.listBaseInFolder?.length">
             <ProjectWrapper v-for="base of basesList.filter(x => folder.listBaseInFolder?.includes(x.id))" :key="base.id"
               :base-role="base.project_role" :base="base">
-              <DashboardTreeViewProjectNode />
+              <DashboardTreeViewProjectNode @update:component="loadFolder()" />
             </ProjectWrapper>
           </template>
         </div>
@@ -325,13 +458,17 @@ watch(
       <template v-if="basesList?.length - listGroupBase?.length > 0">
         <ProjectWrapper v-for="base of basesList.filter(x => !listGroupBase.map(obj => obj.idBase)?.includes(x.id))"
           :key="base.id" :base-role="base.project_role" :base="base">
-          <DashboardTreeViewProjectNode />
+          <DashboardTreeViewProjectNode @update:component="loadFolder()" />
         </ProjectWrapper>
       </template>
       <!-- <WorkspaceEmptyPlaceholder v-else-if="!isWorkspaceLoading" /> -->
     </div>
     <WorkspaceCreateProjectDlg v-model="baseCreateDlg" />
-    <WorkspaceEditFolderDlg v-if="isMoveBaseVisible" v-model:visible="isMoveBaseVisible" :folder="folderSelected" />
+    <WorkspaceEditFolderDlg @update:component="loadFolder()" v-if="isEditFolderVisible"
+      v-model:visible="isEditFolderVisible" :folder="folderSelected" />
+    <WorkspaceCreateChildFolderDlg @update:component="loadFolder()" v-if="isAddFolderChildVisible"
+      v-model:visible="isAddFolderChildVisible" :folder="folderSelected" />
+    <WorkspaceCreateBaseInFolderDlg  @update:component="loadFolder()" v-if="isCreateBaseVisible" v-model="isCreateBaseVisible" :folder="folderSelected" />
   </div>
 </template>
 

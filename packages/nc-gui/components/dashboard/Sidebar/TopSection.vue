@@ -14,7 +14,7 @@ const { isSharedBase } = storeToRefs(baseStore)
 
 const isCreateProjectOpen = ref(false)
 const isCreateGroupOpen = ref(false)
-
+const emit = defineEmits(['update:component'])
 const navigateToSettings = () => {
   // TODO: Handle cloud case properly
   navigateToWorkspaceSettings()
@@ -65,7 +65,7 @@ const navigateToSettings = () => {
           <div class="flex">{{ $t('title.createBase') }}</div>
         </div>
       </WorkspaceCreateProjectBtn>
-      <WorkspaceCreateGroupBtn v-model:is-open="isCreateGroupOpen" modal type="text"
+      <WorkspaceCreateGroupBtn v-model:is-open="isCreateGroupOpen" modal type="text" @update:component="emit('update:component')"
         class="nc-sidebar-top-button !hover:bg-gray-200 !xs:hidden" data-testid="nc-sidebar-create-base-btn">
         <div class="gap-x-2 flex flex-row w-full items-center !font-normal">
           <GeneralIcon icon="plus" />

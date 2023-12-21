@@ -9,7 +9,7 @@ const props = defineProps<{
   size?: NcButtonSize
   centered?: boolean
 }>()
-
+const emit = defineEmits(['update:component'])
 const { isUIAllowed } = useRoles()
 
 const { orgRoles, workspaceRoles } = useRoles()
@@ -27,16 +27,10 @@ const centered = computed(() => props.centered ?? true)
 </script>
 
 <template>
-  <NcButton
-    v-if="isUIAllowed('groupAdd', { roles: workspaceRoles ?? orgRoles }) && !isSharedBase"
-    v-e="['c:group:add']"
-    type="text"
-    :size="size"
-    :centered="centered"
-    @click="groupAddDlg = true"
-  >
+  <NcButton v-if="isUIAllowed('groupAdd', { roles: workspaceRoles ?? orgRoles }) && !isSharedBase" v-e="['c:group:add']"
+    type="text" :size="size" :centered="centered" @click="groupAddDlg = true">
     <slot />
-    <WorkspaceCreateGroupDlg v-model="groupAddDlg" />
+    <WorkspaceCreateGroupDlg v-model="groupAddDlg" @update:component="emit('update:component')" />
   </NcButton>
 </template>
 

@@ -9,14 +9,15 @@ const { $api } = useNuxtApp()
 const baseURL = $api.instance.defaults.baseURL
 
 const props = defineProps<{
-    modelValue: boolean
+    visible: boolean
+    folder: any
 }>()
 
-const emit = defineEmits(['update:modelValue', 'update:component'])
+const emit = defineEmits(['update:visible', 'update:component'])
 
 const { t } = useI18n()
 
-const dialogShow = useVModel(props, 'modelValue', emit)
+const dialogShow = useVModel(props, 'visible', emit)
 
 
 const basesStore = useBases()
@@ -40,22 +41,22 @@ const creating = ref(false)
 const createGroup = async () => {
     creating.value = true
     try {
-        const base = await $fetch(`/api/v1/groups`, {
+        const base = await $fetch(`/api/v1/groups/childGroup`, {
             baseURL,
             method: 'POST',
-            body: { name: formState.value.title },
+            body: {
+                name: formState.value.title,
+                idParent: props.folder?.id
+            },
             headers: { 'xc-auth': $state.token.value as string },
         })
-        dialogShow.value = false
     } catch (e: any) {
         message.error(await extractSdkResponseErrorMsg(e))
     } finally {
+        emit('update:component')
         creating.value = false
-        message.success("Create Folder Successful")
-        setTimeout(() => {
-            emit('update:component')
-            // location.reload();
-        }, 500);
+        dialogShow.value = false
+        message.success("Create Child Folder Successful")
     }
 }
 
@@ -92,7 +93,7 @@ const typeLabel = 'Folder'
                     $t('general.createEntity', {
                         entity: typeLabel,
                     })
-                }}
+                }} ({{ folder?.name }})
             </div>
         </template>
         <div class="mt-3">

@@ -8,7 +8,7 @@ const props = defineProps<{
     baseId: string
 }>()
 const folderId = ref('');
-const emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'update:component'])
 
 const { refreshCommandPalette } = useCommandPalette()
 
@@ -65,7 +65,7 @@ const _move = async () => {
                 body: { idGroup: folderId.value, idBase: props.baseId }
             }).then(async res => {
                 message.success("Move Base Successfull")
-
+                emit('update:component')
             })
         }
     } catch (e: any) {
@@ -73,9 +73,6 @@ const _move = async () => {
     } finally {
         isLoading.value = false
         dialogShow.value = false
-        setTimeout(() => {
-            location.reload();
-        }, 500);
     }
 
 }

@@ -25,7 +25,7 @@ export class GroupController {
     constructor(private readonly groupService: GroupService) { }
 
     @Get('/api/v1/group')
-    @Acl('groupList' , { scope: 'org' })
+    @Acl('groupList', { scope: 'org' })
     async groupList(@Req() req: Request) {
         return new PagedResponseImpl(
             await this.groupService.list({
@@ -40,7 +40,7 @@ export class GroupController {
     }
 
     @Patch('/api/v1/groups/:groupId')
-    @Acl('groupUpdate' , { scope: 'org' })
+    @Acl('groupUpdate', { scope: 'org' })
     async groupUpdate(@Body() body, @Param('groupId') groupId: string) {
         return await this.groupService.update({
             id: groupId,
@@ -49,7 +49,7 @@ export class GroupController {
     }
 
     @Delete('/api/v1/groups/:groupId')
-    @Acl('groupDelete' , { scope: 'org' })
+    @Acl('groupDelete', { scope: 'org' })
     async groupDelete(@Param('groupId') groupId: string) {
         await this.groupService.delete({
             id: groupId
@@ -59,9 +59,19 @@ export class GroupController {
 
     @Post('/api/v1/groups')
     @HttpCode(200)
-    @Acl('groupAdd' , { scope: 'org' })
+    @Acl('groupAdd', { scope: 'org' })
     async groupAdd(@Body() body, @Req() req: Request) {
         const result = await this.groupService.create({
+            tokenBody: body,
+        });
+
+        return result;
+    }
+    @Post('/api/v1/groups/childGroup')
+    @HttpCode(200)
+    @Acl('groupAdd', { scope: 'org' })
+    async groupAddChild(@Body() body, @Req() req: Request) {
+        const result = await this.groupService.createChild({
             tokenBody: body,
         });
 

@@ -8,7 +8,8 @@ const props = defineProps<{
     folder: any
 }>()
 const folderId = ref('');
-const emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'update:component'])
+// const emitComponent = defineEmits([])
 const { $e } = useNuxtApp()
 const dialogShow = useVModel(props, 'visible', emit)
 const { $state } = useNuxtApp()
@@ -63,15 +64,14 @@ const _update = async () => {
             headers: { 'xc-auth': $state.token.value as string },
         }).then(res => {
             message.success("Edit Folder Name Successful")
+            emit('update:component')
+
         })
     } catch (e: any) {
         message.error(await extractSdkResponseErrorMsg(e))
     } finally {
         isLoading.value = false
         dialogShow.value = false
-        setTimeout(() => {
-            location.reload();
-        }, 500);
     }
 
 }
