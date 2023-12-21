@@ -454,7 +454,8 @@ const closeAddColumnDropdown = (scrollToLastCol = false) => {
 }
 
 async function openNewRecordHandler() {
-  const newRow = addEmptyRow()
+  // skip update row when it is `New record form`
+  const newRow = addEmptyRow(dataRef.value.length, true)
   if (newRow) expandForm?.(newRow, undefined, true)
 }
 
@@ -703,8 +704,17 @@ function scrollToRow(row?: number) {
   scrollToCell?.()
 }
 
-function addEmptyRow(row?: number) {
+async function saveEmptyRow(rowObj: Row) {
+  await updateOrSaveRow?.(rowObj)
+}
+
+function addEmptyRow(row?: number, skipUpdate: boolean = false) {
   const rowObj = callAddEmptyRow?.(row)
+
+  if (!skipUpdate && rowObj) {
+    saveEmptyRow(rowObj)
+  }
+
   nextTick().then(() => {
     scrollToRow(row ?? dataRef.value.length - 1)
   })
@@ -1033,13 +1043,11 @@ eventBus.on(async (event, payload) => {
     addColumnDropdown.value = true
   }
   if (event === SmartsheetStoreEvents.CLEAR_NEW_ROW) {
-    const removed = removeRowIfNew?.(payload)
+    clearSelectedRange()
+    activeCell.row = null
+    activeCell.col = null
 
-    if (removed) {
-      clearSelectedRange()
-      activeCell.row = null
-      activeCell.col = null
-    }
+    removeRowIfNew?.(payload)
   }
 })
 
@@ -1431,8 +1439,10 @@ onKeyStroke('ArrowDown', onDown)
                     <td key="row-index" class="caption nc-grid-cell pl-5 pr-1" :data-testid="`cell-Id-${rowIndex}`"
                       @contextmenu="contextMenuTarget = null">
                       <div class="items-center flex gap-1 min-w-[60px]">
-                        <div v-if="!readOnly || isMobileMode" class="nc-row-no sm:min-w-4 text-xs text-gray-500"
-                          :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }">
+                        <div
+                          class="nc-row-no sm:min-w-4 text-xs text-gray-500"
+                          :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }"
+                        >
                           {{ ((paginationDataRef?.page ?? 1) - 1) * (paginationDataRef?.pageSize ?? 25) + rowIndex + 1 }}
                         </div>
                         <div v-if="!readOnly" :class="{ hidden: !row.rowMeta.selected, flex: row.rowMeta.selected }"
@@ -1584,7 +1594,7 @@ onKeyStroke('ArrowDown', onDown)
               <GeneralIcon icon="close" /> -->
               <!-- {{ $t('general.clear') }} -->
             <NcMenuItem
-              v-if="contextMenuTarget"
+              v-if="contextMenuTarget && hasEditPermission"
               class="nc-base-menu-item"
               data-testid="context-menu-item-paste"
               :disabled="isSystemColumn(fields[contextMenuTarget.col])"

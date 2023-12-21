@@ -239,7 +239,7 @@ watch(editEnabled, () => {
       <NcTooltip
         v-if="!isVisible"
         placement="bottom"
-        class="!absolute right-0 bottom-1 nc-text-area-expand-btn"
+        class="!absolute right-0 bottom-1 hidden nc-text-area-expand-btn"
         :class="{ 'right-0 bottom-1': editEnabled, '!bottom-0': !isRichMode }"
       >
         <template #title>{{ $t('title.expand') }}</template>
@@ -301,5 +301,11 @@ textarea:focus {
 <style lang="scss">
 .cell:hover .nc-text-area-expand-btn {
   @apply !block;
+}
+.rich-wrapper:hover,
+.rich-wrapper:active {
+  :deep(.nc-text-area-expand-btn) {
+    @apply !block cursor-pointer;
+  }
 }
 </style>
