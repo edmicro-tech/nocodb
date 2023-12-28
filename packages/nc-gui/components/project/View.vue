@@ -5,9 +5,7 @@ import { isEeUI } from '#imports'
 
 const basesStore = useBases()
 
-const { getProjectUsers } = basesStore
-
-const { openedProject, activeProjectId, baseUserCount } = storeToRefs(basesStore)
+const { openedProject, activeProjectId, basesUser } = storeToRefs(basesStore)
 const { activeTables } = storeToRefs(useTablesStore())
 const { orgRoles, baseRoles, isUIAllowed } = useRoles()
 const { activeWorkspace, workspaceUserCount } = storeToRefs(useWorkspace())
@@ -30,24 +28,9 @@ const { isMobileMode } = useGlobal()
 
 const baseSettingsState = ref('')
 
-const userCount = isEeUI ? workspaceUserCount : baseUserCount
-
-const updateBaseUserCount = async () => {
-  if (!baseUserCount || !isUIAllowed('newUser')) return
-
-  try {
-    const { totalRows } = await getProjectUsers({
-      baseId: activeProjectId.value!,
-      page: 1,
-      searchText: undefined,
-      limit: 20,
-    })
-
-    baseUserCount.value = totalRows
-  } catch (e: any) {
-    message.error(await extractSdkResponseErrorMsg(e))
-  }
-}
+const userCount = computed(() =>
+  isEeUI ? workspaceUserCount : activeProjectId.value ? basesUser.value.get(activeProjectId.value)?.length : 0,
+)
 
 watch(
   () => route.value.query?.page,
@@ -79,16 +62,6 @@ watch(projectPageTab, () => {
     })
   }
 })
-
-watch(
-  () => route.value.params.baseId,
-  (newVal, oldVal) => {
-    if (newVal && oldVal === undefined) {
-      updateBaseUserCount()
-    }
-  },
-  { immediate: true },
-)
 
 watch(
   () => openedProject.value?.title,

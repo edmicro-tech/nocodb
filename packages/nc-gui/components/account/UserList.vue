@@ -295,9 +295,12 @@ const openDeleteModal = (user: UserType) => {
               </div>
             </div>
             <span class="w-26 flex items-center justify-end mr-4">
-              <div class="flex items-center gap-2" :class="{
-                'opacity-0': el.roles?.includes('super'),
-              }">
+              <div
+                class="flex items-center gap-2"
+                :class="{
+                  'opacity-0 pointer-events-none': el.roles?.includes('super'),
+                }"
+              >
                 <NcDropdown :trigger="['click']">
                   <NcButton size="xsmall" type="ghost">
                     <MdiDotsVertical

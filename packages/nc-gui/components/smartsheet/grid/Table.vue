@@ -797,7 +797,7 @@ onClickOutside(tableBodyEl, (e) => {
   // ignore unselecting if clicked inside or on the picker(Date, Time, DateTime, Year)
   // or single/multi select options
   const activePickerOrDropdownEl = document.querySelector(
-    '.nc-picker-datetime.active,.nc-dropdown-single-select-cell.active,.nc-dropdown-multi-select-cell.active,.nc-picker-date.active,.nc-picker-year.active,.nc-picker-time.active',
+    '.nc-picker-datetime.active,.nc-dropdown-single-select-cell.active,.nc-dropdown-multi-select-cell.active,.nc-dropdown-user-select-cell.active,.nc-picker-date.active,.nc-picker-year.active,.nc-picker-time.active',
   )
   if (
     e.target &&
@@ -1011,7 +1011,13 @@ const showFillHandle = computed(
     !readOnly.value &&
     !editEnabled.value &&
     (!selectedRange.isEmpty() || (activeCell.row !== null && activeCell.col !== null)) &&
-    !dataRef.value[(isNaN(selectedRange.end.row) ? activeCell.row : selectedRange.end.row) ?? -1]?.rowMeta?.new,
+    !dataRef.value[(isNaN(selectedRange.end.row) ? activeCell.row : selectedRange.end.row) ?? -1]?.rowMeta?.new &&
+    activeCell.col !== null &&
+    !(
+      isLookup(fields.value[activeCell.col]) ||
+      isRollup(fields.value[activeCell.col]) ||
+      isFormula(fields.value[activeCell.col])
+    ),
 )
 
 watch(
@@ -1254,26 +1260,18 @@ onKeyStroke('ArrowDown', onDown)
 <template>
   <div class="flex flex-col" :class="`${headerOnly !== true ? 'h-full w-full' : ''}`">
     <div data-testid="drag-icon-placeholder" class="absolute w-1 h-1 pointer-events-none opacity-0"></div>
-    <div
-      ref="dragColPlaceholderDomRef"
-      :class="{
-        'hidden w-0 !h-0 left-0 !max-h-0 !max-w-0': !draggedCol,
-      }"
-      class="absolute flex items-center z-40 top-0 h-full bg-gray-50 pointer-events-none opacity-60"
-    >
-      <div
-        v-if="draggedCol"
-        :style="{
+    <div ref="dragColPlaceholderDomRef" :class="{
+      'hidden w-0 !h-0 left-0 !max-h-0 !max-w-0': !draggedCol,
+    }" class="absolute flex items-center z-40 top-0 h-full bg-gray-50 pointer-events-none opacity-60">
+      <div v-if="draggedCol" :style="{
         'min-width': gridViewCols[draggedCol.id!]?.width || '200px',
         'max-width': gridViewCols[draggedCol.id!]?.width || '200px',
         'width': gridViewCols[draggedCol.id!]?.width || '200px',
-      }"
-        class="border-r-1 border-l-1 border-gray-200 h-full"
-      ></div>
+      }" class="border-r-1 border-l-1 border-gray-200 h-full"></div>
     </div>
     <div ref="gridWrapper" class="nc-grid-wrapper min-h-0 flex-1 relative" :class="gridWrapperClass">
       <div v-show="isPaginationLoading"
-        class="flex items-center justify-center absolute l-0 t-0 w-full h-full z-10 pb-10">
+        class="flex items-center justify-center absolute l-0 t-0 w-full h-full z-10 pb-10 pointer-events-none">
         <div class="flex flex-col justify-center gap-2">
           <GeneralLoader size="xlarge" />
           <span class="text-center" v-html="loaderText"></span>
@@ -1439,10 +1437,8 @@ onKeyStroke('ArrowDown', onDown)
                     <td key="row-index" class="caption nc-grid-cell pl-5 pr-1" :data-testid="`cell-Id-${rowIndex}`"
                       @contextmenu="contextMenuTarget = null">
                       <div class="items-center flex gap-1 min-w-[60px]">
-                        <div
-                          class="nc-row-no sm:min-w-4 text-xs text-gray-500"
-                          :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }"
-                        >
+                        <div class="nc-row-no sm:min-w-4 text-xs text-gray-500"
+                          :class="{ toggle: !readOnly, hidden: row.rowMeta.selected }">
                           {{ ((paginationDataRef?.page ?? 1) - 1) * (paginationDataRef?.pageSize ?? 25) + rowIndex + 1 }}
                         </div>
                         <div v-if="!readOnly" :class="{ hidden: !row.rowMeta.selected, flex: row.rowMeta.selected }"
@@ -1499,7 +1495,7 @@ onKeyStroke('ArrowDown', onDown)
                       @mouseover="handleMouseOver($event, rowIndex, colIndex)"
                       @click="handleCellClick($event, rowIndex, colIndex)" @dblclick="makeEditable(row, columnObj)"
                       @contextmenu="showContextMenu($event, { row: rowIndex, col: colIndex })">
-                      <div v-if="!switchingTab" class="w-full h-full">
+                      <div v-if="!switchingTab" class="w-full">
                         <LazySmartsheetVirtualCell v-if="isVirtualCol(columnObj) && columnObj.title"
                           v-model="row.row[columnObj.title]" :column="columnObj"
                           :active="activeCell.col === colIndex && activeCell.row === rowIndex" :row="row"
@@ -1508,8 +1504,7 @@ onKeyStroke('ArrowDown', onDown)
 
                         <LazySmartsheetCell v-else-if="columnObj.title" v-model="row.row[columnObj.title]"
                           :column="columnObj" :edit-enabled="!!hasEditPermission && !!editEnabled && activeCell.col === colIndex && activeCell.row === rowIndex
-                            " :row-index="rowIndex"
-                          :active="activeCell.col === colIndex && activeCell.row === rowIndex"
+                            " :row-index="rowIndex" :active="activeCell.col === colIndex && activeCell.row === rowIndex"
                           :read-only="!hasEditPermission" @update:edit-enabled="editEnabled = $event"
                           @save="updateOrSaveRow?.(row, columnObj.title, state)" @navigate="onNavigate"
                           @cancel="editEnabled = false" />
@@ -1592,14 +1587,10 @@ onKeyStroke('ArrowDown', onDown)
               (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
               " v-e="['a:row:clear']" class="nc-base-menu-item" @click="clearCell(contextMenuTarget)">
               <GeneralIcon icon="close" /> -->
-              <!-- {{ $t('general.clear') }} -->
-            <NcMenuItem
-              v-if="contextMenuTarget && hasEditPermission"
-              class="nc-base-menu-item"
-              data-testid="context-menu-item-paste"
-              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
-              @click="paste"
-            >
+            <!-- {{ $t('general.clear') }} -->
+            <NcMenuItem v-if="contextMenuTarget && hasEditPermission" class="nc-base-menu-item"
+              data-testid="context-menu-item-paste" :disabled="isSystemColumn(fields[contextMenuTarget.col])"
+              @click="paste">
               <div v-e="['a:row:paste']" class="flex gap-2 items-center">
                 <GeneralIcon icon="paste" />
                 <!-- Paste -->
@@ -1608,17 +1599,12 @@ onKeyStroke('ArrowDown', onDown)
             </NcMenuItem>
 
             <!-- Clear cell -->
-            <NcMenuItem
-              v-if="
-                contextMenuTarget &&
-                hasEditPermission &&
-                selectedRange.isSingleCell() &&
-                (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
-              "
-              class="nc-base-menu-item"
-              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
-              @click="clearCell(contextMenuTarget)"
-            >
+            <NcMenuItem v-if="contextMenuTarget &&
+              hasEditPermission &&
+              selectedRange.isSingleCell() &&
+              (isLinksOrLTAR(fields[contextMenuTarget.col]) || !isVirtualCol(fields[contextMenuTarget.col]))
+              " class="nc-base-menu-item" :disabled="isSystemColumn(fields[contextMenuTarget.col])"
+              data-testid="context-menu-item-clear" @click="clearCell(contextMenuTarget)">
               <div v-e="['a:row:clear']" class="flex gap-2 items-center">
                 <GeneralIcon icon="close" />
                 {{ $t('general.clear') }}
@@ -1626,12 +1612,9 @@ onKeyStroke('ArrowDown', onDown)
             </NcMenuItem>
 
             <!-- Clear cell -->
-            <NcMenuItem
-              v-else-if="contextMenuTarget && hasEditPermission"
-              class="nc-base-menu-item"
-              :disabled="isSystemColumn(fields[contextMenuTarget.col])"
-              @click="clearSelectedRangeOfCells()"
-            >
+            <NcMenuItem v-else-if="contextMenuTarget && hasEditPermission" class="nc-base-menu-item"
+              :disabled="isSystemColumn(fields[contextMenuTarget.col])" data-testid="context-menu-item-clear"
+              @click="clearSelectedRangeOfCells()">
               <div v-e="['a:row:clear-range']" class="flex gap-2 items-center">
                 <GeneralIcon icon="closeBox" class="text-gray-500" />
                 {{ $t('general.clear') }}
@@ -1646,12 +1629,13 @@ onKeyStroke('ArrowDown', onDown)
               {{ $t('general.clear') }}
             </NcMenuItem>
             <template
-              v-if="contextMenuTarget && !isLocked && selectedRange.isSingleCell() && isUIAllowed('commentEdit') && !isMobileMode">
+              v-if="contextMenuTarget && selectedRange.isSingleCell() && isUIAllowed('commentEdit') && !isMobileMode">
               <NcDivider />
-              <NcMenuItem v-e="['a:row:comment']" class="nc-base-menu-item" @click="commentRow(contextMenuTarget.row)">
-                <MdiMessageOutline class="h-4 w-4" />
-
-                {{ $t('general.comment') }}
+              <NcMenuItem class="nc-base-menu-item" @click="commentRow(contextMenuTarget.row)">
+                <div v-e="['a:row:comment']" class="flex gap-2 items-center">
+                  <MdiMessageOutline class="h-4 w-4" />
+                  {{ $t('general.comment') }}
+                </div>
               </NcMenuItem>
             </template>
             <!-- comment when neeed -->
@@ -1706,17 +1690,13 @@ onKeyStroke('ArrowDown', onDown)
               <div class="relative overflow-visible min-h-17 w-10">
                 <div
                   class="absolute -top-19 flex flex-col min-h-34.5 w-70 p-1.5 bg-white rounded-lg border-1 border-gray-200 justify-start overflow-hidden"
-                  style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)"
-                  :class="{
+                  style="box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.06), 0px -12px 16px -4px rgba(0, 0, 0, 0.1)" :class="{
                     '-left-44': !isAddNewRecordGridMode,
                     '-left-32': isAddNewRecordGridMode,
-                  }"
-                >
-                  <div
-                    v-e="['c:row:add:grid']"
+                  }">
+                  <div v-e="['c:row:add:grid']"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-600 nc-new-record-with-grid group"
-                    @click="onNewRecordToGridClick"
-                  >
+                    @click="onNewRecordToGridClick">
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-3">
                         <component :is="viewIcons[ViewTypes.GRID]?.icon" class="nc-view-icon text-inherit" />
@@ -1727,11 +1707,9 @@ onKeyStroke('ArrowDown', onDown)
                     </div>
                     <div class="flex flex-row text-xs text-gray-400 ml-7.25">{{ $t('labels.addRowGrid') }}</div>
                   </div>
-                  <div
-                    v-e="['c:row:add:form']"
+                  <div v-e="['c:row:add:form']"
                     class="px-4 py-3 flex flex-col select-none gap-y-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-600 nc-new-record-with-form group"
-                    @click="onNewRecordToFormClick"
-                  >
+                    @click="onNewRecordToFormClick">
                     <div class="flex flex-row items-center justify-between w-full">
                       <div class="flex flex-row items-center justify-start gap-x-2.5">
                         <GeneralIcon class="h-4.5 w-4.5" icon="article" />
