@@ -2,7 +2,16 @@
 import { OrgUserRoles } from 'nocodb-sdk'
 import type { OrgUserReqType, RequestParams, UserType } from 'nocodb-sdk'
 import type { User } from '#imports'
-import { extractSdkResponseErrorMsg, iconMap, useApi, useCopy, useDashboard, useDebounceFn, useNuxtApp } from '#imports'
+import {
+  extractSdkResponseErrorMsg,
+  iconMap,
+  useApi,
+  useCopy,
+  useDashboard,
+  useDebounceFn,
+  useNuxtApp,
+  useUserSorts,
+} from '#imports'
 
 const { api, isLoading } = useApi()
 export interface UserTypeOrganization extends UserType {
@@ -28,7 +37,13 @@ const { user: loggedInUser } = useGlobal()
 
 const { copy } = useCopy()
 
+const { sorts, sortDirection, loadSorts, saveOrUpdate, handleGetSortedData } = useUserSorts('Org')
+
 const users = ref<UserTypeOrganization[]>([])
+
+const sortedUsers = computed(() => {
+  return handleGetSortedData(users.value, sorts.value) as UserTypeOrganization[]
+})
 
 const currentPage = ref(1)
 
@@ -85,6 +100,7 @@ const loadOrganizations = async () => {
 onMounted(async () => {
   await loadOrganizations();
   loadUsers()
+  loadSorts()
 })
 
 const updateRole = async (userId: string, roles: string) => {
@@ -93,6 +109,12 @@ const updateRole = async (userId: string, roles: string) => {
       roles,
     } as OrgUserReqType)
     message.success(t('msg.success.roleUpdated'))
+
+    users.value.forEach((user) => {
+      if (user.id === userId) {
+        user.roles = roles
+      }
+    })
 
     $e('a:org-user:role-updated', { role: roles })
   } catch (e: any) {
@@ -218,11 +240,20 @@ const openDeleteModal = (user: UserType) => {
       </div>
       <div class="w-full rounded-md max-w-250 h-[calc(100%-12rem)] rounded-md overflow-hidden mt-5">
         <div class="flex w-full bg-gray-50 border-1 rounded-t-md">
-          <div class="py-3.5 text-gray-500 font-medium text-3.5 w-2/3 lg:w-1/3 text-start pl-6" data-rec="true">
-            {{ $t('labels.email') }}
+          <div
+            class="py-3.5 text-gray-500 font-medium text-3.5 w-2/3 lg:w-1/3 text-start pl-6 flex items-center space-x-2"
+            data-rec="true"
+          >
+            <span>
+              {{ $t('labels.email') }}
+            </span>
+            <LazyAccountUserMenu :direction="sortDirection.email" field="email" :handle-user-sort="saveOrUpdate" />
           </div>
-          <div class="py-3.5 text-gray-500 font-medium text-3.5 w-1/3 lg:w-2/5 text-start" data-rec="true">{{
-            $t('objects.role') }}
+          <div class="py-3.5 text-gray-500 font-medium text-3.5 w-1/3 lg:w-2/5 text-start flex items-center space-x-2" data-rec="true">
+            <span>
+              {{ $t('objects.role') }}
+            </span>
+            <LazyAccountUserMenu :direction="sortDirection.roles" field="roles" :handle-user-sort="saveOrUpdate" />
           </div>
           <div class="py-3.5 text-gray-500 font-medium text-3.5 lg:w-1/3 w-0 lg:visible invisible text-start"
             data-rec="true">Organization
@@ -239,8 +270,12 @@ const openDeleteModal = (user: UserType) => {
           <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" :description="$t('labels.noData')" />
         </div>
         <section v-else class="tbody h-[calc(100%-4rem)] nc-scrollbar-md border-t-0 !overflow-auto">
-          <div v-for="el of users" :key="el.id" data-testid="nc-token-list"
-            class="user flex py-3 justify-around px-1 border-b-1 border-l-1 border-r-1" :class="{
+          <div
+            v-for="el of sortedUsers"
+            :key="el.id"
+            data-testid="nc-token-list"
+            class="user flex py-3 justify-around px-1 border-b-1 border-l-1 border-r-1"
+            :class="{
               'py-4': el.roles?.includes('super'),
             }">
             <div class="text-3.5 text-start w-2/3 lg:w-1/3 pl-5 flex items-center">
