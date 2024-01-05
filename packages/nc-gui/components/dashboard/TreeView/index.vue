@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TableType } from 'nocodb-sdk'
+import { OrgUserRoles, type TableType } from 'nocodb-sdk'
 
 import ProjectWrapper from './ProjectWrapper.vue'
 
@@ -82,7 +82,7 @@ const loadFolder = async () => {
     }).then(res => {
       listFolder.value = res?.list;
       listFolder.value = listFolder.value.map(obj => ({ ...obj, listBaseInFolder: listGroupBase.value.filter(x => x.idGroup === obj.id).map(x => x.idBase) }));
-      console.log(listFolder.value);
+      console.log(basesList);
     })
   })
 }
@@ -328,7 +328,7 @@ watch(
                     overflow: 'overlay',
                   }" :data-testid="`nc-sidebar-base-${folder.name}-options`" @click="isOptionsOpen = folder?.id">
                     <template v-if="!isSharedBase">
-                      <NcMenuItem @click="addChildFolder(folder)">
+                      <NcMenuItem  v-if="isUIAllowed('super-admin')" @click="addChildFolder(folder)">
                         <NcButton class="mr-1" type="text" size="xxsmall">
                           <GeneralIcon icon="plusCircle" class="text-sm text-gray-500 focus:outline-none" />
                           <span class="ml-2 text-sm text-gray-700 font-medium">
@@ -344,7 +344,7 @@ watch(
                           </span>
                         </NcButton>
                       </NcMenuItem>
-                      <NcMenuItem @click="updateFolderName(folder)">
+                      <NcMenuItem  v-if="isUIAllowed('super-admin')" @click="updateFolderName(folder)">
                         <NcButton class="mr-1" type="text" size="xxsmall">
                           <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
                           <span class="ml-2 text-sm text-gray-700 font-medium">
@@ -352,7 +352,7 @@ watch(
                           </span>
                         </NcButton>
                       </NcMenuItem>
-                      <NcMenuItem @click="openDeleteFolder(folder)">
+                      <NcMenuItem  v-if="isUIAllowed('super-admin')" @click="openDeleteFolder(folder)">
                         <NcButton class="mr-1" type="text" size="xxsmall">
                           <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none mr-2" />
                           <span class="ml-2 text-sm text-gray-700 font-medium">
@@ -401,7 +401,7 @@ watch(
                               </span>
                             </NcButton>
                           </NcMenuItem>
-                          <NcMenuItem @click="updateFolderName(folderChild)">
+                          <NcMenuItem v-if="isUIAllowed('super-admin')" @click="updateFolderName(folderChild)">
                             <NcButton class="mr-1" type="text" size="xxsmall">
                               <GeneralIcon icon="edit" class="text-sm text-gray-500 focus:outline-none" />
                               <span class="ml-2 text-sm text-gray-700 font-medium">
@@ -409,7 +409,7 @@ watch(
                               </span>
                             </NcButton>
                           </NcMenuItem>
-                          <NcMenuItem @click="openDeleteFolder(folderChild)">
+                          <NcMenuItem  v-if="isUIAllowed('super-admin')" @click="openDeleteFolder(folderChild)">
                             <NcButton class="mr-1" type="text" size="xxsmall">
                               <GeneralIcon icon="delete" class="text-sm text-red-500 focus:outline-none mr-2" />
                               <span class="ml-2 text-sm text-gray-700 font-medium">
@@ -440,7 +440,7 @@ watch(
           </div>
         </div>
 
-        <!-- Base In Parent Folder -->
+        <!-- Base In Children Folder -->
         <div
           v-if="basesList.filter(x => folder.listBaseInFolder?.includes(x.id))?.length === 0 && openFolders?.includes(folder.id)"
           class="py-0.5 text-gray-500 ml-13.55">
@@ -455,8 +455,8 @@ watch(
           </template>
         </div>
       </div>
-      <template v-if="basesList?.length - listGroupBase?.length > 0">
-        <ProjectWrapper v-for="base of basesList.filter(x => !listGroupBase.map(obj => obj.idBase)?.includes(x.id))"
+      <template v-if="true">
+        <ProjectWrapper v-for="base of basesList.filter(x => !(listGroupBase.map(obj => obj.idBase)?.includes(x.id)))"
           :key="base.id" :base-role="base.project_role" :base="base">
           <DashboardTreeViewProjectNode @update:component="loadFolder()" />
         </ProjectWrapper>

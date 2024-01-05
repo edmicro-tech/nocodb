@@ -54,6 +54,8 @@ const _move = async () => {
                 method: 'DELETE',
                 headers: { 'xc-auth': $state.token.value as string },
             }).then(res => {
+                if (folderId.value == null) message.success("Move Base Successful")
+                emit('update:component')
                 // message.success("Delete Folder Successful");
             })
         }
@@ -64,7 +66,7 @@ const _move = async () => {
                 headers: { 'xc-auth': $state.token.value as string },
                 body: { idGroup: folderId.value, idBase: props.baseId }
             }).then(async res => {
-                message.success("Move Base Successfull")
+                message.success("Move Base Successful")
                 emit('update:component')
             })
         }
