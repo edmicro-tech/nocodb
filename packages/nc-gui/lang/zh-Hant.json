@@ -157,6 +157,8 @@
     "groupingField": "分組欄位",
     "insertAfter": "插入在後",
     "insertBefore": "插入在前",
+    "insertAbove": "Insert above",
+    "insertBelow": "Insert below",
     "hideField": "隱藏欄位",
     "sortAsc": "升序排序",
     "sortDesc": "降序排序",
@@ -189,7 +191,8 @@
     "shift": "Shift",
     "enter": "Enter",
     "seconds": "Seconds",
-    "paste": "Paste"
+    "paste": "Paste",
+    "restore": "Restore"
   },
   "objects": {
     "workspace": "Workspace",
@@ -273,7 +276,7 @@
     "Count": "計數",
     "Lookup": "查閱",
     "DateTime": "日期時間",
-    "CreateTime": "創建時間",
+    "CreatedTime": "創建時間",
     "LastModifiedTime": "最後修改時間",
     "AutoNumber": "自動編號",
     "Barcode": "條碼",
@@ -642,7 +645,16 @@
     "changeWsName": "Change Workspace Name",
     "pressEnter": "Press Enter",
     "newFormLoaded": "New form will be loaded after",
-    "webhook": "Webhook"
+    "webhook": "Webhook",
+    "multiField": {
+      "newField": "New field",
+      "saveChanges": "Save changes",
+      "updatedField": "Updated field",
+      "deletedField": "Deleted field",
+      "incompleteConfiguration": "Incomplete configuration",
+      "selectField": "Select a field",
+      "selectFieldLabel": "Make changes to field properties by selecting a field from the list"
+    }
   },
   "activity": {
     "openInANewTab": "Open in a new tab",
@@ -1048,7 +1060,12 @@
         "barcodeFieldsCannotBeDirectlyChanged": "Warning: Barcode fields cannot be directly changed."
       },
       "duplicateProject": "Are you sure you want to duplicate the base?",
-      "duplicateTable": "Are you sure you want to duplicate the table?"
+      "duplicateTable": "Are you sure you want to duplicate the table?",
+      "multiField": {
+        "fieldVisibility": "You cannot change visibility of a field that is being edited. Please save or discard changes first.",
+        "moveEditedField": "You cannot move field that is being edited. Either save or discard changes first",
+        "moveDeletedField": "You cannot move field that is deleted. Either save or discard changes first"
+      }
     },
     "info": {
       "disabledAsViewLocked": "Disabled as View is locked",
@@ -1211,7 +1228,8 @@
       "goToNext": "Go to next",
       "thankYou": "Thank you!",
       "submittedFormData": "You have successfully submitted the form data.",
-      "editingSystemKeyNotSupported": "Editing system key not supported"
+      "editingSystemKeyNotSupported": "Editing system key not supported",
+      "notAvailableAtTheMoment": "Not available at the moment"
     },
     "error": {
       "nameRequired": "Name Required",
@@ -1274,6 +1292,7 @@
       "followingCharactersAreNotAllowed": "以下字元不允許",
       "columnNameRequired": "欄位名稱必填",
       "duplicateColumnName": "Duplicate field name",
+      "duplicateSystemColumnName": "Name already used for system field",
       "uiDataTypeRequired": "UI data type is required",
       "columnNameExceedsCharacters": "The length of column name exceeds the max {value} characters",
       "projectNameExceeds50Characters": "專案名稱超過 50 個字元",
@@ -1288,7 +1307,9 @@
       "fieldRequired": "{value} 不能為空",
       "projectNotAccessible": "Project not accessible",
       "copyToClipboardError": "複製到剪貼簿失敗",
-      "pasteFromClipboardError": "Failed to paste from clipboard"
+      "pasteFromClipboardError": "Failed to paste from clipboard",
+      "multiFieldSaveValidation": "Please complete the configuration of all fields before saving",
+      "somethingWentWrong": "Something went wrong"
     },
     "toast": {
       "exportMetadata": "專案中繼資料已成功匯出",
