@@ -26,6 +26,7 @@ import TeamsPluginConfig from '~/plugins/teams';
 import TwilioPluginConfig from '~/plugins/twilio';
 import TwilioWhatsappPluginConfig from '~/plugins/twilioWhatsapp';
 import UpcloudPluginConfig from '~/plugins/upcloud';
+import S3CMCPluginConfig from '~/plugins/s3cmc';
 import VultrPluginConfig from '~/plugins/vultr';
 import SESPluginConfig from '~/plugins/ses';
 import Noco from '~/Noco';
@@ -49,6 +50,7 @@ const defaultPlugins = [
   OvhCloudPluginConfig,
   LinodePluginConfig,
   UpcloudPluginConfig,
+  S3CMCPluginConfig,
   SMTPPluginConfig,
   MailerSendConfig,
   ScalewayPluginConfig,
