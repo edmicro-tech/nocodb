@@ -93,12 +93,12 @@ export default defineNuxtConfig({
         {
           hid: 'twitter:image',
           name: 'twitter:image',
-          content: './link-preview.webp',
+          content: './mic_vietnam_logo.webp',
         },
         {
           hid: 'og:image',
           property: 'og:image',
-          content: './link-preview.webp',
+          content: './mic_vietnam_logo.webp',
         },
       ],
     },
