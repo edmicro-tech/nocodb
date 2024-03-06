@@ -10,6 +10,7 @@ import NocoCache from '~/cache/NocoCache';
 import { extractProps } from '~/helpers/extractProps';
 import { deserializeJSON, serializeJSON } from '~/utils/serialize';
 import { CacheGetType, CacheScope, MetaTable } from '~/utils/globals';
+import { prepareForDb, prepareForResponse } from '~/utils/modelUtils';
 
 export default class FormViewColumn implements FormColumnType {
   id?: string;
@@ -49,11 +50,12 @@ export default class FormViewColumn implements FormColumnType {
         viewColumn.meta && typeof viewColumn.meta === 'string'
           ? JSON.parse(viewColumn.meta)
           : viewColumn.meta;
+
+      await NocoCache.set(
+        `${CacheScope.FORM_VIEW_COLUMN}:${formViewColumnId}`,
+        viewColumn,
+      );
     }
-    await NocoCache.set(
-      `${CacheScope.FORM_VIEW_COLUMN}:${formViewColumnId}`,
-      viewColumn,
-    );
 
     return viewColumn && new FormViewColumn(viewColumn);
   }
@@ -99,18 +101,14 @@ export default class FormViewColumn implements FormColumnType {
 
     await NocoCache.set(`${CacheScope.FORM_VIEW_COLUMN}:${fk_column_id}`, id);
 
-    // if cache is not present skip pushing it into the list to avoid unexpected behaviour
-    const { list } = await NocoCache.getList(CacheScope.FORM_VIEW_COLUMN, [
-      column.fk_view_id,
-    ]);
-
-    if (list?.length)
+    return this.get(id, ncMeta).then(async (viewColumn) => {
       await NocoCache.appendToList(
         CacheScope.FORM_VIEW_COLUMN,
         [column.fk_view_id],
         `${CacheScope.FORM_VIEW_COLUMN}:${id}`,
       );
-    return this.get(id, ncMeta);
+      return viewColumn;
+    });
   }
 
   public static async list(
@@ -171,26 +169,20 @@ export default class FormViewColumn implements FormColumnType {
       'enable_scanner',
     ]);
 
-    // get existing cache
-    const key = `${CacheScope.FORM_VIEW_COLUMN}:${columnId}`;
-    const o = await NocoCache.get(key, CacheGetType.TYPE_OBJECT);
-    if (o) {
-      Object.assign(o, updateObj);
-      // set cache
-      await NocoCache.set(key, o);
-    }
-
-    if (updateObj.meta) {
-      updateObj.meta = serializeJSON(updateObj.meta);
-    }
-
     // update meta
-    return await ncMeta.metaUpdate(
+    const res = await ncMeta.metaUpdate(
       null,
       null,
       MetaTable.FORM_VIEW_COLUMNS,
-      updateObj,
+      prepareForDb(updateObj),
       columnId,
     );
+
+    await NocoCache.update(
+      `${CacheScope.FORM_VIEW_COLUMN}:${columnId}`,
+      prepareForResponse(updateObj),
+    );
+
+    return res;
   }
 }

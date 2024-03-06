@@ -1,7 +1,6 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import multer from 'multer';
-import { GlobalModule } from '~/modules/global/global.module';
 import { NC_ATTACHMENT_FIELD_SIZE } from '~/constants';
 import { ApiDocsController } from '~/controllers/api-docs/api-docs.controller';
 import { ApiTokensController } from '~/controllers/api-tokens.controller';
@@ -10,6 +9,7 @@ import { AttachmentsSecureController } from '~/controllers/attachments-secure.co
 import { AuditsController } from '~/controllers/audits.controller';
 import { SourcesController } from '~/controllers/sources.controller';
 import { CachesController } from '~/controllers/caches.controller';
+import { CalendarsController } from '~/controllers/calendars.controller';
 import { ColumnsController } from '~/controllers/columns.controller';
 import { FiltersController } from '~/controllers/filters.controller';
 import { FormColumnsController } from '~/controllers/form-columns.controller';
@@ -41,6 +41,7 @@ import { AuditsService } from '~/services/audits.service';
 import { SourcesService } from '~/services/sources.service';
 import { BulkDataAliasService } from '~/services/bulk-data-alias.service';
 import { CachesService } from '~/services/caches.service';
+import { CalendarsService } from '~/services/calendars.service';
 import { ColumnsService } from '~/services/columns.service';
 import { FiltersService } from '~/services/filters.service';
 import { FormColumnsService } from '~/services/form-columns.service';
@@ -81,6 +82,8 @@ import { GroupBaseController } from 'src/controllers/api-group-base.controller';
 import { GroupBaseService } from 'src/services/group-base/group-base.service';
 import { UserOrganizationService } from 'src/services/user-organization/user-organization.service';
 import { UserOrganizationController } from 'src/controllers/api-user-organization.controller';
+import { CommandPaletteService } from '~/services/command-palette.service';
+import { CommandPaletteController } from '~/controllers/command-palette.controller';
 
 export const metaModuleMetadata = {
   imports: [
@@ -90,7 +93,6 @@ export const metaModuleMetadata = {
         fieldSize: NC_ATTACHMENT_FIELD_SIZE,
       },
     }),
-    forwardRef(() => GlobalModule),
   ],
   controllers: [
     ...(process.env.NC_WORKER_CONTAINER !== 'true'
@@ -134,6 +136,8 @@ export const metaModuleMetadata = {
         SortsController,
         SharedBasesController,
         NotificationsController,
+        CommandPaletteController,
+        CalendarsController
       ]
       : []),
   ],
@@ -145,6 +149,7 @@ export const metaModuleMetadata = {
     AuditsService,
     SourcesService,
     CachesService,
+    CalendarsService,
     ColumnsService,
     FiltersService,
     FormColumnsService,
@@ -179,6 +184,7 @@ export const metaModuleMetadata = {
     NotificationsService,
     UserOrganizationService,
     NotificationsGateway,
+    CommandPaletteService,
   ],
   exports: [
     TablesService,
@@ -188,6 +194,7 @@ export const metaModuleMetadata = {
     ViewsService,
     ViewColumnsService,
     GridsService,
+    CalendarsService,
     GridColumnsService,
     FormsService,
     FormColumnsService,

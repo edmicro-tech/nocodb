@@ -53,7 +53,8 @@ onUnmounted(() => {
     }">
       <DashboardTreeView :key="componentKey" v-if="!isWorkspaceLoading" />
     </div>
-    <div v-if="!isSharedBase">
+    <div v-if="!isSharedBase" class="border-t-1">
+      <DashboardSidebarBeforeUserInfo />
       <DashboardSidebarUserInfo />
     </div>
   </div>

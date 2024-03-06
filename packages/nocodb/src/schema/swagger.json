@@ -2785,7 +2785,8 @@
                   "value": {
                     "color": "#24716E",
                     "meta": null,
-                    "title": "My Base"
+                    "title": "My Base",
+                    "order": 1
                   }
                 }
               }
@@ -7425,7 +7426,12 @@
               "examples": {
                 "Example 1": {
                   "value": {
-                    "banner_image_url": null,
+                    "banner_image_url": {
+                      "mimetype": "image/jpg",
+                      "size": 32903,
+                      "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+                      "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+                    },
                     "email": "user@example.com",
                     "heading": "My Form",
                     "lock_type": "collaborative",
@@ -7466,7 +7472,13 @@
                   "Example 1": {
                     "value": {
                       "source_id": "ds_g4ccx6e77h1dmi",
-                      "banner_image_url": null,
+                      "banner_image_url": {
+                        "mimetype": "image/jpg",
+                        "size": 32903,
+                        "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+                        "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg",
+                        "signedPath": "dltemp/lNoLbqB62Jdo5Rmp/1709308800000/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+                      },
                       "columns": [
                         {
                           "id": "fvc_ugj9zo5bzocxtl",
@@ -8350,6 +8362,196 @@
         ]
       }
     },
+    "/api/v1/db/meta/tables/{tableId}/calendars": {
+      "parameters": [
+        {
+          "schema": {
+            "$ref": "#/components/schemas/Id",
+            "example": "md_w9gpnaousnfss1",
+            "type": "string"
+          },
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "description": "Unique Table ID"
+        }
+      ],
+      "post": {
+        "summary": "Create Calendar View",
+        "operationId": "db-view-calendar-create",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/View"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "id": "vw_569sqsrp2vuff4",
+                      "source_id": "ds_a95vextjl510z7",
+                      "base_id": "p_slkm6i3v31q4bc",
+                      "fk_model_id": "md_8hr3xndx8umuce",
+                      "title": "Calendar-1",
+                      "type": 6,
+                      "is_default": null,
+                      "show_system_fields": null,
+                      "lock_type": "collaborative",
+                      "uuid": null,
+                      "password": null,
+                      "show": true,
+                      "order": 5,
+                      "created_at": "2023-03-13T07:29:21.387Z",
+                      "updated_at": "2023-03-13T07:29:21.387Z",
+                      "meta": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB View"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewCreateReq"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "title": "My Calendar View",
+                    "type": 4,
+                    "copy_from_id": null,
+                    "fk_grp_col_id": null,
+                    "fk_geo_data_col_id": null,
+                    "calendar_range": [
+                      {
+                        "fk_from_column_id": "cl_g0a89q9xdry3lu",
+                        "fk_to_column_id": "cl_g0a89q9xdry3lu"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Create a new Calendar View",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      }
+    },
+    "/api/v1/db/meta/calendars/{calendarViewId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "vw_1eq2wk2xe3a9j5"
+          },
+          "name": "calendarViewId",
+          "in": "path",
+          "required": true,
+          "description": "Unique Calendar View ID"
+        }
+      ],
+      "patch": {
+        "summary": "Update Calendar View",
+        "operationId": "db-view-calendar-update",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB View"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateReq"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "fk_cover_image_col_id": "cl_ib8l4j1kiu1efx",
+                    "title": "Calendar - 2",
+                    "calendar_range": [
+                      {
+                        "id": "cl_gpoc4d1dfef",
+                        "fk_from_column_id": "cl_g0a89q9xdry3lu",
+                        "fk_to_column_id": "cl_g0a89q9xdry3lu"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Update the Calendar View data with Calendar ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get Calendar View",
+        "operationId": "db-view-calendar-read",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB View"
+        ],
+        "description": "Get the Calendar View data by Calendar ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      }
+    },
     "/api/v1/db/meta/projects/{baseId}/meta-diff": {
       "parameters": [
         {
@@ -8848,6 +9050,14 @@
             "in": "query",
             "name": "filterArrJson",
             "description": "Used for multiple filter queries"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pks",
+            "description": "Comma separated list of pks"
           },
           {
             "$ref": "#/components/parameters/xc-auth"
@@ -9523,6 +9733,591 @@
             "$ref": "#/components/responses/BadRequest"
           }
         }
+      }
+    },
+    "/api/v1/db/calendar-data/{orgs}/{baseName}/{tableName}/views/{viewName}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "orgs",
+          "in": "path",
+          "required": true,
+          "description": "Organisation Name. Currently `noco` will be used."
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseName",
+          "in": "path",
+          "required": true,
+          "description": "Base Name"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tableName",
+          "in": "path",
+          "required": true,
+          "description": "Table Name"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "viewName",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List rows in Calendar View of a Table",
+        "operationId": "db-calendar-view-row-list",
+        "description": "List all rows in Calendar View of a Table",
+        "tags": [
+          "DB Calendar View Row"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "from_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "to_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "where"
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "nested",
+            "description": "Query params for nested data"
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset"
+          },
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "description": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "x-stoplight": {
+                      "id": "okd8utzm9xqet"
+                    },
+                    "description": "List of calendar view rows",
+                    "items": {
+                      "x-stoplight": {
+                        "id": "j758lsjv53o4q"
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "pageInfo": {
+                    "$ref": "#/components/schemas/Paginated",
+                    "x-stoplight": {
+                      "id": "hylgqzgm8yhye"
+                    },
+                    "description": "Paginated Info"
+                  }
+                },
+                "required": [
+                  "list",
+                  "pageInfo"
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "list": [
+                      {
+                        "Id": 1,
+                        "Title": "baz",
+                        "SingleSelect": null,
+                        "Sheet-1 List": [
+                          {
+                            "Id": 1,
+                            "Title": "baz"
+                          }
+                        ],
+                        "LTAR": [
+                          {
+                            "Id": 1,
+                            "Title": "baz"
+                          }
+                        ]
+                      },
+                      {
+                        "Id": 2,
+                        "Title": "foo",
+                        "SingleSelect": "a",
+                        "Sheet-1 List": [
+                          {
+                            "Id": 2,
+                            "Title": "foo"
+                          }
+                        ],
+                        "LTAR": [
+                          {
+                            "Id": 2,
+                            "Title": "foo"
+                          }
+                        ]
+                      },
+                      {
+                        "Id": 3,
+                        "Title": "bar",
+                        "SingleSelect": "b",
+                        "Sheet-1 List": [],
+                        "LTAR": []
+                      }
+                    ],
+                    "pageInfo": {
+                      "totalRows": 3,
+                      "page": 1,
+                      "pageSize": 25,
+                      "isFirstPage": true,
+                      "isLastPage": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "$ref": "#/components/responses/BadRequest"
+        }
+      }
+    },
+    "/api/v1/db/calendar-data/{orgs}/{baseName}/{tableName}/views/{viewName}/countByDate/" : {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "orgs",
+          "in": "path",
+          "required": true,
+          "description": "Organisation Name. Currently `noco` will be used."
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "baseName",
+          "in": "path",
+          "required": true,
+          "description": "Base Name"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tableName",
+          "in": "path",
+          "required": true,
+          "description": "Table Name"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "viewName",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Count of Records in Dates in Calendar View",
+        "operationId": "db-calendar-view-row-count",
+        "description": "Get the count of table view rows grouped by the dates",
+        "tags": [
+          "DB Calendar View Row Count"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "from_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "to_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "where"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "offset"
+          },
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/v1/db/public/calendar-view/{sharedViewUuid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "24a6d0bb-e45d-4b1a-bfef-f492d870de9f"
+          },
+          "name": "sharedViewUuid",
+          "in": "path",
+          "required": true,
+          "description": "Shared View UUID"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "in": "header",
+          "name": "xc-password",
+          "description": "Shared view password"
+        }
+      ],
+      "get": {
+        "summary": "List rows in Calendar View of a Table",
+        "operationId": "public-data-calendar-row-list",
+        "description": "List all rows in Calendar View of a Table",
+        "tags": [
+          "DB Calendar View Row"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "from_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "to_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "where"
+          },
+          {
+            "schema": {},
+            "in": "query",
+            "name": "nested",
+            "description": "Query params for nested data"
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "offset"
+          },
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "description": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "type": "array",
+                    "x-stoplight": {
+                      "id": "okd8utzm9xqet"
+                    },
+                    "description": "List of calendar view rows",
+                    "items": {
+                      "x-stoplight": {
+                        "id": "j758lsjv53o4q"
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "pageInfo": {
+                    "$ref": "#/components/schemas/Paginated",
+                    "x-stoplight": {
+                      "id": "hylgqzgm8yhye"
+                    },
+                    "description": "Paginated Info"
+                  }
+                },
+                "required": [
+                  "list",
+                  "pageInfo"
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "list": [
+                      {
+                        "Id": 1,
+                        "Title": "baz",
+                        "SingleSelect": null,
+                        "Sheet-1 List": [
+                          {
+                            "Id": 1,
+                            "Title": "baz"
+                          }
+                        ],
+                        "LTAR": [
+                          {
+                            "Id": 1,
+                            "Title": "baz"
+                          }
+                        ]
+                      },
+                      {
+                        "Id": 2,
+                        "Title": "foo",
+                        "SingleSelect": "a",
+                        "Sheet-1 List": [
+                          {
+                            "Id": 2,
+                            "Title": "foo"
+                          }
+                        ],
+                        "LTAR": [
+                          {
+                            "Id": 2,
+                            "Title": "foo"
+                          }
+                        ]
+                      },
+                      {
+                        "Id": 3,
+                        "Title": "bar",
+                        "SingleSelect": "b",
+                        "Sheet-1 List": [],
+                        "LTAR": []
+                      }
+                    ],
+                    "pageInfo": {
+                      "totalRows": 3,
+                      "page": 1,
+                      "pageSize": 25,
+                      "isFirstPage": true,
+                      "isLastPage": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "$ref": "#/components/responses/BadRequest"
+        }
+      }
+    },
+    "/api/v1/db/public/calendar-view/{sharedViewUuid}/countByDate": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "24a6d0bb-e45d-4b1a-bfef-f492d870de9f"
+          },
+          "name": "sharedViewUuid",
+          "in": "path",
+          "required": true,
+          "description": "Shared View UUID"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "in": "header",
+          "name": "xc-password",
+          "description": "Shared view password"
+        }
+      ],
+      "get": {
+        "summary": "Count of Records in Dates in Calendar View",
+        "operationId": "public-data-calendar-row-count",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "from_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "to_date",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "where"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "in": "query",
+            "name": "offset"
+          },
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "Public"
+        ]
       }
     },
     "/api/v1/db/data/{orgs}/{baseName}/{tableName}/views/{viewName}": {
@@ -11985,6 +12780,14 @@
             "in": "query",
             "name": "filterArrJson",
             "description": "Used for multiple filter queries"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pks",
+            "description": "Comma separated list of pks"
           }
         ],
         "description": "List all shared view rows"
@@ -14618,6 +15421,10 @@
                                 "type": "integer",
                                 "description": "Kanban Count"
                               },
+                              "calendarCount": {
+                                "type": "integer",
+                                "description": "Calendar Count"
+                              },
                               "total": {
                                 "type": "integer",
                                 "description": "Total View Count"
@@ -14637,6 +15444,10 @@
                               "sharedKanbanCount": {
                                 "type": "integer",
                                 "description": "Shared Kanban Count"
+                              },
+                              "sharedCalendarCount": {
+                                "type": "integer",
+                                "description": "Shared Calendar Count"
                               },
                               "sharedTotal": {
                                 "type": "integer",
@@ -14703,11 +15514,13 @@
                             "gridCount": 3,
                             "galleryCount": 0,
                             "kanbanCount": 0,
+                            "calendarCount": 0,
                             "total": 3,
                             "sharedFormCount": 0,
                             "sharedGridCount": 0,
                             "sharedGalleryCount": 0,
                             "sharedKanbanCount": 0,
+                            "sharedCalendarCount": 0,
                             "sharedTotal": 0,
                             "sharedLockedCount": 0
                           },
@@ -14743,11 +15556,13 @@
                             "gridCount": 3,
                             "galleryCount": 0,
                             "kanbanCount": 0,
+                            "calendarCount": 0,
                             "total": 3,
                             "sharedFormCount": 0,
                             "sharedGridCount": 0,
                             "sharedGalleryCount": 0,
                             "sharedKanbanCount": 0,
+                            "sharedCalendarCount": 0,
                             "sharedTotal": 0,
                             "sharedLockedCount": 0
                           },
@@ -15540,6 +16355,14 @@
             "description": "Used for multiple filter queries"
           },
           {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pks",
+            "description": "Comma separated list of pks"
+          },
+          {
             "$ref": "#/components/parameters/xc-auth"
           }
         ],
@@ -16329,6 +17152,131 @@
         ]
       }
     },
+    "/api/v2/tables/{tableId}/links/{columnId}/records": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "description": "Table ID"
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "viewId",
+          "in": "query",
+          "description": "View ID"
+        }
+      ],
+      "post": {
+        "summary": "Copy paste or deleteAll nested link",
+        "operationId": "db-data-table-row-nested-list-copy-paste-or-deleteAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "examples": {
+                "Example 1" : {
+                  "value": {
+                    "link": [
+                      {"Id": 1},
+                      {"Id": 2},
+                      {"Id": 3},
+                      {"Id": 5},
+                      {"Id": 6}
+                    ],
+                    "unlink": [
+                      {"Id": 4}
+                    ]
+                }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": ["DB Data Table Row"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/nestedListCopyPasteOrDeleteAllReq"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": [
+                    {
+                      "operation": "copy",
+                      "rowId": "1",
+                      "columnId": "ca2ppiy8raidc09",
+                      "fk_related_model_id": "m797s6vbrqvo2pv"
+                    },
+                    {
+                      "operation": "paste",
+                      "rowId": "2",
+                      "columnId": "ca2ppiy8raidc09",
+                      "fk_related_model_id": "m797s6vbrqvo2pv"
+                    }
+                  ]
+                },
+                "Example 2": {
+                  "value": [
+                    {
+                      "operation": "deleteAll",
+                      "rowId": "1",
+                      "columnId": "ca2ppiy8raidc09",
+                      "fk_related_model_id": "m797s6vbrqvo2pv"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "Copy links from the one cell and paste them into another cell or delete all records from cell",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-auth"
+          }
+        ]
+      }
+    },
+    "/api/v1/command_palette": {
+      "parameters": [],
+      "post": {
+        "summary": "Get command palette suggestions",
+        "operationId": "utils-command-palette",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "Utils"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          }
+        },
+        "description": "Get dynamic command palette suggestions based on scope"
+      }
+    },
     "/jobs/listen": {
       "post": {
         "summary": "Jobs Listen",
@@ -16592,6 +17540,64 @@
         "x-stoplight": {
           "id": "6cr1iwhbyxncd"
         }
+      },
+      "AttachmentRes": {
+        "description": "Model for Attachment Response",
+        "oneOf": [
+          {
+            "type": "object",
+            "x-examples": {
+              "Example 1": {
+                "mimetype": "image/jpg",
+                "size": 32903,
+                "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+                "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg",
+                "signedPath": "dltemp/lNoLbqB62Jdo5Rmp/1709308800000/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+              },
+              "Example 2" :{
+                "mimetype": "image/jpeg",
+                "size": 146143,
+                "title": "2 be loved.jpeg",
+                "url": "https://some-s3-server.com/nc/uploads/2023/10/16/some-key/3niqHLngUKiU2Hupe8.jpeg",
+                "signedUrl": "https://some-s3-server.com/nc/uploads/2023/10/16/signed-url-misc-info"
+              }
+            },
+            "properties": {
+              "mimetype": {
+                "type": "string",
+                "description": "The mimetype of the attachment"
+              },
+              "path": {
+                "type": "string",
+                "description": "The attachment stored path"
+              },
+              "size": {
+                "type": "number",
+                "description": "The size of the attachment"
+              },
+              "title": {
+                "type": "string",
+                "description": "The title of the attachment used in UI"
+              },
+              "url": {
+                "type": "string",
+                "description": "The attachment stored url"
+              },
+              "signedPath": {
+                "type": "string",
+                "description": "Attachment signedPath will allow to access attachment directly"
+              },
+              "signedUrl": {
+                "type": "string",
+                "description": "Attachment signedUrl will allow to access attachment directly"
+              }
+            }
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Attachment Response Model"
       },
       "FileReq": {
         "description": "Model for File Request",
@@ -18120,7 +19126,13 @@
         "examples": [
           {
             "source_id": "ds_g4ccx6e77h1dmi",
-            "banner_image_url": null,
+            "banner_image_url": {
+              "mimetype": "image/jpg",
+              "size": 32903,
+              "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+              "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg",
+              "signedPath": "dltemp/lNoLbqB62Jdo5Rmp/1709308800000/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+            },
             "columns": [
               {
                 "id": "fvc_ugj9zo5bzocxtl",
@@ -18144,7 +19156,13 @@
             "fk_model_id": "md_rsu68aqjsbyqtl",
             "heading": "My Form",
             "lock_type": "collaborative",
-            "logo_url": null,
+            "logo_url": {
+              "mimetype": "image/jpg",
+              "size": 32903,
+              "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+              "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg",
+              "signedPath": "dltemp/lNoLbqB62Jdo5Rmp/1709308800000/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+            },
             "meta": null,
             "redirect_after_secs": null,
             "redirect_url": null,
@@ -18166,8 +19184,8 @@
             }
           },
           "banner_image_url": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Banner Image URL. Not in use currently."
+            "$ref": "#/components/schemas/AttachmentRes",
+            "description": "Banner Image URL"
           },
           "columns": {
             "type": "array",
@@ -18209,8 +19227,8 @@
             "example": "collaborative"
           },
           "logo_url": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Logo URL. Not in use currently."
+            "$ref": "#/components/schemas/AttachmentRes",
+            "description": "Logo URL"
           },
           "meta": {
             "$ref": "#/components/schemas/Meta",
@@ -18221,7 +19239,7 @@
             "description": "The numbers of seconds to redirect after form submission"
           },
           "redirect_url": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "URL to redirect after submission"
           },
           "show_blank_form": {
@@ -18229,7 +19247,7 @@
             "description": "Show `Blank Form` after 5 seconds"
           },
           "subheading": {
-            "type": "string",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "The subheading of the form",
             "example": "My Form Subheading"
           },
@@ -18238,7 +19256,7 @@
             "description": "Show `Submit Another Form` button"
           },
           "success_msg": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "Custom message after the form is successfully submitted"
           },
           "title": {
@@ -18255,7 +19273,12 @@
         "description": "Model for Form Update Request",
         "examples": [
           {
-            "banner_image_url": null,
+            "banner_image_url": {
+              "mimetype": "image/jpg",
+              "size": 32903,
+              "title": "Random-Pictures-of-Conceptual-and-Creative-Ideas-02.jpg",
+              "path": "download/noco/pm0umqsip16i1u5/m8yn03dncqal6ri//iDL5ednaHz2j2Sa3Cl.jpg"
+            },
             "email": "user@example.com",
             "heading": "My Form",
             "logo_url": null,
@@ -18272,8 +19295,15 @@
         "type": "object",
         "properties": {
           "banner_image_url": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Banner Image URL. Not in use currently."
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AttachmentReq"
+              },
+              {
+                "type" : "null"
+              }
+            ],
+            "description": "Banner Image URL"
           },
           "email": {
             "$ref": "#/components/schemas/StringOrNull",
@@ -18286,8 +19316,15 @@
             "type": "string"
           },
           "logo_url": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Logo URL. Not in use currently."
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AttachmentReq"
+              },
+              {
+                "type" : "null"
+              }
+            ],
+            "description": "Logo URL"
           },
           "meta": {
             "$ref": "#/components/schemas/Meta",
@@ -18298,7 +19335,7 @@
             "description": "The numbers of seconds to redirect after form submission"
           },
           "redirect_url": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "URL to redirect after submission"
           },
           "show_blank_form": {
@@ -18306,15 +19343,16 @@
             "description": "Show `Blank Form` after 5 seconds"
           },
           "subheading": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "The subheading of the form"
+            "$ref": "#/components/schemas/TextOrNull",
+            "description": "The subheading of the form",
+            "example": "My Form Subheading"
           },
           "submit_another_form": {
             "$ref": "#/components/schemas/Bool",
             "description": "Show `Submit Another Form` button"
           },
           "success_msg": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "Custom message after the form is successfully submitted"
           }
         },
@@ -18366,8 +19404,8 @@
             "description": "Unique ID"
           },
           "description": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Form Column Description (Not in use)"
+            "$ref": "#/components/schemas/TextOrNull",
+            "description": "Form Column Description"
           },
           "fk_column_id": {
             "$ref": "#/components/schemas/Id",
@@ -18378,11 +19416,11 @@
             "description": "Foreign Key to View"
           },
           "help": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Form Column Help Text"
+            "$ref": "#/components/schemas/TextOrNull",
+            "description": "Form Column Help Text (Not in use)"
           },
           "label": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "Form Column Label"
           },
           "meta": {
@@ -18451,15 +19489,15 @@
         },
         "properties": {
           "description": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Form Column Description (Not in use)"
+            "$ref": "#/components/schemas/TextOrNull",
+            "description": "Form Column Description"
           },
           "help": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Form Column Help Text"
+            "$ref": "#/components/schemas/TextOrNull",
+            "description": "Form Column Help Text (Not in use)"
           },
           "label": {
-            "$ref": "#/components/schemas/StringOrNull",
+            "$ref": "#/components/schemas/TextOrNull",
             "description": "Form Column Label"
           },
           "meta": {
@@ -19944,6 +20982,270 @@
           "id": "9zirjgj9k1gqa"
         }
       },
+      "Calendar": {
+        "description": "Model for Calendar",
+        "examples": [
+          {
+            "id": "vw_wqs4zheuo5lgdy",
+            "fk_view_id": "vw_wqs4zheuo5lgdy",
+            "fk_cover_image_col_id": null,
+            "columns": [
+              {
+                "id": "kvc_2skkg5mi1eb37f",
+                "fk_column_id": "cl_hzos4ghyncqi4k",
+                "fk_view_id": "vw_wqs4zheuo5lgdy",
+                "source_id": "ds_hd4ojj0xpquaam",
+                "base_id": "p_kzfl5lb0t3tcok",
+                "title": "string",
+                "show": 1,
+                "bold": 0,
+                "italic": 0,
+                "underline": 0,
+                "order": "1"
+              }
+            ],
+            "calendar_range": [
+              {
+                "id": "kvc_2skkg5mi1eb37f",
+                "fk_view_id": "vw_wqs4zheuo5lgdy",
+                "fk_from_column_id": "cl_hzos4ghyncqi4k",
+                "fk_to_column_id": "cl_hzos4ghyncqi4k"
+              }
+            ],
+            "meta": null,
+            "title": "My Calendar"
+          }
+        ],
+        "title": "Calendar Model",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id",
+            "description": "Unique ID"
+          },
+          "fk_view_id": {
+            "$ref": "#/components/schemas/Id",
+            "x-stoplight": {
+              "id": "1kgw1w06b97nl"
+            },
+            "description": "View ID"
+          },
+          "fk_cover_image_col_id": {
+            "$ref": "#/components/schemas/StringOrNull",
+            "description": "Cover Image Column ID"
+          },
+          "columns": {
+            "type": "array",
+            "description": "Calendar Columns",
+            "items": {
+              "$ref": "#/components/schemas/CalendarColumn"
+            }
+          },
+          "calendar_range": {
+            "type": "array",
+            "description": "Calendar Date Range",
+            "items": {
+              "$ref": "#/components/schemas/CalendarRange"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Meta Info for Kanban"
+          },
+          "title": {
+            "type": "string",
+            "description": "Kanban Title",
+            "example": "My Kanban"
+          }
+        },
+        "x-stoplight": {
+          "id": "gu721t0zw7jqq"
+        }
+      },
+      "CalendarColumn": {
+        "description": "Model for Calendar Column",
+        "examples": [
+          {
+            "id": "kvc_2skkg5mi1eb37f",
+            "fk_column_id": "cl_hzos4ghyncqi4k",
+            "fk_view_id": "vw_wqs4zheuo5lgdy",
+            "source_id": "ds_hd4ojj0xpquaam",
+            "base_id": "p_kzfl5lb0t3tcok",
+            "title": "string",
+            "show": 0,
+            "bold": 0,
+            "italic": 0,
+            "underline": 0,
+            "order": "1"
+          }
+        ],
+        "title": "Calendar Column Model",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id",
+            "description": "Unique ID"
+          },
+          "fk_column_id": {
+            "$ref": "#/components/schemas/Id",
+            "description": "Foreign Key to Column"
+          },
+          "fk_view_id": {
+            "$ref": "#/components/schemas/Id",
+            "x-stoplight": {
+              "id": "t1fy4zy561ih8"
+            },
+            "description": "Foreign Key to View"
+          },
+          "source_id": {
+            "$ref": "#/components/schemas/Id",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Baes ID\n"
+          },
+          "base_id": {
+            "$ref": "#/components/schemas/Id",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Base ID"
+          },
+          "title": {
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Base ID",
+            "type": "string"
+          },
+          "show": {
+            "$ref": "#/components/schemas/Bool",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Is this column shown?"
+          },
+          "bold": {
+            "$ref": "#/components/schemas/Bool",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Is this column shown as bold?"
+          },
+          "italic": {
+            "$ref": "#/components/schemas/Bool",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Is this column shown as italic?"
+          },
+          "underline": {
+            "$ref": "#/components/schemas/Bool",
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Is this column shown underlines?"
+          },
+          "order": {
+            "type": "number",
+            "x-stoplight": {
+              "id": "pbnchzgci5dwa"
+            },
+            "example": 1,
+            "description": "Column Order"
+          }
+        },
+        "x-stoplight": {
+          "id": "psbv6c6y9qvbu"
+        }
+      },
+      "CalendarRange": {
+        "description": "Model for Calendar Date Range",
+        "examples": [
+          {
+            "id": "kvc_2skkg5mi1eb37f",
+            "fk_from_column_id": "cl_hzos4ghyncqi4k",
+            "fk_to_column_id": "cl_hzos4ghyncqi4k",
+            "fk_view_id": "vw_wqs4zheuo5lgdy",
+            "label": "string"
+          }
+        ],
+        "title": "Calendar Date Range Model",
+        "type": "object",
+        "properties": {
+          "fk_from_column_id": {
+            "$ref": "#/components/schemas/Id",
+            "description": "Foreign Key to Column"
+          },
+          "fk_view_id": {
+            "$ref": "#/components/schemas/StringOrNull",
+            "x-stoplight": {
+              "id": "t1fy4zy561ih8"
+            },
+            "description": "Foreign Key to View"
+          },
+          "label": {
+            "x-stoplight": {
+              "id": "uqq8xmyz97t1u"
+            },
+            "description": "Base ID",
+            "type": "string"
+          }
+        },
+        "x-stoplight": {
+          "id": "psbv6c6y9qvbu"
+        }
+      },
+      "CalendarUpdateReq": {
+        "description": "Model for Calendar Update Request",
+        "examples": [
+          {
+            "fk_cover_image_col_id": "cl_ib8l4j1kiu1efx",
+            "title": "Calendar 2",
+            "calendar_range": [
+              {
+                "id": "kvc_2skkg5mi1eb37f",
+                "fk_view_id": "vw_wqs4zheuo5lgdy",
+                "fk_from_column_id": "cl_hzos4ghyncqi4k",
+                "fk_to_column_id": "cl_hzos4ghyncqi4k"
+              }
+            ]
+          }
+        ],
+        "title": "Calendar Update Request Model",
+        "type": "object",
+        "properties": {
+          "fk_cover_image_col_id": {
+            "$ref": "#/components/schemas/StringOrNull",
+            "x-stoplight": {
+              "id": "81wn4hzj76wod"
+            },
+            "description": "Foreign Key to Cover Image Column"
+          },
+          "title": {
+            "type": "string",
+            "description": "Calendar Title",
+            "example": "Calendar 01"
+          },
+          "calendar_range": {
+            "type": "array",
+            "description": "Calendar Columns",
+            "items": {
+              "$ref": "#/components/schemas/CalendarRange"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "x-stoplight": {
+              "id": "stsvdmkli1b0r"
+            },
+            "description": "Meta Info"
+          }
+        },
+        "x-stoplight": {
+          "id": "9zirjgj9k1gqa"
+        }
+      },
       "LicenseReq": {
         "description": "Model for Kanban Request",
         "examples": [
@@ -21240,7 +22542,8 @@
           {
             "color": "#24716E",
             "meta": null,
-            "title": "My Base"
+            "title": "My Base",
+            "order": 1
           }
         ],
         "title": "Base Update Request Model",
@@ -21277,6 +22580,12 @@
             "items": {
               "type": "string"
             }
+          },
+          "order": {
+            "type": "number",
+            "description": "The order of the list of projects.",
+            "example": 1,
+            "minimum": 0
           }
         }
       },
@@ -21971,6 +23280,47 @@
         },
         "x-stoplight": {
           "id": "8v8qzwm3w4v11"
+        }
+      },
+      "TextOrNull": {
+        "description": "Model for TextOrNull",
+        "examples": [
+          "string"
+        ],
+        "oneOf": [
+          {
+            "maxLength": 8192,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "TextOrNull Model"
+      },
+      "CalendarRangeOrNull": {
+        "description": "Model for CalendarRangeOrNull",
+        "example": [{
+          "id": "kvc_2skkg5mi1eb37f",
+          "fk_from_column_id": "cl_hzos4ghyncqi4k",
+          "fk_to_column_id": "cl_hzos4ghyncqi4k",
+          "fk_view_id": "vw_wqs4zheuo5lgdy",
+          "label": "string"
+        }],
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarRange"
+            }
+          }
+        ],
+        "title": "CalendarRangeOrNull Model",
+        "x-stoplight": {
+          "id": "p1g7xrgdsn540"
         }
       },
       "StringOrNull": {
@@ -23045,6 +24395,9 @@
               },
               {
                 "$ref": "#/components/schemas/Map"
+              },
+              {
+                "$ref": "#/components/schemas/Calendar"
               }
             ],
             "description": "Associated View Model"
@@ -23228,6 +24581,19 @@
             "fk_geo_data_col_id": null
           },
           {
+            "title": "My Calendar View",
+            "type": 6,
+            "copy_from_id": null,
+            "fk_grp_col_id": null,
+            "fk_geo_data_col_id": null,
+            "calendar_range": [
+              {
+                "fk_from_column_id": "cl_5jestblzneb649",
+                "fk_to_column_id": "cl_5jestblzneb649"
+              }
+            ]
+          },
+          {
             "title": "My Map View",
             "type": 5,
             "copy_from_id": null,
@@ -23256,6 +24622,10 @@
           "fk_geo_data_col_id": {
             "$ref": "#/components/schemas/StringOrNull",
             "description": "Foreign Key to Geo Data Column. Used in creating Map View."
+          },
+          "calendar_range": {
+            "description": "Calendar Range or Null",
+            "$ref": "#/components/schemas/CalendarRangeOrNull"
           }
         },
         "required": [
@@ -23893,6 +25263,30 @@
             "type": "boolean",
             "required": false
           }
+        }
+      },
+      "nestedListCopyPasteOrDeleteAllReq": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 2,
+        "items": {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": ["copy", "paste", "deleteAll"]
+            },
+            "rowId": {
+              "type": "string"
+            },
+            "columnId":{
+              "type": "string"
+            },
+            "fk_related_model_id":{
+              "type": "string"
+            }
+          },
+          "required": ["operation", "rowId", "columnId", "fk_related_model_id"]
         }
       }
     },

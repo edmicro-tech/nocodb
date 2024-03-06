@@ -158,12 +158,13 @@ export class ExportService {
         // pg default value fix
         if (source.type === 'pg') {
           if (column.cdf) {
+            const cdf = column.cdf.toString();
             // check if column.cdf has unmatched single quotes
-            const matches = column.cdf.match(/'/g);
+            const matches = cdf.match(/'/g);
             if (matches && matches.length % 2 !== 0) {
               // if so remove after last single quote
-              const lastQuoteIndex = column.cdf.lastIndexOf("'");
-              column.cdf = column.cdf.substring(0, lastQuoteIndex);
+              const lastQuoteIndex = cdf.lastIndexOf("'");
+              column.cdf = cdf.substring(0, lastQuoteIndex);
             }
           }
         }
@@ -514,6 +515,8 @@ export class ExportService {
     if (hasLink) {
       linkStream.setEncoding('utf8');
 
+      let streamedHeaders = false;
+
       for (const mm of mmColumns) {
         if (handledMmList.includes(mm.colOptions?.fk_mm_model_id)) continue;
 
@@ -572,8 +575,11 @@ export class ExportService {
             mmOffset,
             mmLimit,
             mmFields,
-            true,
+            streamedHeaders ? false : true,
           );
+
+          // avoid writing headers for same model multiple times
+          streamedHeaders = true;
         } catch (e) {
           this.debugLog(e);
           throw e;
@@ -633,7 +639,8 @@ export class ExportService {
           } catch (e) {
             reject(e);
           }
-        });
+        })
+        .catch(reject);
     });
   }
 
@@ -681,7 +688,8 @@ export class ExportService {
           } catch (e) {
             reject(e);
           }
-        });
+        })
+        .catch(reject);
     });
   }
 

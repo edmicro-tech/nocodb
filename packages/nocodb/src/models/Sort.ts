@@ -27,7 +27,6 @@ export default class Sort {
 
   public static async deleteAll(viewId: string, ncMeta = Noco.ncMeta) {
     await NocoCache.deepDel(
-      CacheScope.SORT,
       `${CacheScope.SORT}:${viewId}`,
       CacheDelDirection.PARENT_TO_CHILD,
     );
@@ -38,10 +37,7 @@ export default class Sort {
     // on delete, delete any optimised single query cache
     {
       const view = await View.get(viewId, ncMeta);
-      await NocoCache.delAll(
-        CacheScope.SINGLE_QUERY,
-        `${view.fk_model_id}:${view.id}:*`,
-      );
+      await View.clearSingleQueryCache(view.fk_model_id, [view], ncMeta);
     }
   }
 
@@ -94,32 +90,29 @@ export default class Sort {
           order: 'asc',
         },
       });
-      await NocoCache.delAll(CacheScope.SORT, `${sortObj.fk_view_id}:*`);
       await NocoCache.setList(CacheScope.SORT, [sortObj.fk_view_id], sortList);
-    } else {
-      await NocoCache.appendToList(
-        CacheScope.SORT,
-        [sortObj.fk_view_id],
-        `${CacheScope.SORT}:${row.id}`,
-      );
-
-      await NocoCache.appendToList(
-        CacheScope.SORT,
-        [sortObj.fk_column_id],
-        `${CacheScope.SORT}:${row.id}`,
-      );
     }
-
     // on insert, delete any optimised single query cache
     {
       const view = await View.get(row.fk_view_id, ncMeta);
-      await NocoCache.delAll(
-        CacheScope.SINGLE_QUERY,
-        `${view.fk_model_id}:${view.id}:*`,
-      );
+      await View.clearSingleQueryCache(view.fk_model_id, [view], ncMeta);
     }
 
-    return this.get(row.id, ncMeta);
+    return this.get(row.id, ncMeta).then(async (sort) => {
+      if (!sortObj.push_to_top) {
+        await NocoCache.appendToList(
+          CacheScope.SORT,
+          [sortObj.fk_view_id],
+          `${CacheScope.SORT}:${row.id}`,
+        );
+        await NocoCache.appendToList(
+          CacheScope.SORT,
+          [sortObj.fk_column_id],
+          `${CacheScope.SORT}:${row.id}`,
+        );
+      }
+      return sort;
+    });
   }
 
   public getColumn(): Promise<Column> {
@@ -155,16 +148,6 @@ export default class Sort {
   }
 
   public static async update(sortId, body, ncMeta = Noco.ncMeta) {
-    // get existing cache
-    const key = `${CacheScope.SORT}:${sortId}`;
-    const o = await NocoCache.get(key, CacheGetType.TYPE_OBJECT);
-    if (o) {
-      // update fk_column_id & direction
-      o.fk_column_id = body.fk_column_id;
-      o.direction = body.direction;
-      // set cache
-      await NocoCache.set(key, o);
-    }
     // set meta
     const res = await ncMeta.metaUpdate(
       null,
@@ -177,14 +160,16 @@ export default class Sort {
       sortId,
     );
 
+    await NocoCache.update(`${CacheScope.SORT}:${sortId}`, {
+      fk_column_id: body.fk_column_id,
+      direction: body.direction,
+    });
+
     // on update, delete any optimised single query cache
     {
       const sort = await this.get(sortId, ncMeta);
       const view = await View.get(sort.fk_view_id, ncMeta);
-      await NocoCache.delAll(
-        CacheScope.SINGLE_QUERY,
-        `${view.fk_model_id}:${view.id}:*`,
-      );
+      await View.clearSingleQueryCache(view.fk_model_id, [view], ncMeta);
     }
 
     return res;
@@ -192,20 +177,18 @@ export default class Sort {
 
   public static async delete(sortId: string, ncMeta = Noco.ncMeta) {
     const sort = await this.get(sortId, ncMeta);
+
+    await ncMeta.metaDelete(null, null, MetaTable.SORT, sortId);
+
     await NocoCache.deepDel(
-      CacheScope.SORT,
       `${CacheScope.SORT}:${sortId}`,
       CacheDelDirection.CHILD_TO_PARENT,
     );
-    await ncMeta.metaDelete(null, null, MetaTable.SORT, sortId);
 
     // on delete, delete any optimised single query cache
     if (sort?.fk_view_id) {
       const view = await View.get(sort.fk_view_id, ncMeta);
-      await NocoCache.delAll(
-        CacheScope.SINGLE_QUERY,
-        `${view.fk_model_id}:${view.id}:*`,
-      );
+      await View.clearSingleQueryCache(view.fk_model_id, [view], ncMeta);
     }
   }
 

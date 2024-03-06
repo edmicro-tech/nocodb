@@ -232,7 +232,7 @@ async function onMoveStack(event: any, undo = false) {
     const { fk_grp_col_id, meta: stack_meta } = kanbanMetaData.value
     groupingFieldColOptions.value[oldIndex].order = newIndex
     groupingFieldColOptions.value[newIndex].order = oldIndex
-    const stackMetaObj = JSON.parse(stack_meta as string) || {}
+    const stackMetaObj = parseProp(stack_meta) || {}
     stackMetaObj[fk_grp_col_id as string] = groupingFieldColOptions.value
     await updateKanbanMeta({
       meta: stackMetaObj,
@@ -291,7 +291,8 @@ const kanbanListScrollHandler = useDebounceFn(async (e: any) => {
     const stackTitle = e.target.getAttribute('data-stack-title')
     const pageSize = appInfo.value.defaultLimit || 25
     const stack = formattedData.value.get(stackTitle)
-    if (stack) {
+
+    if (stack && (countByStack.value.get(stackTitle) === undefined || stack.length < countByStack.value.get(stackTitle)!)) {
       const page = Math.ceil(stack.length / pageSize)
       await loadMoreKanbanData(stackTitle, { offset: page * pageSize })
     }
@@ -366,7 +367,7 @@ watch(
         // horizontally scroll to the end of the kanban container
         // when a new option is added within kanban view
         nextTick(() => {
-          if (shouldScrollToRight.value) {
+          if (shouldScrollToRight.value && kanbanContainerRef.value) {
             kanbanContainerRef.value.scrollTo({
               left: kanbanContainerRef.value.scrollWidth,
               behavior: 'smooth',

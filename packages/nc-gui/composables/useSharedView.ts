@@ -1,4 +1,5 @@
 import type {
+  CalendarType,
   ExportTypes,
   FilterType,
   KanbanType,
@@ -42,7 +43,7 @@ export function useSharedView() {
 
   const allowCSVDownload = useState<boolean>('allowCSVDownload', () => false)
 
-  const meta = useState<TableType | KanbanType | MapType | undefined>('meta', () => undefined)
+  const meta = useState<TableType | KanbanType | MapType | CalendarType | undefined>('meta', () => undefined)
 
   const formColumns = computed(
     () =>
@@ -147,6 +148,75 @@ export function useSharedView() {
     )
   }
 
+  const fetchSharedCalendarViewData = async (param: {
+    from_date: string
+    to_date: string
+    sortsArr: SortType[]
+    filtersArr: FilterType[]
+    fields?: any[]
+    sort?: any[]
+    where?: string
+    /** Query params for nested data */
+    nested?: any
+    offset?: number
+  }) => {
+    if (!sharedView.value)
+      return {
+        list: [],
+        pageInfo: {},
+      }
+
+    if (!param.offset) {
+      const page = paginationData.value.page || 1
+      const pageSize = paginationData.value.pageSize || appInfoDefaultLimit
+      param.offset = (page - 1) * pageSize
+    }
+
+    return await $api.dbCalendarViewRow.publicDataCalendarRowList(
+      sharedView.value.uuid!,
+      {
+        limit: sharedView.value?.type === ViewTypes.CALENDAR ? 3000 : undefined,
+        ...param,
+        filterArrJson: JSON.stringify(param.filtersArr ?? nestedFilters.value),
+        sortArrJson: JSON.stringify(param.sortsArr ?? sorts.value),
+      } as any,
+      {
+        headers: {
+          'xc-password': password.value,
+        },
+      },
+    )
+  }
+
+  const fetchSharedViewActiveDate = async (param: {
+    from_date: string
+    to_date: string
+    sortsArr: SortType[]
+    filtersArr: FilterType[]
+    sort?: any[]
+    where?: string
+  }) => {
+    if (!sharedView.value)
+      return {
+        list: [],
+        pageInfo: {},
+      }
+
+    return await $api.public.dataCalendarRowCount(
+      sharedView.value.uuid!,
+      {
+        ...param,
+        filterArrJson: JSON.stringify(param.filtersArr ?? nestedFilters.value),
+        sortArrJson: JSON.stringify(param.sortsArr ?? sorts.value),
+      } as any,
+      {
+        headers: {
+          'xc-password': password.value,
+        },
+      },
+    )
+  }
+
   const fetchSharedViewGroupedData = async (
     columnId: string,
     { sortsArr, filtersArr }: { sortsArr: SortType[]; filtersArr: FilterType[] },
@@ -199,6 +269,8 @@ export function useSharedView() {
     meta,
     nestedFilters,
     fetchSharedViewData,
+    fetchSharedViewActiveDate,
+    fetchSharedCalendarViewData,
     fetchSharedViewGroupedData,
     paginationData,
     sorts,

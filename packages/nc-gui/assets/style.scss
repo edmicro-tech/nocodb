@@ -253,7 +253,19 @@ a {
 }
 // select dropdown border style
 .ant-select-dropdown {
-  @apply border-1 border-gray-200
+  @apply border-1 border-gray-200;
+
+  .rc-virtual-list-scrollbar {
+    @apply !w-1;
+  }
+  
+  .rc-virtual-list-scrollbar-thumb{
+    @apply !bg-gray-200;
+
+    &:hover{
+      @apply !bg-gray-300;
+    }
+  }
 }
 
 // menu item styling
@@ -536,6 +548,13 @@ a {
   @apply bg-gray-300 bg-opacity-20;
 }
 
+.ant-select-item-option:hover{
+  @apply !bg-gray-100;
+}
+
+.ant-select-item-option-selected{
+  @apply !bg-white;
+}
 /* Hide the element with id nc-selected-item-icon */
 .ant-select-selection-item #nc-selected-item-icon {
   @apply hidden;
@@ -597,7 +616,7 @@ a {
 }
 
 .nc-click-transition {
-  @apply transform transition-transform transition-color !text-gray-400 !hover:(scale-130 !text-gray-500) !active:(scale-100 !text-gray-500);
+  @apply transform transition-transform transition-colors !text-gray-400 !hover:(scale-130 !text-gray-500) !active:(scale-100 !text-gray-500);
 }
 
 .nc-click-transition-1 {
@@ -705,7 +724,7 @@ input[type='number'] {
   }
 
   .nc-sidebar-node-btn:not(.nc-sidebar-expand) {
-    @apply !xs:(hidden)
+    @apply !xs:(hidden);
   }
 }
 
@@ -718,13 +737,54 @@ input[type='number'] {
   @apply xs:(opacity-100 hover:bg-gray-50);
 
   .nc-icon {
-    @apply xs:(visible opacity-100 !text-gray-500)
+    @apply xs:(visible opacity-100 !text-gray-500);
   }
 }
 
 .ant-message-notice-content {
   @apply !rounded-md;
   .ant-message-custom-content{
-    @apply flex items-center
+    @apply flex items-center;
+  }
+}
+
+svg.nc-cell-icon, svg.nc-virtual-cell-icon {
+  @apply w-1em h-1em flex-none;
+  font-size: 1rem;
+}
+
+
+// For select type field list layout 
+.nc-field-layout-list {
+  @apply !flex !flex-col !items-start w-full !space-y-0.5 !max-w-full;
+
+  .ant-checkbox-wrapper {
+    @apply !m-0 !h-9 !mr-0 !flex !items-center w-full !max-w-full pl-2 rounded-lg hover:bg-gray-100;
+
+    &:hover {
+      .ant-checkbox-checked:after {
+        @apply !rounded;
+      }
+    }
+    .ant-checkbox {
+      @apply !top-0;
+
+      & + span {
+        @apply !flex !pl-4 max-w-[calc(100%_-_16px)];
+      }
+      .ant-checkbox-checked:after,
+      .ant-checkbox-inner {
+        @apply !rounded;
+      }
+    }
+  }
+  .ant-radio-wrapper {
+    @apply !m-0 !h-9 !mr-0 !flex !items-center w-full !max-w-full pl-2 rounded-lg hover:bg-gray-100;
+    .ant-radio {
+      @apply !top-0;
+    }
+    .ant-radio + span {
+      @apply !flex !pl-4 max-w-[calc(100%_-_16px)];
+    }
   }
 }

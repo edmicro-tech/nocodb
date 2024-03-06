@@ -82,6 +82,8 @@ const permissionScopes = {
     'galleryViewGet',
     'kanbanViewGet',
     'gridViewUpdate',
+    'formViewUpdate',
+    'calendarViewGet',
     'groupedDataList',
     'mmList',
     'hmList',
@@ -132,6 +134,7 @@ const permissionScopes = {
     'nestedDataList',
     'nestedDataLink',
     'nestedDataUnlink',
+    'nestedListCopyPasteOrDeleteAll',
     'baseUserList',
 
     // Base API Tokens
@@ -176,6 +179,7 @@ const rolePermissions:
       galleryViewGet: true,
       kanbanViewGet: true,
       groupedDataList: true,
+      calendarViewGet: true,
 
       mmList: true,
       hmList: true,
@@ -217,6 +221,7 @@ const rolePermissions:
       dataInsert: true,
       viewColumnUpdate: true,
       gridViewUpdate: true,
+      formViewUpdate: true,
       sortCreate: true,
       sortUpdate: true,
       sortDelete: true,
@@ -239,6 +244,7 @@ const rolePermissions:
 
       nestedDataLink: true,
       nestedDataUnlink: true,
+      nestedListCopyPasteOrDeleteAll: true,
       // TODO add ACL with base scope
       // upload: true,
       // uploadViaURL: true,
@@ -267,6 +273,7 @@ const rolePermissions:
       passwordChange: true,
       baseList: true,
       testConnection: true,
+      isPluginActive: true,
     },
   },
   [OrgUserRoles.CREATOR]: {
@@ -291,7 +298,6 @@ const rolePermissions:
       userInviteResend: true,
       upload: true,
       uploadViaURL: true,
-      isPluginActive: true,
       baseCreate: true,
       duplicateSharedBase: true,
     },

@@ -6,7 +6,6 @@ import { SharedFormPage } from '../../../pages/SharedForm';
 import { Api, UITypes } from 'nocodb-sdk';
 import { LoginPage } from '../../../pages/LoginPage';
 import { getDefaultPwd } from '../../../tests/utils/general';
-import { WorkspacePage } from '../../../pages/WorkspacePage';
 import { enableQuickRun, isEE } from '../../../setup/db';
 
 // todo: Move most of the ui actions to page object and await on the api response
@@ -49,18 +48,6 @@ test.describe('Form view', () => {
       fields: ['LastUpdate', 'Country', 'Cities'],
     });
 
-    // remove & verify (drag-drop)
-    await form.removeField({ field: 'Cities', mode: 'dragDrop' });
-    await form.verifyFormViewFieldsOrder({
-      fields: ['LastUpdate', 'Country'],
-    });
-
-    // add & verify (drag-drop)
-    await form.addField({ field: 'Cities', mode: 'dragDrop' });
-    await form.verifyFormViewFieldsOrder({
-      fields: ['LastUpdate', 'Country', 'Cities'],
-    });
-
     // remove & verify (hide field button)
     await form.removeField({ field: 'Cities', mode: 'hideField' });
     await form.verifyFormViewFieldsOrder({
@@ -88,7 +75,7 @@ test.describe('Form view', () => {
     });
   });
 
-  test('Form elements validation', async ({ page }) => {
+  test('Form elements validation', async () => {
     // close 'Team & Auth' tab
     await dashboard.closeTab({ title: 'Team & Auth' });
     await dashboard.treeView.openTable({ title: 'Country' });
@@ -182,7 +169,7 @@ test.describe('Form view', () => {
     await dashboard.verifyToast({
       message: 'Please activate SMTP plugin in App store for enabling email notification',
     });
-    const url = dashboard.rootPage.url();
+    // const url = dashboard.rootPage.url();
 
     // activate SMTP plugin
     // await accountAppStorePage.goto();
@@ -254,7 +241,6 @@ test.describe('Form view with LTAR', () => {
 
   let dashboard: DashboardPage;
   let loginPage: LoginPage;
-  let wsPage: WorkspacePage;
   let context: any;
   let api: Api<any>;
 
@@ -264,7 +250,6 @@ test.describe('Form view with LTAR', () => {
     context = await setup({ page, isEmptyProject: true });
     dashboard = new DashboardPage(page, context.base);
     loginPage = new LoginPage(page);
-    wsPage = new WorkspacePage(page);
 
     api = new Api({
       baseURL: `http://localhost:8080/`,

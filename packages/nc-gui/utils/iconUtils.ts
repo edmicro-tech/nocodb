@@ -7,6 +7,7 @@ import MdiStar from '~icons/mdi/star'
 import MdiStarOutline from '~icons/mdi/star-outline'
 import MdiHeart from '~icons/mdi/heart'
 import MdiHeartOutline from '~icons/mdi/heart-outline'
+import LayoutSidebar from '~icons/tabler/layout-sidebar'
 import MdiMoonFull from '~icons/mdi/moon-full'
 import MdiMoonNew from '~icons/mdi/moon-new'
 import MdiThumbUp from '~icons/mdi/thumb-up'
@@ -21,17 +22,14 @@ import TablerColumnInsertRight from '~icons/tabler/column-insert-right'
 import MdiEyeCircleOutline from '~icons/mdi/eye-circle-outline'
 import MsGroup from '~icons/material-symbols/groups-outline-rounded'
 import MsAddBoxOutline from '~icons/nc-icons/add-box'
-import MsDownloadRounded from '~icons/nc-icons/download'
 import LogosAirtable from '~icons/logos/airtable'
 import MsSort from '~icons/material-symbols/sort'
 import MaterialSymbolsEdit from '~icons/material-symbols/edit-outline-rounded'
-import MaterialDuplicate from '~icons/material-symbols/file-copy-outline-rounded'
 import MaterialSymbolsWarningOutlineRounded from '~icons/material-symbols/warning-outline-rounded'
 import MaterialSymbolsDragIndicator from '~icons/ri/draggable'
 import PlusSquare from '~icons/nc-icons/plus-square'
 import MobileShare from '~icons/nc-icons/share'
 import PhLayout from '~icons/ph/layout'
-import Delete from '~icons/material-symbols/delete-outline-rounded'
 import Minus from '~icons/material-symbols/remove-rounded'
 import Code from '~icons/material-symbols/code-rounded'
 import Palette from '~icons/material-symbols/palette-outline'
@@ -94,11 +92,13 @@ import Sort from '~icons/nc-icons/sort'
 
 // NocoDB Icons
 import NcEye from '~icons/nc-icons/eye'
+import NcEyeOff from '~icons/nc-icons/eye-off'
 import NcStar from '~icons/nc-icons/star'
 import NcUnStar from '~icons/nc-icons/star-remove'
 import NcSearch from '~icons/nc-icons/search'
 import NcCreditCard from '~icons/nc-icons/credit-card'
 import NcLayers from '~icons/nc-icons/layers'
+import NcUser from '~icons/nc-icons/user'
 import NcUsers from '~icons/nc-icons/users'
 import NcCheck from '~icons/nc-icons/check'
 import NcIconsRowHeightMedium from '~icons/nc-icons/row-height-medium'
@@ -110,6 +110,58 @@ import NcNotification from '~icons/material-symbols/notifications-outline'
 import NcCommentHere from '~icons/nc-icons/comment-here'
 import NcAddDataSource from '~icons/nc-icons/add-data-source'
 import NcDatabaseIcon from '~icons/nc-icons/database'
+import NcChevronDown from '~icons/nc-icons/chevron-down'
+import NcTrash from '~icons/nc-icons/trash'
+import NcPencil from '~icons/nc-icons/pencil'
+import NcRename from '~icons/nc-icons/rename'
+import NcDuplicate from '~icons/nc-icons/duplicate'
+import NcEdit from '~icons/nc-icons/edit'
+import NcCopy from '~icons/nc-icons/copy'
+import NcPaste from '~icons/nc-icons/paste'
+import NcArrowUp from '~icons/nc-icons/arrow-up'
+import NcArrowDown from '~icons/nc-icons/arrow-down'
+import NcUpload from '~icons/nc-icons/upload'
+import NcDownload from '~icons/nc-icons/download'
+// import NcProjectGray from '~icons/nc-icons/project-gray'
+import NcPhoneCall from '~icons/nc-icons/phone-call'
+import NcItalic from '~icons/nc-icons/italic'
+import NcBold from '~icons/nc-icons/bold'
+import NcUnderline from '~icons/nc-icons/underline'
+import NcCrop from '~icons/nc-icons/crop'
+import NcLink from '~icons/nc-icons/link'
+
+import NcCellBarcode from '~icons/nc-icons/cell-barcode'
+import NcCellCheckbox from '~icons/nc-icons/cell-checkbox'
+import NcCellDate from '~icons/nc-icons/cell-date'
+import NcCellEmail from '~icons/nc-icons/cell-email'
+import NcCellFormula from '~icons/nc-icons/cell-formula'
+import NcCellCurrency from '~icons/nc-icons/cell-currency'
+import NcCellDatetime from '~icons/nc-icons/cell-datetime'
+import NcCellDb from '~icons/nc-icons/cell-db'
+import NcCellDecimal from '~icons/nc-icons/cell-decimal'
+import NcCellDuration from '~icons/nc-icons/cell-duration'
+import NcCellGeometry from '~icons/nc-icons/cell-geometry'
+import NcCellJson from '~icons/nc-icons/cell-json'
+import NcCellLinks from '~icons/nc-icons/cell-link'
+import NcCellLongText from '~icons/nc-icons/cell-longtext'
+import NcCellLookup from '~icons/nc-icons/cell-lookup'
+import NcCellMultiSelect from '~icons/nc-icons/cell-multiselect'
+import NcCellNumber from '~icons/nc-icons/cell-number'
+import NcCellPercent from '~icons/nc-icons/cell-percentage'
+import NcCellPhone from '~icons/nc-icons/cell-phone'
+import NcCellQrCode from '~icons/nc-icons/cell-qrcode'
+import NcCellRating from '~icons/nc-icons/cell-rating'
+import NcCellRollup from '~icons/nc-icons/cell-rollup'
+import NcCellSingleSelect from '~icons/nc-icons/cell-select'
+import NcCellText from '~icons/nc-icons/cell-text'
+import NcCellTime from '~icons/nc-icons/cell-time'
+import NcCellUrl from '~icons/nc-icons/cell-url'
+import NcCellUser from '~icons/nc-icons/cell-user'
+import NcCellSystemDate from '~icons/nc-icons/system-date'
+import NcCellSystemKey from '~icons/nc-icons/system-key'
+import NcCellSystemUser from '~icons/nc-icons/system-user'
+import NcCellSystemText from '~icons/nc-icons/system-text'
+import NcCellAttachment from '~icons/nc-icons/cell-attachment'
 
 // keep it for reference
 // todo: remove it after all icons are migrated
@@ -259,6 +311,39 @@ import NcDatabaseIcon from '~icons/nc-icons/database'
 } as const */
 
 export const iconMap = {
+  cellBarcode: NcCellBarcode,
+  cellCheckbox: NcCellCheckbox,
+  cellDate: NcCellDate,
+  cellEmail: NcCellEmail,
+  cellFormula: NcCellFormula,
+  cellCurrency: NcCellCurrency,
+  cellDatetime: NcCellDatetime,
+  cellDb: NcCellDb,
+  cellDecimal: NcCellDecimal,
+  cellDuration: NcCellDuration,
+  cellGeometry: NcCellGeometry,
+  cellJson: NcCellJson,
+  cellLinks: NcCellLinks,
+  cellLongText: NcCellLongText,
+  cellLookup: NcCellLookup,
+  cellMultiSelect: NcCellMultiSelect,
+  cellNumber: NcCellNumber,
+  cellPercent: NcCellPercent,
+  cellPhone: NcCellPhone,
+  cellQrCode: NcCellQrCode,
+  cellRating: NcCellRating,
+  cellRollup: NcCellRollup,
+  cellSingleSelect: NcCellSingleSelect,
+  cellText: NcCellText,
+  cellTime: NcCellTime,
+  cellUrl: NcCellUrl,
+  cellUser: NcCellUser,
+  cellSystemDate: NcCellSystemDate,
+  cellSystemKey: NcCellSystemKey,
+  cellSystemUser: NcCellSystemUser,
+  cellSystemText: NcCellSystemText,
+  cellAttachment: NcCellAttachment,
+
   sort: Sort,
   group: Group,
   filter: Filter,
@@ -310,6 +395,7 @@ export const iconMap = {
   translate: h('span', { class: 'material-symbols' }, 'translate'),
   preview: h('span', { class: 'material-symbols' }, 'visibility'),
   link: h('span', { class: 'material-symbols' }, 'link'),
+  link2: NcLink,
   returnKey: h('span', { class: 'material-symbols' }, 'keyboard_return'),
   keyboard: h('span', { class: 'material-symbols' }, 'keyboard'),
   accountPlus: h('span', { class: 'material-symbols' }, 'person_add'),
@@ -329,18 +415,20 @@ export const iconMap = {
   accountCircle: h('span', { class: 'material-symbols' }, 'account_circle'),
   phUser: PhUser,
   phUsers: PhUsers,
+  user: NcUser,
   users: NcUsers,
   cloudDownload: h('span', { class: 'material-symbols' }, 'cloud_download'),
-  download: MsDownloadRounded,
-  upload: h('span', { class: 'material-symbols' }, 'cloud_upload'),
+  download: NcDownload,
+  cloudUpload: h('span', { class: 'material-symbols' }, 'cloud_upload'),
+  upload: NcUpload,
   hook: Phishing,
   erd: h('span', { class: 'material-symbols' }, 'account_tree'),
   plus: h('span', { class: 'material-symbols', style: '-webkit-text-stroke: 0.3px' }, 'add'),
   plusSquare: PlusSquare,
   minus: Minus,
   help: h('span', { class: 'material-symbols' }, 'help'),
-  copy: h('span', { class: 'material-symbols' }, 'content_copy'),
-  duplicate: MaterialDuplicate,
+  copy: NcCopy,
+  duplicate: NcDuplicate,
   clipboard: h('span', { class: 'material-symbols' }, 'content_paste'),
   settings: h('span', { class: 'material-symbols' }, 'settings'),
   image: h('span', { class: 'material-symbols' }, 'image'),
@@ -351,6 +439,7 @@ export const iconMap = {
   arrowLeft: Left,
   arrowUp: Up,
   layout: PhLayout,
+  sidebar: LayoutSidebar,
   doubleRightArrow: h('span', { class: 'material-symbols', style: '-webkit-text-stroke: 0.5px' }, 'keyboard_double_arrow_right'),
   doubleLeftArrow: h('span', { class: 'material-symbols', style: '-webkit-text-stroke: 0.5px' }, 'keyboard_double_arrow_left'),
   sidebarMinimise: PhCaretDoubleLeftThin, // h('span', { class: 'material-symbols' }, 'left_panel_close'),
@@ -363,7 +452,7 @@ export const iconMap = {
   csv: PhCsvThin, // h('span', { class: 'material-symbols' }, 'grid_on'),
   code: Code,
   palette: h(Palette, {}, () => 'palette'),
-  delete: Delete,
+  delete: NcTrash,
   deleteListItem: h('span', { class: 'material-symbols' }, 'delete'),
   import: h('span', { class: 'material-symbols' }, 'system_update_alt'),
   edit: MaterialSymbolsEdit,
@@ -402,7 +491,7 @@ export const iconMap = {
   calculator: h('span', { class: 'material-symbols' }, 'calculate'),
   rollup: h('span', { class: 'material-symbols' }, 'group_work'),
   eye: NcEye,
-  eyeSlash: h('span', { class: 'material-symbols' }, 'visibility_off'),
+  eyeSlash: NcEyeOff,
   expand: h('span', { class: 'material-symbols' }, 'open_in_full'),
   shrink: h('span', { class: 'material-symbols' }, 'close_fullscreen'),
   check: NcCheck,
@@ -461,7 +550,18 @@ export const iconMap = {
   role_no_access: NoAccess,
   commentHere: NcCommentHere,
   fileImage: FileImageIcon,
-  paste: h('span', { class: 'material-symbols' }, 'content_paste'),
+  paste: NcPaste,
+  chevronDown: NcChevronDown,
+  pencil: NcPencil,
+  rename: NcRename,
+  ncEdit: NcEdit,
+  ncArrowUp: NcArrowUp,
+  ncArrowDown: NcArrowDown,
+  underline: NcUnderline,
+  bold: NcBold,
+  italic: NcItalic,
+  phoneCall: NcPhoneCall,
+  crop: NcCrop,
 }
 
 export const getMdiIcon = (type: string): any => {

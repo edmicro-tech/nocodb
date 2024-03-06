@@ -6,20 +6,34 @@ import TurndownService from 'turndown'
 import { marked } from 'marked'
 import { generateJSON } from '@tiptap/html'
 import Underline from '@tiptap/extension-underline'
+import Placeholder from '@tiptap/extension-placeholder'
 import { TaskItem } from '@/helpers/dbTiptapExtensions/task-item'
 import { Link } from '@/helpers/dbTiptapExtensions/links'
+import { IsExpandedFormOpenInj, IsFormInj, ReadonlyInj, RowHeightInj } from '#imports'
 
 const props = defineProps<{
   value?: string | null
-  readonly?: boolean
+  readOnly?: boolean
   syncValueChange?: boolean
   showMenu?: boolean
   fullMode?: boolean
+  isFormField?: boolean
+  autofocus?: boolean
+  placeholder?: string
+  renderAsText?: boolean
 }>()
 
 const emits = defineEmits(['update:value'])
 
 const isExpandedFormOpen = inject(IsExpandedFormOpenInj, ref(false))!
+
+const rowHeight = inject(RowHeightInj, ref(1 as const))
+
+const readOnlyCell = inject(ReadonlyInj, ref(false))
+
+const isForm = inject(IsFormInj, ref(false))
+
+const isFocused = ref(false)
 
 const turndownService = new TurndownService({})
 
@@ -98,13 +112,19 @@ const editorDom = ref<HTMLElement | null>(null)
 const vModel = useVModel(props, 'value', emits, { defaultValue: '' })
 
 const tiptapExtensions = [
-  StarterKit,
+  StarterKit.configure({
+    heading: props.isFormField ? false : undefined,
+  }),
   TaskList,
   TaskItem.configure({
     nested: true,
   }),
   Underline,
   Link,
+  Placeholder.configure({
+    emptyEditorClass: 'is-editor-empty',
+    placeholder: props.placeholder,
+  }),
 ]
 
 const editor = useEditor({
@@ -114,9 +134,18 @@ const editor = useEditor({
       .turndown(editor.getHTML().replaceAll(/<p><\/p>/g, '<br />'))
       .replaceAll(/\n\n<br \/>\n\n/g, '<br>\n\n')
 
-    vModel.value = markdown
+    vModel.value = props.isFormField && markdown === '<br />' ? '' : markdown
   },
-  editable: !props.readonly,
+  editable: !props.readOnly,
+  autofocus: props.autofocus,
+  onFocus: () => {
+    isFocused.value = true
+  },
+  onBlur: (e) => {
+    if (!(e?.event?.relatedTarget as HTMLElement)?.closest('.bubble-menu, .nc-textarea-rich-editor')) {
+      isFocused.value = false
+    }
+  },
 })
 
 const setEditorContent = (contentMd: any, focusEndOfDoc?: boolean) => {
@@ -146,8 +175,18 @@ const setEditorContent = (contentMd: any, focusEndOfDoc?: boolean) => {
 }
 
 if (props.syncValueChange) {
-  watch(vModel, () => {
+  watch([vModel, editor], () => {
     setEditorContent(vModel.value)
+  })
+}
+
+if (props.isFormField) {
+  watch([props, editor], () => {
+    if (props.readOnly) {
+      editor.value?.setEditable(false)
+    } else {
+      editor.value?.setEditable(true)
+    }
   })
 }
 
@@ -156,37 +195,77 @@ watch(editorDom, () => {
 
   setEditorContent(vModel.value, true)
 
+  if (props.isFormField) return
   // Focus editor after editor is mounted
   setTimeout(() => {
     editor.value?.chain().focus().run()
   }, 50)
 })
+
+useEventListener(
+  editorDom,
+  'focusout',
+  (e: FocusEvent) => {
+    if (!(e?.relatedTarget as HTMLElement)?.closest('.bubble-menu, .nc-textarea-rich-editor')) {
+      isFocused.value = false
+    }
+  },
+  true,
+)
 </script>
 
 <template>
   <div
     class="h-full focus:outline-none"
     :class="{
-      'flex flex-col flex-grow nc-rich-text-full': props.fullMode,
-      'nc-rich-text-embed flex flex-col pl-1 w-full': !props.fullMode,
+      'flex flex-col flex-grow nc-rich-text-full': fullMode,
+      'nc-rich-text-embed flex flex-col pl-1 w-full': !fullMode,
+      'readonly': readOnly,
+      'nc-form-rich-text-field !p-0': isFormField,
     }"
-    tabindex="0"
+    :tabindex="readOnlyCell || isFormField ? -1 : 0"
   >
-    <div v-if="props.showMenu" class="absolute top-0 right-0.5">
-      <CellRichTextSelectedBubbleMenu v-if="editor" :editor="editor" embed-mode />
+    <div v-if="renderAsText" class="truncate">
+      <span v-if="editor"> {{ editor?.getText() ?? '' }}</span>
     </div>
-    <CellRichTextSelectedBubbleMenuPopup v-if="editor" :editor="editor" />
-    <CellRichTextLinkOptions v-if="editor" :editor="editor" />
-    <EditorContent
-      ref="editorDom"
-      :editor="editor"
-      class="flex flex-col nc-textarea-rich-editor w-full"
-      :class="{
-        'ml-1 mt-2.5 flex-grow': props.fullMode,
-        'nc-scrollbar-md': (!props.fullMode && !props.readonly) || isExpandedFormOpen,
-        'flex-grow': isExpandedFormOpen,
-      }"
-    />
+    <template v-else>
+      <div
+        v-if="showMenu && !readOnly && !isFormField"
+        class="absolute top-0 right-0.5 xs:hidden"
+        :class="{
+          'max-w-[calc(100%_-_198px)] flex justify-end rounded-tr-2xl overflow-hidden': fullMode,
+        }"
+      >
+        <div class="nc-longtext-scrollbar">
+          <CellRichTextSelectedBubbleMenu v-if="editor" :editor="editor" embed-mode :is-form-field="isFormField" />
+        </div>
+      </div>
+      <CellRichTextSelectedBubbleMenuPopup v-if="editor && !isFormField" :editor="editor" />
+      <CellRichTextLinkOptions v-if="editor" :editor="editor" />
+      <EditorContent
+        ref="editorDom"
+        :editor="editor"
+        class="flex flex-col nc-textarea-rich-editor w-full"
+        :class="{
+          'mt-2.5 flex-grow': fullMode,
+          'nc-scrollbar-md': !fullMode || (!fullMode && isExpandedFormOpen),
+          'flex-grow': isExpandedFormOpen,
+          [`!overflow-hidden children:line-clamp-${rowHeight}`]:
+            !fullMode && readOnly && rowHeight && !isExpandedFormOpen && !isForm,
+        }"
+      />
+      <div v-if="isFormField && !readOnly">
+        <div
+          class="overflow-hidden"
+          :class="isFocused ? 'max-h-[50px]' : 'max-h-0'"
+          :style="{
+            transition: 'max-height 0.2s ease-in-out',
+          }"
+        >
+          <CellRichTextSelectedBubbleMenu v-if="editor" :editor="editor" embed-mode is-form-field />
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -206,21 +285,68 @@ watch(editorDom, () => {
   .ProseMirror {
     @apply !border-transparent max-h-full;
   }
+  &:not(.nc-form-rich-text-field) {
+    .ProseMirror {
+      min-height: 8rem;
+    }
+  }
+  &.nc-form-rich-text-field {
+    .ProseMirror {
+      padding: 0;
+    }
+    &.readonly {
+      ul[data-type='taskList'] li input[type='checkbox'] {
+        background-color: #d5d5d9 !important;
+        &:not(:checked) {
+          @apply !border-gray-400;
+        }
+        &:focus {
+          box-shadow: none !important;
+          background-color: #d5d5d9 !important;
+        }
+      }
+    }
+  }
+  &.readonly {
+    .nc-textarea-rich-editor {
+      .ProseMirror {
+        resize: none;
+        white-space: pre-line;
+      }
+    }
+  }
 }
 
 .nc-rich-text-full {
-  @apply px-1.75;
+  @apply px-3;
   .ProseMirror {
-    @apply !p-2;
-
-    max-height: calc(min(60vh, 100rem));
-    min-height: 8rem;
+    @apply !p-2 h-[min(797px,100vh_-_170px)] w-[min(1256px,100vw_-_124px)];
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin !important;
+    resize: both;
+    min-height: 215px;
+    max-height: min(797px, calc(100vh - 170px));
+    min-width: 256px;
+    max-width: min(1256px, 100vw - 126px);
+  }
+  &.readonly {
+    .ProseMirror {
+      @apply bg-gray-50;
+    }
   }
 }
 
 .nc-textarea-rich-editor {
+  .tiptap p.is-editor-empty:first-child::before {
+    color: #6a7184;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
   .ProseMirror {
-    @apply flex-grow pt-1 border-1 border-gray-200 rounded-lg pr-1 mr-2;
+    @apply flex-grow pt-1 border-1 border-gray-200 rounded-lg;
 
     > * {
       @apply ml-1;
@@ -330,41 +456,6 @@ watch(editorDom, () => {
 
   pre {
     height: fit-content;
-  }
-}
-
-.nc-rich-text-full {
-  .ProseMirror {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scrollbar-width: thin !important;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    &::-webkit-scrollbar-track {
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-      margin-top: 4px;
-      margin-bottom: 4px;
-    }
-    &::-webkit-scrollbar-track-piece {
-      width: 0px;
-    }
-    &::-webkit-scrollbar {
-      @apply bg-transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-
-      width: 4px;
-      @apply bg-gray-300;
-    }
-    &::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-400;
-    }
   }
 }
 </style>

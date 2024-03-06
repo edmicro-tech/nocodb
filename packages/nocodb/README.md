@@ -265,7 +265,7 @@ We allow you to sync schema changes if you have made changes outside MicDB GUI. 
 
 ### Audit
 
-We are keeping all the user operation logs in one place. See <a href="https://docs.nocodb.com/setup-and-usages/audit" target="_blank">Audit</a> for details.
+We are keeping all the user operation logs in one place. See <a href="https://docs.nocodb.com/data-sources/actions-on-data-sources/#audit-logs" target="_blank">Audit</a> for details.
 
 # Production Setup
 
@@ -273,7 +273,7 @@ By default, SQLite is used for storing metadata. However, you can specify your d
 
 ## Environment variables
 
-Please refer to the [Environment variables](https://docs.nocodb.com/getting-started/environment-variables)
+Please refer to the [Environment variables](https://docs.nocodb.com/getting-started/self-hosted/environment-variables)
 
 # Development Setup
 

@@ -161,13 +161,14 @@ export default class Hook implements HookType {
       insertObj,
     );
 
-    await NocoCache.appendToList(
-      CacheScope.HOOK,
-      [hook.fk_model_id],
-      `${CacheScope.HOOK}:${id}`,
-    );
-
-    return this.get(id, ncMeta);
+    return this.get(id, ncMeta).then(async (hook) => {
+      await NocoCache.appendToList(
+        CacheScope.HOOK,
+        [hook.fk_model_id],
+        `${CacheScope.HOOK}:${id}`,
+      );
+      return hook;
+    });
   }
 
   public static async update(
@@ -208,19 +209,10 @@ export default class Hook implements HookType {
       updateObj.notification = JSON.stringify(updateObj.notification);
     }
 
-    // get existing cache
-    const key = `${CacheScope.HOOK}:${hookId}`;
-    let o = await NocoCache.get(key, CacheGetType.TYPE_OBJECT);
-    if (o) {
-      // update data
-      o = { ...o, ...updateObj };
-      // replace notification
-      o.notification = updateObj.notification;
-      // set cache
-      await NocoCache.set(key, o);
-    }
     // set meta
     await ncMeta.metaUpdate(null, null, MetaTable.HOOKS, updateObj, hookId);
+
+    await NocoCache.update(`${CacheScope.HOOK}:${hookId}`, updateObj);
 
     return this.get(hookId, ncMeta);
   }
@@ -237,7 +229,6 @@ export default class Hook implements HookType {
     );
     for (const filter of filterList) {
       await NocoCache.deepDel(
-        CacheScope.FILTER_EXP,
         `${CacheScope.FILTER_EXP}:${filter.id}`,
         CacheDelDirection.CHILD_TO_PARENT,
       );
@@ -245,7 +236,6 @@ export default class Hook implements HookType {
     }
     // Delete Hook
     await NocoCache.deepDel(
-      CacheScope.HOOK,
       `${CacheScope.HOOK}:${hookId}`,
       CacheDelDirection.CHILD_TO_PARENT,
     );

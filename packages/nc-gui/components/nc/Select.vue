@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  value?: string
+  value?: string | string[]
   placeholder?: string
+  mode?: 'multiple' | 'tags'
   dropdownClassName?: string
   showSearch?: boolean
   // filterOptions is a function
@@ -31,6 +32,8 @@ const dropdownMatchSelectWidth = computed(() => props.dropdownMatchSelectWidth)
 
 const loading = computed(() => props.loading)
 
+const mode = computed(() => props.mode)
+
 const vModel = useVModel(props, 'value', emits)
 
 const onChange = (value: string) => {
@@ -41,20 +44,21 @@ const onChange = (value: string) => {
 <template>
   <a-select
     v-model:value="vModel"
-    :placeholder="placeholder"
-    class="nc-select"
-    :dropdown-class-name="dropdownClassName"
-    :show-search="showSearch"
-    :filter-option="filterOption"
-    :dropdown-match-select-width="dropdownMatchSelectWidth"
     :allow-clear="allowClear"
-    :loading="loading"
     :disabled="loading"
+    :dropdown-class-name="dropdownClassName"
+    :dropdown-match-select-width="dropdownMatchSelectWidth"
+    :filter-option="filterOption"
+    :loading="loading"
+    :mode="mode"
+    :placeholder="placeholder"
+    :show-search="showSearch"
+    class="nc-select"
     @change="onChange"
   >
     <template #suffixIcon>
       <GeneralLoader v-if="loading" />
-      <GeneralIcon v-else icon="arrowDown" class="text-gray-800 nc-select-expand-btn" />
+      <GeneralIcon v-else class="text-gray-800 nc-select-expand-btn" icon="arrowDown" />
     </template>
     <slot />
   </a-select>
@@ -78,15 +82,18 @@ const onChange = (value: string) => {
   height: fit-content;
   .ant-select-selector {
     box-shadow: 0px 5px 3px -2px rgba(0, 0, 0, 0.02), 0px 3px 1px -2px rgba(0, 0, 0, 0.06);
-    @apply border-1 border-gray-200 !rounded-lg;
+    @apply border-1 border-gray-200 rounded-lg;
   }
 
   .ant-select-selection-item {
-    @apply font-medium pr-3;
+    @apply font-medium pr-3 rounded-md;
   }
 
   .ant-select-selection-placeholder {
     @apply text-gray-600;
+  }
+  .ant-select-selection-item-remove {
+    @apply text-gray-800 !pb-1;
   }
 }
 .nc-select.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {

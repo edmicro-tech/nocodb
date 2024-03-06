@@ -16,6 +16,7 @@ import {
   useBase,
   useBases,
   useDialog,
+  useGlobal,
   useNuxtApp,
   useRoles,
   useRouter,
@@ -32,7 +33,7 @@ const route = router.currentRoute
 
 const basesStore = useBases()
 
-const { createProject: _createProject } = basesStore
+const { createProject: _createProject, updateProject } = basesStore
 
 const { bases, basesList, activeProjectId } = storeToRefs(basesStore)
 
@@ -52,6 +53,8 @@ const baseURL = $api.instance.defaults.baseURL
 const { isSharedBase } = storeToRefs(baseStore)
 
 const { activeTable: _activeTable } = storeToRefs(useTablesStore())
+
+const { isMobileMode } = useGlobal()
 
 const contextMenuTarget = reactive<{ type?: 'base' | 'source' | 'table' | 'main' | 'layout'; value?: any }>({})
 
@@ -271,6 +274,38 @@ const scrollTableNode = () => {
 
   // Scroll to the table node
   activeTableDom?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+
+const onMove = async (_event: { moved: { newIndex: number; oldIndex: number; element: NcProject } }) => {
+  const {
+    moved: { newIndex = 0, oldIndex = 0, element },
+  } = _event
+
+  if (!element?.id) return
+
+  let nextOrder: number
+
+  // set new order value based on the new order of the items
+  if (basesList.value.length - 1 === newIndex) {
+    // If moving to the end, set nextOrder greater than the maximum order in the list
+    nextOrder = Math.max(...basesList.value.map((item) => item?.order ?? 0)) + 1
+  } else if (newIndex === 0) {
+    // If moving to the beginning, set nextOrder smaller than the minimum order in the list
+    nextOrder = Math.min(...basesList.value.map((item) => item?.order ?? 0)) / 2
+  } else {
+    nextOrder =
+      (parseFloat(String(basesList.value[newIndex - 1]?.order ?? 0)) +
+        parseFloat(String(basesList.value[newIndex + 1]?.order ?? 0))) /
+      2
+  }
+
+  const _nextOrder = !isNaN(Number(nextOrder)) ? nextOrder : oldIndex
+
+  await updateProject(element.id, {
+    order: _nextOrder,
+  })
+
+  $e('a:base:reorder')
 }
 
 watch(

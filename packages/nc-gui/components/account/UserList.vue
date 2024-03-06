@@ -245,13 +245,13 @@ const openDeleteModal = (user: UserType) => {
             data-rec="true"
           >
             <span>
-              {{ $t('labels.email') }}
+              {{ $t('objects.users') }}
             </span>
             <LazyAccountUserMenu :direction="sortDirection.email" field="email" :handle-user-sort="saveOrUpdate" />
           </div>
           <div class="py-3.5 text-gray-500 font-medium text-3.5 w-1/3 lg:w-2/5 text-start flex items-center space-x-2" data-rec="true">
             <span>
-              {{ $t('objects.role') }}
+              {{ $t('general.access') }}
             </span>
             <LazyAccountUserMenu :direction="sortDirection.roles" field="roles" :handle-user-sort="saveOrUpdate" />
           </div>
@@ -296,9 +296,9 @@ const openDeleteModal = (user: UserType) => {
                     <GeneralIcon v-if="el?.roles === OrgUserRoles.CREATOR" id="nc-selected-item-icon" icon="check"
                       class="w-4 h-4 text-primary" />
                   </div>
-                  <span class="text-gray-500 text-xs whitespace-normal" data-rec="true">
+                  <div class="text-gray-500 text-xs whitespace-normal" data-rec="true">
                     {{ $t('msg.info.roles.orgCreator') }}
-                  </span>
+                  </div>
                 </a-select-option>
 
                 <a-select-option class="nc-users-list-role-option" :value="OrgUserRoles.VIEWER"
@@ -308,11 +308,14 @@ const openDeleteModal = (user: UserType) => {
                     <GeneralIcon v-if="el.roles === OrgUserRoles.VIEWER" id="nc-selected-item-icon" icon="check"
                       class="w-4 h-4 text-primary" />
                   </div>
-                  <span class="text-gray-500 text-xs whitespace-normal" data-rec="true">
+                  <div class="text-gray-500 text-xs whitespace-normal" data-rec="true">
                     {{ $t('msg.info.roles.orgViewer') }}
-                  </span>
+                  </div>
                 </a-select-option>
               </NcSelect>
+              <div v-else class="font-weight-bold" data-rec="true">
+                {{ $t(`objects.roleType.orgLevelCreator`) }}
+              </div>
             </div>
             <div class="text-3.5 text-start lg:w-1/3 w-0 lg:visible invisible">
               <div class="font-weight-bold" data-rec="true">
@@ -371,6 +374,18 @@ const openDeleteModal = (user: UserType) => {
                 </NcDropdown>
               </div>
             </span>
+          </div>
+          <div
+            v-if="sortedUsers.length === 1"
+            class="user pt-12 pb-4 px-2 flex flex-col items-center gap-6 text-center border-b-1 border-l-1 border-r-1"
+          >
+            <div class="text-2xl text-gray-800 font-bold">
+              {{ $t('placeholder.inviteYourTeam') }}
+            </div>
+            <div class="text-sm text-gray-700">
+              {{ $t('placeholder.inviteYourTeamLabel') }}
+            </div>
+            <img src="~assets/img/placeholder/invite-team.png" class="!w-[30rem] flex-none" />
           </div>
         </section>
       </div>

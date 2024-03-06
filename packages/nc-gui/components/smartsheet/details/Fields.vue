@@ -5,7 +5,6 @@ import { UITypes, isSystemColumn, isVirtualCol } from 'nocodb-sdk'
 import Draggable from 'vuedraggable'
 import { onKeyDown, useMagicKeys } from '@vueuse/core'
 import type { ColumnType, SelectOptionsType } from 'nocodb-sdk'
-import { Icon } from '@iconify/vue'
 import { type Field, getUniqueColumnName, ref, useSmartsheetStoreOrThrow } from '#imports'
 
 interface TableExplorerColumn extends ColumnType {
@@ -15,6 +14,7 @@ interface TableExplorerColumn extends ColumnType {
     order: number
     view_id: string
   }
+  view_id?: string
 }
 
 interface op {
@@ -356,6 +356,7 @@ const onFieldAdd = (state: TableExplorerColumn) => {
   }
 
   state.temp_id = `temp_${++temporaryAddCount.value}`
+  state.view_id = view.value?.id as string
   ops.value.push({
     op: 'add',
     column: state,
@@ -819,8 +820,8 @@ watch(
       <template v-else>
         <div class="flex w-full justify-between py-2">
           <a-input
-            data-testid="nc-field-search-input"
             v-model:value="searchQuery"
+            data-testid="nc-field-search-input"
             class="!h-8 !px-1 !rounded-lg !w-72"
             :placeholder="$t('placeholder.searchFields')"
           >
@@ -832,8 +833,8 @@ watch(
                 v-if="searchQuery.length > 0"
                 icon="close"
                 class="mx-1 h-3.5 w-3.5 text-gray-500 group-hover:text-black"
-                @click="searchQuery = ''"
                 data-testid="nc-field-clear-search"
+                @click="searchQuery = ''"
               />
             </template>
           </a-input>
@@ -888,16 +889,16 @@ watch(
               :model-value="fields"
               :disabled="isLocked"
               item-key="id"
-              @change="onMove($event)"
               data-testid="nc-field-list-wrapper"
+              @change="onMove($event)"
             >
               <template #item="{ element: field }">
                 <div
                   v-if="field.title.toLowerCase().includes(searchQuery.toLowerCase()) && !field.pv"
                   class="flex px-2 hover:bg-gray-100 first:rounded-t-lg border-b-1 last:rounded-b-none border-gray-200 pl-5 group"
                   :class="` ${compareCols(field, activeField) ? 'selected' : ''}`"
-                  @click="changeField(field, $event)"
                   :data-testid="`nc-field-item-${fieldState(field)?.title || field.title}`"
+                  @click="changeField(field, $event)"
                 >
                   <div class="flex items-center flex-1 py-2.5 gap-1 w-2/6">
                     <component
@@ -913,12 +914,12 @@ watch(
                       :checked="
                         visibilityOps.find((op) => op.column.fk_column_id === field.id)?.visible ?? viewFieldsMap[field.id].show
                       "
+                      data-testid="nc-field-visibility-checkbox"
                       @change="
                         (event: any) => {
                           toggleVisibility(event.target.checked, viewFieldsMap[field.id])
                         }
                       "
-                      data-testid="nc-field-visibility-checkbox"
                     />
                     <NcCheckbox v-else :disabled="true" class="opacity-0" :checked="true" />
                     <SmartsheetHeaderVirtualCellIcon
@@ -994,8 +995,8 @@ watch(
                       size="small"
                       class="no-action mr-2"
                       :disabled="loading"
-                      @click="recoverField(field)"
                       data-testid="nc-field-restore-changes"
+                      @click="recoverField(field)"
                     >
                       <div class="flex items-center text-xs gap-1">
                         <GeneralIcon icon="reload" />
@@ -1030,8 +1031,8 @@ watch(
 
                               <div
                                 class="flex flex-row px-3 py-2 w-46 justify-between items-center group hover:bg-gray-100 cursor-pointer"
-                                @click="onClickCopyFieldUrl(field)"
                                 data-testid="nc-field-item-action-copy-id"
+                                @click="onClickCopyFieldUrl(field)"
                               >
                                 <div class="flex flex-row items-baseline gap-x-1 font-bold text-xs">
                                   <div class="text-gray-600">{{ $t('labels.idColon') }}</div>
@@ -1051,29 +1052,28 @@ watch(
                           <template v-if="!isLocked">
                             <NcMenuItem
                               key="table-explorer-duplicate"
-                              @click="duplicateField(field)"
                               data-testid="nc-field-item-action-duplicate"
+                              @click="duplicateField(field)"
                             >
-                              <Icon class="iconify text-gray-800" icon="lucide:copy" /><span>{{ $t('general.duplicate') }}</span>
+                              <GeneralIcon icon="duplicate" class="text-gray-800" />
+                              <span>{{ $t('general.duplicate') }}</span>
                             </NcMenuItem>
                             <NcMenuItem
                               v-if="!field.pv"
                               key="table-explorer-insert-above"
-                              @click="addField(field, true)"
                               data-testid="nc-field-item-action-insert-above"
+                              @click="addField(field, true)"
                             >
-                              <Icon class="iconify text-gray-800" icon="lucide:arrow-up" /><span>{{
-                                $t('general.insertAbove')
-                              }}</span>
+                              <GeneralIcon icon="ncArrowUp" class="text-gray-800" />
+                              <span>{{ $t('general.insertAbove') }}</span>
                             </NcMenuItem>
                             <NcMenuItem
                               key="table-explorer-insert-below"
-                              @click="addField(field)"
                               data-testid="nc-field-item-action-insert-below"
+                              @click="addField(field)"
                             >
-                              <Icon class="iconify text-gray-800" icon="lucide:arrow-down" /><span>{{
-                                $t('general.insertBelow')
-                              }}</span>
+                              <GeneralIcon icon="ncArrowDown" class="text-gray-800" />
+                              <span>{{ $t('general.insertBelow') }}</span>
                             </NcMenuItem>
 
                             <a-menu-divider class="my-1.5" />
@@ -1081,8 +1081,8 @@ watch(
                             <NcMenuItem
                               key="table-explorer-delete"
                               class="!hover:bg-red-50"
-                              @click="onFieldDelete(field)"
                               data-testid="nc-field-item-action-delete"
+                              @click="onFieldDelete(field)"
                             >
                               <div class="text-red-500">
                                 <GeneralIcon icon="delete" class="group-hover:text-accent -ml-0.25 -mt-0.75 mr-0.5" />
@@ -1111,8 +1111,8 @@ watch(
                 <div
                   class="flex px-2 bg-white hover:bg-gray-100 border-b-1 border-gray-200 first:rounded-tl-lg last:border-b-1 pl-5 group"
                   :class="` ${compareCols(displayColumn, activeField) ? 'selected' : ''}`"
-                  @click="changeField(displayColumn, $event)"
                   :data-testid="`nc-field-item-${fieldState(displayColumn)?.title || displayColumn.title}`"
+                  @click="changeField(displayColumn, $event)"
                 >
                   <div class="flex items-center flex-1 py-2.5 gap-1 w-2/6">
                     <component
@@ -1171,8 +1171,8 @@ watch(
                       size="small"
                       class="no-action mr-2"
                       :disabled="loading"
-                      @click="recoverField(displayColumn)"
                       data-testid="nc-field-restore-changes"
+                      @click="recoverField(displayColumn)"
                     >
                       <div class="flex items-center text-xs gap-1">
                         <GeneralIcon icon="reload" />
@@ -1212,8 +1212,8 @@ watch(
 
                             <div
                               class="flex flex-row px-3 py-2 w-46 justify-between items-center group hover:bg-gray-100 cursor-pointer"
-                              @click="onClickCopyFieldUrl(displayColumn)"
                               data-testid="nc-field-item-action-copy-id"
+                              @click="onClickCopyFieldUrl(displayColumn)"
                             >
                               <div class="flex flex-row items-baseline gap-x-1 font-bold text-xs">
                                 <div class="text-gray-600">{{ $t('labels.idColon') }}</div>
@@ -1256,7 +1256,7 @@ watch(
                 @add="onFieldAdd"
               />
               <div v-else class="w-[25rem] flex flex-col justify-center p-4 items-center">
-                <img src="~assets/img/fieldPlaceholder.svg" class="!w-[18rem]" />
+                <img src="~assets/img/placeholder/multi-field-editor.png" class="!w-[18rem]" />
                 <div class="text-2xl text-gray-600 font-bold text-center pt-6">{{ $t('labels.multiField.selectField') }}</div>
                 <div class="text-center text-sm px-2 text-gray-500 pt-6">
                   {{ $t('labels.multiField.selectFieldLabel') }}

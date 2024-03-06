@@ -18,7 +18,7 @@ RUN cp $GOPATH/bin/litestream /usr/src/lt
 ###########
 # Builder
 ###########
-FROM node:18.12.1-alpine as builder
+FROM node:18.19.1-alpine as builder
 WORKDIR /usr/src/app
 
 # install node-gyp dependencies
@@ -50,7 +50,7 @@ RUN pnpm install --prod --shamefully-hoist \
 ##########
 # Runner
 ##########
-FROM alpine:3.18
+FROM alpine:3.19
 WORKDIR /usr/src/app
 
 ENV NC_DOCKER 0.6
@@ -71,5 +71,5 @@ COPY --from=builder /usr/src/appEntry/ /usr/src/appEntry/
 EXPOSE 8080
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-# Start Nocodb
+# Start Micdb
 CMD ["/usr/src/appEntry/start.sh"]

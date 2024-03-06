@@ -19,15 +19,31 @@ export class DatasService {
   constructor() {}
 
   async dataList(
-    param: PathParams & { query: any; disableOptimization?: boolean },
+    param: (PathParams | { view?: View; model: Model }) & {
+      query: any;
+      disableOptimization?: boolean;
+      ignorePagination?: boolean;
+      calendarLimitOverride?: number;
+      throwErrorIfInvalidParams?: boolean;
+    },
   ) {
-    const { model, view } = await getViewAndModelByAliasOrId(param);
+    let { model, view } = param as { view?: View; model?: Model };
+
+    if (!model) {
+      const modelAndView = await getViewAndModelByAliasOrId(
+        param as PathParams,
+      );
+      model = modelAndView.model;
+      view = modelAndView.view;
+    }
 
     return await this.getDataList({
       model,
       view,
       query: param.query,
       throwErrorIfInvalidParams: true,
+      ignorePagination: param.ignorePagination,
+      calendarLimitOverride: param.calendarLimitOverride,
     });
   }
 
@@ -136,6 +152,8 @@ export class DatasService {
     baseModel?: BaseModelSqlv2;
     throwErrorIfInvalidParams?: boolean;
     ignoreViewFilterAndSort?: boolean;
+    ignorePagination?: boolean;
+    calendarLimitOverride?: number;
   }) {
     const { model, view, query = {}, ignoreViewFilterAndSort = false } = param;
 
@@ -174,6 +192,8 @@ export class DatasService {
             await baseModel.list(listArgs, {
               ignoreViewFilterAndSort,
               throwErrorIfInvalidParams: param.throwErrorIfInvalidParams,
+              ignorePagination: param.ignorePagination,
+              calendarLimitOverride: param.calendarLimitOverride,
             }),
             {},
             listArgs,
